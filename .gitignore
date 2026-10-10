@@ -7,10 +7,18 @@ node_modules/
 .env.local
 .env.*.local
 
-# Virtual environments
+# Python virtual environments & bytecode
 .venv/
 venv/
 env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Databases
+*.db
+*.sqlite3
 
 # Build and output directories
 dist/
