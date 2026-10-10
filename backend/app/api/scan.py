@@ -176,6 +176,71 @@ async def scan_qr(
         scan_res.explanation = f"Decoded QR code text content: '{payload_text}'. " + scan_res.explanation
         return scan_res
 
+@router.post("/multi", response_model=ScanResponse)
+async def scan_multi(
+    req: MultiVectorScanRequest,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_user)
+) -> Any:
+    """Multi-vector analysis combining text, URL, phone number, and sender details."""
+    start_time = time.time()
+    sub_responses = []
+
+    if req.text:
+        t_res = await scan_text(req=TextScanRequest(text=req.text, sender=req.sender_email), db=db, current_user=current_user)
+        sub_responses.append(t_res)
+
+    if req.url:
+        u_res = await scan_url(req=UrlScanRequest(url=req.url), db=db, current_user=current_user)
+        sub_responses.append(u_res)
+
+    if req.phone_number:
+        p_res = scan_phone(req=PhoneScanRequest(phone_number=req.phone_number), db=db, current_user=current_user)
+        sub_responses.append(p_res)
+
+    if not sub_responses:
+        raise HTTPException(status_code=400, detail="Multi-vector scan requires at least one field (text, url, or phone_number).")
+
+    max_score = max(r.risk_score for r in sub_responses)
+    risk_level = "High Risk" if max_score >= 70 else ("Suspicious" if max_score >= 35 else "Safe")
+    
+    combined_indicators = []
+    red_flags = []
+    actions = []
+    categories = []
+    for r in sub_responses:
+        combined_indicators.extend(r.threat_indicators)
+        red_flags.extend(r.red_flags)
+        actions.extend(r.recommended_actions)
+        if r.scam_category:
+            categories.append(r.scam_category)
+
+    category = categories[0] if categories else "Multi-Vector Fraud"
+    exec_time = round((time.time() - start_time) * 1000, 2)
+
+    response = ScanResponse(
+        scan_type="multi",
+        risk_level=risk_level,
+        risk_score=max_score,
+        scam_category=category,
+        explanation=f"Multi-vector threat scan evaluated {len(sub_responses)} attack vectors.",
+        red_flags=list(dict.fromkeys(red_flags)),
+        evidence=f"Analyzed vectors: {[r.scan_type for r in sub_responses]}",
+        recommended_actions=list(dict.fromkeys(actions)),
+        limitations="Correlated multi-vector analysis based on AI heuristics and threat databases.",
+        threat_indicators=combined_indicators,
+        extracted_entities={
+            "vectors_evaluated": len(sub_responses),
+            "max_risk_score": max_score
+        },
+        execution_time_ms=exec_time,
+        timestamp=datetime.now(timezone.utc)
+    )
+
+    scan_id_str = _save_scan_record(db, current_user, response, f"Multi-vector scan ({len(sub_responses)} vectors)")
+    response.scan_id = scan_id_str
+    return response
+
 @router.get("/history", response_model=List[ScanHistoryResponse])
 def get_scan_history(
     skip: int = 0,
@@ -238,13 +303,19 @@ def delete_scan_history_item(
         
     try:
         scan_id_int = int(scan_id)
-        item = db.query(ScanHistory).filter(ScanHistory.id == scan_id_int, ScanHistory.user_id == current_user.id).first()
-        if item:
-            db.delete(item)
-            db.commit()
     except ValueError:
-        pass
-        
+        raise HTTPException(status_code=400, detail="Invalid scan_id format. Must be integer ID or string UUID.")
+
+    item_any = db.query(ScanHistory).filter(ScanHistory.id == scan_id_int).first()
+    if not item_any:
+        raise HTTPException(status_code=404, detail="Scan record not found")
+
+    if item_any.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete another user's scan record")
+
+    db.delete(item_any)
+    db.commit()
+
     return {"message": "Scan record deleted successfully", "scan_id": scan_id}
 
 def _save_scan_record(db: Session, user: Optional[User], response: ScanResponse, input_snippet: str) -> str:

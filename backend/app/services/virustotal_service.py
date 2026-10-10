@@ -4,6 +4,7 @@ import logging
 from typing import Dict, Any, Optional
 from urllib.parse import urlparse
 from app.core.config import settings
+from app.utils.validators import is_private_or_local_target
 
 logger = logging.getLogger("scamsense.virustotal")
 
@@ -14,12 +15,12 @@ class VirusTotalService:
 
     async def check_url(self, url: str) -> Dict[str, Any]:
         """Query VirusTotal API v3 for URL scan analysis statistics."""
-        if not url:
+        if not url or is_private_or_local_target(url):
             return {
                 "checked": False,
                 "provider": "VirusTotal",
-                "status": "invalid_input",
-                "details": "Invalid or empty URL."
+                "status": "invalid_or_private_input",
+                "details": "Private network, localhost, or invalid URL."
             }
 
         if not self.api_key:

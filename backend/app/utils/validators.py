@@ -81,3 +81,47 @@ def is_ip_address(host: str) -> bool:
         return False
     ip_pattern = re.compile(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$')
     return bool(ip_pattern.match(host))
+
+def is_private_or_local_target(target: str) -> bool:
+    """Check if URL or hostname targets private IP ranges, localhost, or non-HTTP schemes (SSRF protection)."""
+    if not target:
+        return False
+        
+    target_clean = target.strip().lower()
+    
+    # Check unsafe schemes
+    if ":" in target_clean and not target_clean.startswith(("http://", "https://")):
+        scheme = target_clean.split(":")[0]
+        if scheme in ["file", "ftp", "gopher", "dict", "ldap", "tftp", "php"]:
+            return True
+
+    domain = get_domain_from_url(target) or target_clean
+    
+    # Remove port if present
+    if ":" in domain:
+        domain = domain.split(":")[0]
+        
+    # Check localhost and local hostnames
+    local_hosts = ["localhost", "127.0.0.1", "0.0.0.0", "::1", "169.254.169.254", "metadata.google.internal"]
+    if domain in local_hosts or domain.endswith(".local") or domain.endswith(".internal"):
+        return True
+
+    # Check private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x, 169.254.x.x)
+    if is_ip_address(domain):
+        parts = [int(p) for p in domain.split(".")]
+        if len(parts) == 4:
+            if parts[0] == 10:
+                return True
+            if parts[0] == 172 and 16 <= parts[1] <= 31:
+                return True
+            if parts[0] == 192 and parts[1] == 168:
+                return True
+            if parts[0] == 169 and parts[1] == 254:
+                return True
+            if parts[0] == 127:
+                return True
+            if parts[0] == 0:
+                return True
+
+    return False
+

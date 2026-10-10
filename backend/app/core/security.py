@@ -57,15 +57,34 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    user_id = None
+    role = "user"
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: str = payload.get("sub")
+        user_id = payload.get("sub")
+        role = payload.get("role", "user")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
+        # Fallback to Firebase Token verification if configured
+        from app.services.firebase_service import FirebaseService
+        fb_svc = FirebaseService()
+        if fb_svc.is_initialized:
+            fb_token = fb_svc.verify_token(token)
+            if fb_token:
+                user_id = fb_token.get("uid") or fb_token.get("email")
+            else:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
+        else:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
 
-    user = db.query(User).filter(User.id == int(user_id), User.is_active == True).first()
+    user = None
+    try:
+        uid_int = int(user_id)
+        user = db.query(User).filter(User.id == uid_int, User.is_active == True).first()
+    except (ValueError, TypeError):
+        user = db.query(User).filter(User.email == str(user_id), User.is_active == True).first()
+
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
 

@@ -6,6 +6,10 @@ node_modules/
 .env
 .env.local
 .env.*.local
+serviceAccountKey.json
+*serviceAccountKey*.json
+*.pem
+
 
 # Python virtual environments & bytecode
 .venv/

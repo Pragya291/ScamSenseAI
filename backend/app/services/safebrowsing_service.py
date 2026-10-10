@@ -3,6 +3,7 @@ import logging
 from urllib.parse import urlparse
 from typing import Dict, Any, Optional
 from app.core.config import settings
+from app.utils.validators import is_private_or_local_target
 
 logger = logging.getLogger("scamsense.safebrowsing")
 
@@ -15,14 +16,14 @@ class SafeBrowsingService:
         """Check URL against Google Safe Browsing API v4."""
         # 1. Validate & Normalize URL
         normalized_url = self._normalize_url(url)
-        if not normalized_url:
+        if not normalized_url or is_private_or_local_target(normalized_url):
             return {
                 "checked": False,
                 "is_threat": False,
                 "threat_types": [],
                 "provider": "Google Safe Browsing",
-                "status": "invalid_url",
-                "details": "Malformed URL or unsupported scheme."
+                "status": "invalid_or_private_url",
+                "details": "Private network, localhost, or malformed URL."
             }
 
         if not self.api_key:

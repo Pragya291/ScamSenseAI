@@ -9,7 +9,7 @@ from app.utils.constants import (
 )
 from app.utils.validators import (
     extract_urls, extract_phone_numbers, extract_emails, extract_crypto_wallets,
-    get_domain_from_url, is_ip_address
+    get_domain_from_url, is_ip_address, is_private_or_local_target
 )
 from app.schemas.scan import ScanResponse, ThreatIndicator
 from app.models.blacklist import Blacklist, Whitelist
@@ -277,6 +277,16 @@ class ScamDetectorService:
                     matched_text=url
                 )
             ]}
+
+        if is_private_or_local_target(url) or is_private_or_local_target(domain):
+            score += 75.0
+            indicators.append(ThreatIndicator(
+                category="SSRF / Internal Target Risk",
+                severity="CRITICAL",
+                rule_name="private_network_target",
+                description=f"Target URL '{url}' points to private network IP address, localhost, or non-standard protocol.",
+                matched_text=domain
+            ))
 
         if is_ip_address(domain):
             score += 35.0
