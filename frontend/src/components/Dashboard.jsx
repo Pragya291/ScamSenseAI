@@ -491,15 +491,25 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
               >
-                <div className="w-7 h-7 rounded-full bg-linear-to-tr from-blue-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center">
-                  {user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'P')}
+                <div className="w-7 h-7 rounded-full bg-linear-to-tr from-blue-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                  {user?.photoURL ? (
+                    <img 
+                      src={user.photoURL} 
+                      alt={user.displayName || "User Avatar"} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  ) : null}
+                  {(!user?.photoURL || user?.photoURL === '') && (
+                    <span>{user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'P')}</span>
+                  )}
                 </div>
                 <div className="text-left hidden md:block">
-                  <div className="text-xs font-bold text-slate-900 leading-tight">
-                    {user?.displayName || 'Pragya Mishra'}
+                  <div className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[130px]">
+                    {user?.displayName || user?.email?.split('@')[0] || 'Pragya Mishra'}
                   </div>
-                  <div className="text-[10px] text-slate-500 leading-tight">
-                    Free Plan
+                  <div className="text-[10px] text-slate-500 leading-tight truncate max-w-[130px]">
+                    {user?.email || 'Free Plan'}
                   </div>
                 </div>
               </button>

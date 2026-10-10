@@ -237,8 +237,8 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
               <button
                 type="button"
                 onClick={handleGoogleSignIn}
-                disabled={googleLoading}
-                className="w-full py-3 px-4 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 text-xs sm:text-sm font-semibold text-slate-700 flex items-center justify-center gap-3 transition shadow-2xs cursor-pointer"
+                disabled={isLoading || googleLoading}
+                className="w-full py-3 px-4 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed text-xs sm:text-sm font-semibold text-slate-700 flex items-center justify-center gap-3 transition shadow-2xs cursor-pointer"
               >
                 {googleLoading ? (
                   <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
@@ -250,7 +250,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                   </svg>
                 )}
-                <span>Sign in with Google</span>
+                <span>{googleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
               </button>
 
               {/* Footer Switcher */}

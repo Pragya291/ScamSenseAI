@@ -11,7 +11,8 @@ import {
   sendPasswordResetEmail, 
   signOut as fbSignOut, 
   onAuthStateChanged,
-  isFirebaseConfigured 
+  isFirebaseConfigured,
+  syncUserProfileWithFirestore
 } from '../lib/firebase';
 
 const AuthContext = createContext(null);
@@ -25,12 +26,13 @@ export function AuthProvider({ children }) {
   const postLoginDestination = import.meta.env.VITE_POST_LOGIN_REDIRECT || '/dashboard';
 
   useEffect(() => {
-    // Check for redirect result if mobile redirect was used
+    // Check for redirect result if mobile redirect or popup fallback was used
     if (isFirebaseConfigured) {
       getRedirectResult(auth)
-        .then((result) => {
+        .then(async (result) => {
           if (result && result.user) {
             setUser(result.user);
+            await syncUserProfileWithFirestore(result.user);
           }
         })
         .catch((error) => {
@@ -45,10 +47,13 @@ export function AuthProvider({ children }) {
     }, 1000);
 
     // Subscribe to Firebase auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       setLoading(false);
       clearTimeout(timer);
+      if (currentUser) {
+        await syncUserProfileWithFirestore(currentUser);
+      }
     });
 
     return () => {
@@ -88,6 +93,12 @@ export function AuthProvider({ children }) {
       case 'auth/invalid-api-key':
       case 'auth/api-key-not-valid':
         return 'Firebase API key is not configured. Please add your credentials in .env file.';
+      case 'auth/unauthorized-domain':
+        return 'This domain is not authorized for Google Sign-In in Firebase Console.';
+      case 'auth/operation-not-allowed':
+        return 'Google Sign-In is not enabled in Firebase Console. Please enable Google in Firebase Console -> Authentication -> Sign-in method.';
+      case 'auth/account-exists-with-different-credential':
+        return 'An account already exists with the same email using a different sign-in method.';
       default:
         return error.message || 'Authentication failed. Please verify your credentials and try again.';
     }
@@ -115,6 +126,7 @@ export function AuthProvider({ children }) {
         await updateProfile(userCredential.user, { displayName: name });
       }
       setUser(userCredential.user);
+      await syncUserProfileWithFirestore(userCredential.user);
       return { success: true, user: userCredential.user };
     } catch (error) {
       const friendlyMsg = mapAuthError(error);
@@ -142,6 +154,7 @@ export function AuthProvider({ children }) {
 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
+      await syncUserProfileWithFirestore(userCredential.user);
       return { success: true, user: userCredential.user };
     } catch (error) {
       const friendlyMsg = mapAuthError(error);
@@ -154,25 +167,14 @@ export function AuthProvider({ children }) {
   const signInWithGoogle = async () => {
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured) {
-        const mockUser = {
-          uid: 'google-demo-' + Date.now(),
-          displayName: 'Google Demo User',
-          email: 'user@gmail.com',
-          photoURL: 'https://lh3.googleusercontent.com/a/default-user',
-          isMock: true
-        };
-        setUser(mockUser);
-        return { success: true, user: mockUser };
-      }
-
       try {
         const result = await signInWithPopup(auth, googleProvider);
         setUser(result.user);
+        await syncUserProfileWithFirestore(result.user);
         return { success: true, user: result.user };
       } catch (popupError) {
-        // If popup is blocked or mobile unsupported, try redirect
-        if (popupError.code === 'auth/popup-blocked' || popupError.code === 'auth/popup-closed-by-user') {
+        // If popup is blocked by browser, attempt fallback redirect
+        if (popupError.code === 'auth/popup-blocked') {
           await signInWithRedirect(auth, googleProvider);
           return { redirecting: true };
         }
@@ -245,3 +247,4 @@ export function useAuth() {
   }
   return context;
 }
+

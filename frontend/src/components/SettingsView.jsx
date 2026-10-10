@@ -148,8 +148,18 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
           
           {/* TOP AVATAR & BIO HERO CARD */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-28 h-28 rounded-full bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white font-black text-3xl flex items-center justify-center shadow-xl shrink-0 border-4 border-white dark:border-slate-800">
-              PM
+            <div className="w-28 h-28 rounded-full bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white font-black text-3xl flex items-center justify-center shadow-xl shrink-0 border-4 border-white dark:border-slate-800 overflow-hidden">
+              {user?.photoURL ? (
+                <img 
+                  src={user.photoURL} 
+                  alt={user?.displayName || "Profile Photo"} 
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              ) : null}
+              {(!user?.photoURL || user?.photoURL === '') && (
+                <span>{user?.displayName ? user.displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'PM'}</span>
+              )}
             </div>
 
             <div className="space-y-3 flex-1 text-center md:text-left">

@@ -14,6 +14,14 @@ import {
   setPersistence,
   browserLocalPersistence
 } from 'firebase/auth';
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp
+} from 'firebase/firestore';
 
 // Read Firebase configuration from Vite environment variables
 const firebaseConfig = {
@@ -35,8 +43,9 @@ export const isFirebaseConfigured = Boolean(
 // Initialize Firebase App instance
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-// Initialize Firebase Auth
+// Initialize Firebase Auth & Cloud Firestore
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // Configure Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
@@ -49,9 +58,49 @@ try {
   console.warn("Persistence setting initialization:", e);
 }
 
+/**
+ * Creates or updates the user profile document in Cloud Firestore under collection `users/{uid}`.
+ * Preserves existing `createdAt` timestamp while updating `lastLoginAt` and user details.
+ */
+export const syncUserProfileWithFirestore = async (authUser) => {
+  if (!authUser || authUser.isMock || !isFirebaseConfigured) return;
+
+  try {
+    const userRef = doc(db, 'users', authUser.uid);
+    const userDoc = await getDoc(userRef);
+
+    const providerId = authUser.providerData && authUser.providerData.length > 0 
+      ? authUser.providerData[0].providerId 
+      : (authUser.providerId || 'google.com');
+
+    const profileData = {
+      uid: authUser.uid,
+      displayName: authUser.displayName || authUser.email?.split('@')[0] || 'User',
+      email: authUser.email || '',
+      photoURL: authUser.photoURL || '',
+      provider: providerId,
+      lastLoginAt: serverTimestamp()
+    };
+
+    if (!userDoc.exists()) {
+      // Create new profile for first-time sign in
+      await setDoc(userRef, {
+        ...profileData,
+        createdAt: serverTimestamp()
+      });
+    } else {
+      // Update last login and profile info for returning users
+      await updateDoc(userRef, profileData);
+    }
+  } catch (error) {
+    console.warn("Cloud Firestore profile sync notice (permission/network):", error);
+  }
+};
+
 export {
   app,
   auth,
+  db,
   googleProvider,
   signInWithPopup,
   signInWithRedirect,
@@ -63,3 +112,4 @@ export {
   signOut,
   onAuthStateChanged
 };
+
