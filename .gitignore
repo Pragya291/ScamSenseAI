@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment and secret files
+.env
+.env.local
+.env.*.local
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Build and output directories
+dist/
+build/
+*.log
+
+# Temp & audit artifacts
+audit-report.json
