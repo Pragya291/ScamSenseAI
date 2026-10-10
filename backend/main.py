@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+# Add backend directory to sys.path so 'app' module is always found
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -24,7 +30,6 @@ init_db()
 async def lifespan(app: FastAPI):
     init_db()
     yield
-    # Shutdown logic if needed
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
