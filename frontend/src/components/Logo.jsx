@@ -60,8 +60,8 @@ export default function Logo({ className = "h-9 w-auto", showText = true, onClic
       </div>
 
       {showText && (
-        <span className="text-xl font-bold tracking-tight text-[#111827] flex items-center">
-          ScamSense <span className="text-[#2563EB] ml-1">AI</span>
+        <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center">
+          ScamSense <span className="text-blue-600 dark:text-blue-400 ml-1">AI</span>
         </span>
       )}
     </div>

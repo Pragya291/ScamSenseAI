@@ -65,16 +65,23 @@ export default function LandingNavbar({ onNavigate, currentView }) {
           {/* Right actions */}
           <div className="hidden md:flex items-center gap-3">
             <button
+              onClick={() => onNavigate('dashboard', 'settings')}
+              className="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              title="Open Settings"
+            >
+              Settings
+            </button>
+            <button
               onClick={() => onNavigate('signin')}
               className="px-4 py-2 text-sm font-semibold text-[#111827] bg-white border border-[#E3E8F2] rounded-lg hover:border-gray-400 hover:bg-gray-50 transition shadow-xs cursor-pointer"
             >
               Sign In
             </button>
             <button
-              onClick={() => onNavigate('signup')}
+              onClick={() => onNavigate('dashboard', 'home')}
               className="px-4 py-2 text-sm font-semibold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] rounded-lg hover:opacity-95 hover:shadow-md transition shadow-xs cursor-pointer flex items-center gap-1.5"
             >
-              <span>Get Started</span>
+              <span>Dashboard</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -129,6 +136,15 @@ export default function LandingNavbar({ onNavigate, currentView }) {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
+                onNavigate('dashboard', 'settings');
+              }}
+              className="w-full py-2.5 text-center text-sm font-semibold text-slate-700 bg-slate-100 rounded-lg"
+            >
+              Settings
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
                 onNavigate('signin');
               }}
               className="w-full py-2.5 text-center text-sm font-semibold text-[#111827] border border-[#E3E8F2] rounded-lg"
@@ -138,11 +154,11 @@ export default function LandingNavbar({ onNavigate, currentView }) {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onNavigate('signup');
+                onNavigate('dashboard', 'home');
               }}
               className="w-full py-2.5 text-center text-sm font-semibold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] rounded-lg"
             >
-              Get Started
+              Open Dashboard
             </button>
           </div>
         </div>

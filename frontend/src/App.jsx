@@ -55,8 +55,8 @@ function AppContent() {
     );
   }
 
-  // If user is authenticated and navigating to dashboard or any authenticated sub-tab
-  if (currentView === 'dashboard' || (user && (currentView === 'signin' || currentView === 'signup'))) {
+  // If user is authenticated or explicitly on the dashboard view
+  if (user || currentView === 'dashboard') {
     return (
       <Dashboard 
         activeTab={activeTab}
@@ -105,9 +105,10 @@ function AppContent() {
     <div className="min-h-screen bg-[#F7F9FE] text-[#111827] flex flex-col justify-between selection:bg-blue-600 selection:text-white">
       {/* Landing Navigation Bar */}
       <LandingNavbar 
-        onNavigate={(view) => {
+        onNavigate={(view, tab = 'home') => {
           if (view === 'auth' || view === 'signin') navigateTo('signin');
           else if (view === 'signup') navigateTo('signup');
+          else if (view === 'dashboard') navigateTo('dashboard', tab);
           else navigateTo('landing');
         }} 
         currentView={currentView} 

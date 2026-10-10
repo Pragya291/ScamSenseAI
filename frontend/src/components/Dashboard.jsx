@@ -35,7 +35,9 @@ import {
   User,
   Copy,
   Check,
-  FileText
+  FileText,
+  Menu,
+  X
 } from 'lucide-react';
 
 // Sample initial scan records
@@ -107,15 +109,39 @@ const INITIAL_SCANS = [
   }
 ];
 
-export default function Dashboard({ activeTab = 'home', setActiveTab, onSignOut, onBackToHome }) {
+export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: externalSetActiveTab, onSignOut, onBackToHome }) {
   const { user, signOutUser } = useAuth();
+  
+  // Internal tab state fallback if external handler is omitted
+  const [internalActiveTab, setInternalActiveTab] = useState('home');
+  const activeTab = externalActiveTab !== undefined ? externalActiveTab : internalActiveTab;
+  const setActiveTab = (tab) => {
+    setInternalActiveTab(tab);
+    if (externalSetActiveTab) externalSetActiveTab(tab);
+  };
   
   const [scans, setScans] = useState(INITIAL_SCANS);
   const [selectedScan, setSelectedScan] = useState(INITIAL_SCANS[0]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('scamsense_theme');
+    if (saved) return saved === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  const handleToggleDarkMode = (val) => {
+    const newMode = val !== undefined ? val : !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('scamsense_theme', newMode ? 'dark' : 'light');
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // Quick Scan Input states on Home tab
   const [scanType, setScanType] = useState('URL');
@@ -125,6 +151,9 @@ export default function Dashboard({ activeTab = 'home', setActiveTab, onSignOut,
 
   // Target Scan Type for Workspace
   const [targetScanType, setTargetScanType] = useState('URL');
+
+  // Search filter query state
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Filtered scans based on search query
   const filteredScans = scans.filter(s => 
@@ -325,23 +354,94 @@ export default function Dashboard({ activeTab = 'home', setActiveTab, onSignOut,
           </button>
         </div>
       </aside>
+      {/* MOBILE DRAWER SIDEBAR */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div 
+            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileSidebarOpen(false)} 
+          />
+          <aside className={`relative w-72 max-w-[85vw] h-full p-6 flex flex-col justify-between shadow-2xl z-10 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900'}`}>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <Logo onClick={() => { setMobileSidebarOpen(false); onBackToHome(); }} />
+                <button 
+                  onClick={() => setMobileSidebarOpen(false)}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <nav className="space-y-1.5">
+                {[
+                  { id: 'home', label: 'Home', icon: Home },
+                  { id: 'scan', label: 'Scan', icon: Scan },
+                  { id: 'threat-intel', label: 'Threat Intelligence', icon: ShieldAlert },
+                  { id: 'scan-history', label: 'Scan History', icon: History },
+                  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+                  { id: 'settings', label: 'Settings', icon: Settings }
+                ].map(({ id, label, icon: IconComponent }) => (
+                  <button
+                    key={id}
+                    onClick={() => {
+                      if (id === 'scan') setTargetScanType('URL');
+                      setActiveTab(id);
+                      setMobileSidebarOpen(false);
+                    }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
+                      activeTab === id
+                        ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
+                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  >
+                    <IconComponent className="w-5 h-5" />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => { setMobileSidebarOpen(false); handleSignOut(); }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 transition cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
 
       {/* MAIN DASHBOARD CONTENT AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         
         {/* 2. TOP NAVIGATION BAR */}
-        <header className={`sticky top-0 z-30 px-6 py-4 border-b ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#E2E8F0]'} backdrop-blur-md flex items-center justify-between gap-4`}>
+        <header className={`sticky top-0 z-30 px-4 sm:px-6 py-4 border-b ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#E2E8F0]'} backdrop-blur-md flex items-center justify-between gap-4`}>
           
-          {/* Global Search Input */}
-          <div className="relative max-w-md w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search scans, URLs, messages..."
-              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-[#E2E8F0] bg-slate-50/70 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="flex items-center gap-3 w-full max-w-md">
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl border border-[#E2E8F0] text-slate-600 hover:bg-slate-100 transition cursor-pointer shrink-0"
+              title="Open Navigation"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            {/* Global Search Input */}
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-slate-400 dark:text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search scans, URLs, messages..."
+                className="w-full pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
           </div>
 
           {/* Right Header Controls */}
@@ -349,8 +449,10 @@ export default function Dashboard({ activeTab = 'home', setActiveTab, onSignOut,
             
             {/* Dark mode toggle */}
             <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2.5 rounded-xl border border-[#E2E8F0] text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+              onClick={() => handleToggleDarkMode()}
+              className={`p-2.5 rounded-xl border transition cursor-pointer ${
+                darkMode ? 'border-slate-700 bg-slate-800 text-amber-400 hover:bg-slate-700' : 'border-[#E2E8F0] text-slate-600 hover:bg-slate-100'
+              }`}
               title="Toggle Theme"
             >
               {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
@@ -472,6 +574,8 @@ export default function Dashboard({ activeTab = 'home', setActiveTab, onSignOut,
             <SettingsView 
               onSignOut={handleSignOut}
               onClearHistory={handleClearAllHistory}
+              darkMode={darkMode}
+              onToggleDarkMode={handleToggleDarkMode}
             />
           )}
 

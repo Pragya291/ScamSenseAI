@@ -148,10 +148,10 @@ export default function LandingFooter({ onNavigate }) {
           </div>
         </div>
 
-        {/* Copyright & Bottom note */}
+        {/* Copyright & Team Credits */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
           <div>
-            &copy; {currentYear} ScamSense AI. All rights reserved.
+            &copy; {currentYear} ScamSense AI. All rights reserved. • <span className="text-slate-400 font-semibold">Created by Janahvi Loke & Pragya Mishra</span>
           </div>
           <div className="flex items-center gap-6">
             <span className="hover:text-slate-400 cursor-pointer">Terms</span>

@@ -24,11 +24,12 @@ import {
   Sparkles,
   KeyRound,
   LogOut,
-  AlertCircle
+  AlertCircle,
+  BarChart3
 } from 'lucide-react';
 
-export default function SettingsView({ onSignOut, onClearHistory }) {
-  const { user, isFirebaseConfigured, resetPassword, signOutUser } = useAuth();
+export default function SettingsView({ onSignOut, onClearHistory, darkMode, onToggleDarkMode }) {
+  const { user, isFirebaseConfigured, resetPassword } = useAuth();
   
   const [activeSubTab, setActiveSubTab] = useState('profile'); // 'profile' | 'security' | 'notifications' | 'appearance' | 'privacy'
   const [isEditing, setIsEditing] = useState(false);
@@ -36,13 +37,13 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
 
-  // Profile Form States (Initialized from reference screenshot 3)
+  // Profile Form States (Matching exact screenshot values)
   const [profileData, setProfileData] = useState({
     fullName: user?.displayName || 'Pragya Mishra',
     pronouns: 'she/her',
-    bio: 'Cybersecurity enthusiast focused on AI-powered fraud detection. Building safer internet for everyone. Open Innovation hackathon participant — Team PJSR (Programming Just Solves Real-Problem). Passionate about Detect, Explain, Protect. Experienced in building 4-in-1 scam detection with Gemini AI + Safe Browsing + VirusTotal.',
+    bio: 'Cybersecurity enthusiast focused on AI-powered fraud detection. Building safer internet for everyone. Open innovation hackathon participant — Team PJSR (Programming Just Solves Real-Problem). Passionate about Detect • Explain • Protect. Experienced in building 4-in-1 scam detection with Gemini AI + Safe Browsing + VirusTotal.',
     occupation: 'Cybersecurity Analyst',
-    jobTitle: 'Threat Intelligence Researcher at ScamSense AI',
+    jobTitle: 'Threat Intelligence Researcher',
     age: '27',
     gender: 'Female',
     dob: 'March 15, 1998',
@@ -53,12 +54,13 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
     location: 'Mumbai, Maharashtra, India',
     address: 'Andheri West, Mumbai - 400053',
     experience: '3+ Years',
-    company: 'ScamSense AI (Team PJSR)',
-    education: 'B.Tech Cybersecurity, Mumbai University 2020',
+    company: 'ScamSense AI • Team PJSR',
+    education: 'B.Tech Cybersecurity, Mumbai University • 2020',
+    workLocation: 'Remote',
     linkedin: 'linkedin.com/in/pragyamishra',
     github: 'github.com/pragya-mishra',
     website: 'pragyamishra.dev',
-    skills: ['Threat Analysis', 'AI/ML', 'React', 'Python', 'Firebase', 'Gemini AI', 'English', 'Hindi', 'Marathi']
+    skills: ['Threat Analysis', 'AI/ML', 'React', 'Python', 'Firebase', 'Gemini AI']
   });
 
   const handleSaveProfile = (e) => {
@@ -82,41 +84,30 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
+    <div className="space-y-6 animate-in fade-in duration-300">
       
-      {/* PAGE HEADER & USER PILL (Matching Reference Screenshot 3) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
+      {/* PAGE HEADER & EDIT PROFILE ACTION (Matching Screenshot) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
-              Settings —
-            </h1>
-            <span className="text-sm font-semibold text-slate-500">
-              Manage your profile, preferences and security
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
-            Update your personal information, preferences, and security settings to keep your account safe and secure.
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
+            Enhanced Profile Details
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+            Manage your personal and professional information
           </p>
         </div>
 
-        {/* User Pill on Top Right */}
-        <div className="flex items-center gap-3 bg-white p-2 px-3 rounded-2xl border border-[#E2E8F0] shadow-2xs self-start sm:self-auto">
-          <div className="text-right">
-            <div className="text-xs font-bold text-slate-900">{profileData.fullName}</div>
-            <div className="flex items-center justify-end gap-1.5 text-[10px] font-bold">
-              <span className="text-blue-600">#2563EB</span>
-              <span className="text-amber-600 bg-amber-50 px-1.5 py-0.2 rounded-md border border-amber-200">Free Plan</span>
-            </div>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white font-bold text-xs flex items-center justify-center shadow-xs">
-            {profileData.fullName.split(' ').map(n => n[0]).join('')}
-          </div>
-        </div>
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="px-5 py-2.5 rounded-2xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#1D4ED8] hover:to-[#6D28D9] text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition cursor-pointer self-start sm:self-auto"
+        >
+          <Edit3 className="w-4 h-4" />
+          <span>{isEditing ? 'Cancel Editing' : 'Edit Profile'}</span>
+        </button>
       </div>
 
       {/* SUB NAVIGATION TABS */}
-      <div className="flex items-center gap-2 border-b border-[#E2E8F0] pb-3 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 overflow-x-auto">
         {[
           { id: 'profile', label: 'Profile Details', icon: User },
           { id: 'security', label: 'Account Security', icon: Lock },
@@ -130,10 +121,10 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition cursor-pointer shrink-0 ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer shrink-0 ${
                 isActive
                   ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-xs'
-                  : 'bg-white border border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                  : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -145,256 +136,199 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
 
       {/* Save Success Alert */}
       {saveSuccess && (
-        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span>Profile changes saved successfully!</span>
         </div>
       )}
 
       {/* MAIN TAB CONTENT */}
-
-      {/* TAB 1: PROFILE DETAILS (Matching Reference Screenshot 3 Right Side) */}
       {activeSubTab === 'profile' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="space-y-6">
           
-          {/* Main Profile Details Card (8 cols) */}
-          <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6">
-            
-            {/* Card Header & Edit Profile Action */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
-                Profile Details
-              </h2>
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="px-4 py-2 rounded-xl border border-blue-200 bg-blue-50/60 hover:bg-blue-100 text-xs font-bold text-[#2563EB] flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>{isEditing ? 'Cancel Editing' : 'Edit Profile'}</span>
-              </button>
+          {/* TOP AVATAR & BIO HERO CARD */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-center md:items-start gap-6">
+            <div className="w-28 h-28 rounded-full bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white font-black text-3xl flex items-center justify-center shadow-xl shrink-0 border-4 border-white dark:border-slate-800">
+              PM
             </div>
 
-            {/* Editable or View Mode Profile Section */}
-            {isEditing ? (
-              <form onSubmit={handleSaveProfile} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
-                    <input
-                      type="text"
-                      value={profileData.fullName}
-                      onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Occupation</label>
-                    <input
-                      type="text"
-                      value={profileData.occupation}
-                      onChange={(e) => setProfileData({ ...profileData, occupation: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+            <div className="space-y-3 flex-1 text-center md:text-left">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <h2 className="text-2xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight">
+                  {profileData.fullName}
+                </h2>
+                <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Verified</span>
+                </span>
+              </div>
 
+              <div className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                {profileData.pronouns} • {profileData.jobTitle}
+              </div>
+
+              {/* Bio Box */}
+              <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700/80 space-y-1 text-xs text-slate-700 dark:text-slate-200 leading-relaxed text-left">
+                <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>Bio</span>
+                </div>
+                <p className="text-[11.5px] text-slate-600 dark:text-slate-300">
+                  {profileData.bio}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* EDIT FORM OR VIEW GRID */}
+          {isEditing ? (
+            <form onSubmit={handleSaveProfile} className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-xs space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Bio / External Description</label>
-                  <textarea
-                    rows={3}
-                    value={profileData.bio}
-                    onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                    className="w-full p-3 rounded-xl border border-slate-300 text-xs font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    value={profileData.fullName}
+                    onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Job Title</label>
-                    <input
-                      type="text"
-                      value={profileData.jobTitle}
-                      onChange={(e) => setProfileData({ ...profileData, jobTitle: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Mobile</label>
-                    <input
-                      type="text"
-                      value={profileData.mobile}
-                      onChange={(e) => setProfileData({ ...profileData, mobile: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Occupation</label>
+                  <input
+                    type="text"
+                    value={profileData.occupation}
+                    onChange={(e) => setProfileData({ ...profileData, occupation: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
+              </div>
 
-                <div className="flex justify-end gap-3 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-5 py-2 rounded-xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white text-xs font-bold shadow-xs hover:opacity-95 flex items-center gap-1.5"
-                  >
-                    <Save className="w-3.5 h-3.5" />
-                    <span>Save Changes</span>
-                  </button>
+              <div>
+                <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Bio</label>
+                <textarea
+                  rows={3}
+                  value={profileData.bio}
+                  onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 text-xs font-medium focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Mobile</label>
+                  <input
+                    type="text"
+                    value={profileData.mobile}
+                    onChange={(e) => setProfileData({ ...profileData, mobile: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
-              </form>
-            ) : (
-              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Location</label>
+                  <input
+                    type="text"
+                    value={profileData.location}
+                    onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white text-xs font-bold shadow-xs hover:opacity-95 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              {/* LEFT COLUMN: Personal Information, Social Links, Skills, Languages (6 cols) */}
+              <div className="lg:col-span-6 space-y-6">
                 
-                {/* User Banner Header */}
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                  <div className="w-24 h-24 rounded-full bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white font-black text-2xl flex items-center justify-center shadow-xl shrink-0 border-4 border-white">
-                    PM
+                {/* Personal Information Box */}
+                <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-4">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    <User className="w-4 h-4 text-blue-600" />
+                    <span>Personal Information</span>
                   </div>
 
-                  <div className="space-y-2 text-center sm:text-left">
-                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
-                        <span>Verified</span>
-                      </span>
-
-                      <span className="px-2.5 py-0.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-xs font-bold flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 text-purple-600" />
-                        <span>Pro</span>
-                      </span>
+                  <div className="space-y-2.5 text-xs">
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Gender</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.gender}</span>
                     </div>
-
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">
-                      {profileData.fullName}
-                    </h3>
-                    <div className="text-xs text-slate-400 font-medium">
-                      {profileData.pronouns}
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Date of Birth</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.dob}</span>
                     </div>
-                  </div>
-                </div>
-
-                {/* Bio / External Description Box */}
-                <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-100/80 space-y-1 text-xs text-slate-700 leading-relaxed">
-                  <div className="font-bold text-slate-900 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Bio / External Description</span>
-                  </div>
-                  <p className="text-[11.5px] text-slate-600">
-                    {profileData.bio}
-                  </p>
-                </div>
-
-                {/* Profile Information Key-Value Grid (Matching Reference Screenshot 3) */}
-                <div className="space-y-3 pt-2">
-                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Profile Information
-                  </h4>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-xs border-t border-slate-100 pt-3">
-                    
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Occupation</span>
-                      <span className="font-bold text-slate-800">{profileData.occupation}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Mobile</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.mobile}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Job Title</span>
-                      <span className="font-bold text-slate-800">{profileData.jobTitle}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Alternate</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.altMobile}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Age</span>
-                      <span className="font-bold text-slate-800">{profileData.age}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Email</span>
+                      <span className="col-span-2 font-bold text-blue-600">{profileData.emailId}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Gender</span>
-                      <span className="font-bold text-slate-800">{profileData.gender}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Personal Email</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.personalEmail}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Date of Birth</span>
-                      <span className="font-bold text-slate-800">{profileData.dob}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Location</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.location}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Mobile</span>
-                      <span className="font-bold text-slate-800">{profileData.mobile}</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Address</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.address}</span>
                     </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Alternate Mobile</span>
-                      <span className="font-bold text-slate-800">{profileData.altMobile}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Email ID</span>
-                      <span className="font-bold text-slate-800">{profileData.emailId}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Personal Email</span>
-                      <span className="font-bold text-slate-800">{profileData.personalEmail}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Location</span>
-                      <span className="font-bold text-slate-800">{profileData.location}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Address</span>
-                      <span className="font-bold text-slate-800">{profileData.address}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Work Experience</span>
-                      <span className="font-bold text-slate-800">{profileData.experience}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Company</span>
-                      <span className="font-bold text-slate-800">{profileData.company}</span>
-                    </div>
-
-                    <div>
-                      <span className="text-slate-400 font-medium block text-[11px]">Education</span>
-                      <span className="font-bold text-slate-800">{profileData.education}</span>
-                    </div>
-
                   </div>
                 </div>
 
-                {/* Social Links */}
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Social Links
-                  </h4>
-                  <div className="flex flex-wrap gap-4 text-xs font-semibold text-slate-700">
-                    <a href={`https://${profileData.linkedin}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-blue-600">
-                      <Linkedin className="w-4 h-4 text-blue-600" />
+                {/* Social Links Box */}
+                <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-3">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    <Globe className="w-4 h-4 text-blue-600" />
+                    <span>Social Links</span>
+                  </div>
+                  <div className="space-y-2 text-xs font-semibold">
+                    <a href={`https://${profileData.linkedin}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline">
+                      <span className="w-5 h-5 rounded-md bg-blue-600 text-white font-black text-[10px] flex items-center justify-center">in</span>
                       <span>{profileData.linkedin}</span>
                     </a>
-                    <a href={`https://${profileData.github}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-slate-900">
-                      <Github className="w-4 h-4 text-slate-800" />
+                    <a href={`https://${profileData.github}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-slate-800 hover:underline">
+                      <span className="w-5 h-5 rounded-md bg-slate-900 text-white font-black text-[10px] flex items-center justify-center">G</span>
                       <span>{profileData.github}</span>
                     </a>
-                    <a href={`https://${profileData.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-purple-600">
+                    <a href={`https://${profileData.website}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-slate-700 hover:underline">
                       <Globe className="w-4 h-4 text-purple-600" />
                       <span>{profileData.website}</span>
                     </a>
                   </div>
                 </div>
 
-                {/* Skills Tags */}
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Skills
-                  </h4>
+                {/* Skills Box */}
+                <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-3">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    <Sparkles className="w-4 h-4 text-purple-600" />
+                    <span>Skills</span>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {profileData.skills.map((skill, idx) => (
                       <span key={idx} className="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
@@ -404,61 +338,105 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
                   </div>
                 </div>
 
-              </div>
-            )}
-
-          </div>
-
-          {/* Right Summary Cards in Settings (4 cols - Matching Reference Screenshot 3) */}
-          <div className="lg:col-span-4 space-y-6">
-            
-            {/* Total Scans Summary Card */}
-            <div className="bg-emerald-50/40 rounded-3xl p-6 border border-emerald-200/80 shadow-2xs space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Scans</div>
-                <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">1,842</div>
-                <div className="text-xs font-bold text-emerald-600 mt-1">+128 this month</div>
-              </div>
-            </div>
-
-            {/* Threats Blocked Summary Card */}
-            <div className="bg-amber-50/40 rounded-3xl p-6 border border-amber-200/80 shadow-2xs space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20">
-                <ShieldAlert className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Threats Blocked</div>
-                <div className="text-3xl font-black text-slate-900 mt-0.5 tracking-tight">97</div>
-                <div className="text-xs font-bold text-amber-700 mt-1">+9 this week</div>
-              </div>
-            </div>
-
-            {/* Account Quick Status */}
-            <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-2xs space-y-3">
-              <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">Account Status</div>
-              <div className="space-y-2 text-xs text-slate-600">
-                <div className="flex items-center justify-between">
-                  <span>Auth Provider</span>
-                  <span className="font-bold text-slate-800">{isFirebaseConfigured ? 'Firebase OAuth' : 'Demonstration Auth'}</span>
+                {/* Languages Box */}
+                <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-3">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    <Globe className="w-4 h-4 text-blue-600" />
+                    <span>Languages</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">English</span>
+                    <span className="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">Hindi</span>
+                    <span className="px-3 py-1 rounded-xl bg-blue-50 text-blue-700 text-xs font-bold">Marathi</span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span>Encryption</span>
-                  <span className="font-bold text-emerald-600">AES-256 Active</span>
-                </div>
-              </div>
-            </div>
 
-          </div>
+              </div>
+
+              {/* RIGHT COLUMN: Professional Information & Live Stats (6 cols) */}
+              <div className="lg:col-span-6 space-y-6">
+                
+                {/* Professional Information Box */}
+                <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-4">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    <Briefcase className="w-4 h-4 text-purple-600" />
+                    <span>Professional Information</span>
+                  </div>
+
+                  <div className="space-y-3 text-xs">
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Occupation</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.occupation}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Company</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.company}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Experience</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.experience}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Education</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.education}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-slate-500 font-medium">Work Location</span>
+                      <span className="col-span-2 font-bold text-slate-900">{profileData.workLocation}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Live Stats Box (Matching Screenshot Layout) */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                    <BarChart3 className="w-4 h-4 text-blue-600" />
+                    <span>Live Stats</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Total Scans Card */}
+                    <div className="bg-emerald-50/50 rounded-3xl p-5 border border-emerald-200/80 space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md">
+                        <ShieldCheck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Scans</div>
+                        <div className="text-3xl font-black text-slate-900 mt-0.5">1,842</div>
+                        <div className="text-xs font-bold text-emerald-600 mt-1 flex items-center gap-1">
+                          <span>+128 this month</span>
+                          <span>↗</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Threats Blocked Card */}
+                    <div className="bg-amber-50/50 rounded-3xl p-5 border border-amber-200/80 space-y-3">
+                      <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md">
+                        <ShieldAlert className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Threats Blocked</div>
+                        <div className="text-3xl font-black text-slate-900 mt-0.5">97</div>
+                        <div className="text-xs font-bold text-amber-700 mt-1 flex items-center gap-1">
+                          <span>+9 this week</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          )}
 
         </div>
       )}
 
       {/* TAB 2: ACCOUNT SECURITY */}
       {activeSubTab === 'security' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6 max-w-3xl">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-xs space-y-6 max-w-3xl">
           <div>
             <h3 className="text-xl font-extrabold text-slate-900">Account Security</h3>
             <p className="text-xs text-slate-500 mt-1">Manage password reset emails, authentication methods, and security controls.</p>
@@ -503,7 +481,7 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
 
       {/* TAB 3: NOTIFICATIONS */}
       {activeSubTab === 'notifications' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6 max-w-3xl">
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-xs space-y-6 max-w-3xl">
           <div>
             <h3 className="text-xl font-extrabold text-slate-900">Notification Preferences</h3>
             <p className="text-xs text-slate-500 mt-1">Configure in-app security alerts and scan notifications.</p>
@@ -531,20 +509,51 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
 
       {/* TAB 4: APPEARANCE */}
       {activeSubTab === 'appearance' && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6 max-w-3xl">
+        <div className={`rounded-3xl p-6 sm:p-8 border shadow-xs space-y-6 max-w-3xl ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-900'}`}>
           <div>
-            <h3 className="text-xl font-extrabold text-slate-900">Appearance Settings</h3>
-            <p className="text-xs text-slate-500 mt-1">Customize the ScamSense AI visual presentation.</p>
+            <h3 className="text-xl font-extrabold">Appearance Settings</h3>
+            <p className={`text-xs mt-1 ${darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Customize the ScamSense AI visual presentation across all pages.</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-xs font-bold">
-            <div className="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/50 flex flex-col items-center justify-center gap-2 cursor-pointer">
-              <Sun className="w-6 h-6 text-blue-600" />
-              <span>Light Theme (Active)</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-bold">
+            {/* Light Theme Option */}
+            <div 
+              onClick={() => onToggleDarkMode && onToggleDarkMode(false)}
+              className={`p-5 rounded-2xl border-2 transition cursor-pointer flex flex-col items-center justify-center gap-2 ${
+                !darkMode 
+                  ? 'border-blue-600 bg-blue-50/70 text-blue-900 shadow-xs' 
+                  : 'border-slate-700 bg-slate-900/50 text-slate-300 hover:bg-slate-700/50'
+              }`}
+            >
+              <Sun className="w-6 h-6 text-amber-500" />
+              <span>Light Theme {!darkMode && '(Active)'}</span>
             </div>
-            <div className="p-5 rounded-2xl border border-slate-200 bg-slate-100 text-slate-500 flex flex-col items-center justify-center gap-2 cursor-pointer opacity-75">
-              <Moon className="w-6 h-6" />
-              <span>Dark Theme</span>
+
+            {/* Dark Theme Option */}
+            <div 
+              onClick={() => onToggleDarkMode && onToggleDarkMode(true)}
+              className={`p-5 rounded-2xl border-2 transition cursor-pointer flex flex-col items-center justify-center gap-2 ${
+                darkMode 
+                  ? 'border-blue-500 bg-blue-900/40 text-blue-200 shadow-xs' 
+                  : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              <Moon className="w-6 h-6 text-indigo-400" />
+              <span>Dark Theme {darkMode && '(Active)'}</span>
+            </div>
+
+            {/* System Default Option */}
+            <div 
+              onClick={() => {
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (onToggleDarkMode) onToggleDarkMode(systemPrefersDark);
+              }}
+              className={`p-5 rounded-2xl border-2 transition cursor-pointer flex flex-col items-center justify-center gap-2 ${
+                darkMode ? 'border-slate-700 bg-slate-900/50 text-slate-400 hover:bg-slate-700/50' : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <Sparkles className="w-6 h-6 text-purple-400" />
+              <span>System Default</span>
             </div>
           </div>
         </div>
@@ -576,7 +585,7 @@ export default function SettingsView({ onSignOut, onClearHistory }) {
         </div>
       )}
 
-      {/* FOOTER DISCLAIMER (Matching Reference Screenshot 3) */}
+      {/* FOOTER DISCLAIMER */}
       <div className="pt-6 border-t border-[#E2E8F0] text-center text-[11px] text-slate-400 font-medium">
         Last updated: 9 Oct 2025 • All changes are auto-saved securely • Encrypted with AES-256 • ScamSense AI v2.4.1
       </div>

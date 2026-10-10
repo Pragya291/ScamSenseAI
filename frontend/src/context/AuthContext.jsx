@@ -39,13 +39,22 @@ export function AuthProvider({ children }) {
         });
     }
 
+    // Safety timeout: ensure loading finishes within 1 second even if Firebase listener stalls
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
     // Subscribe to Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+      clearTimeout(timer);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   // Map Firebase error codes to friendly, safe, plain English messages
