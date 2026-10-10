@@ -1,9 +1,9 @@
 import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Union
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "ScamSenseAI API"
+    PROJECT_NAME: str = "ScamSense AI — Scam & Fraud Defense Agent"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     
@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./scamsense.db")
     
-    # CORS
+    # CORS & Deployment
+    FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:5173",
@@ -24,6 +25,14 @@ class Settings(BaseSettings):
         "http://127.0.0.1:8000",
         "*"
     ]
+    
+    # External API Keys (Optional with safe fallbacks)
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    GOOGLE_SAFE_BROWSING_API_KEY: str = os.getenv("GOOGLE_SAFE_BROWSING_API_KEY", "")
+    VIRUSTOTAL_API_KEY: str = os.getenv("VIRUSTOTAL_API_KEY", "")
+    TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
+    FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "")
+    FIREBASE_CREDENTIALS_PATH: str = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")

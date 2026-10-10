@@ -50,7 +50,6 @@ class ScamDetectorService:
         for brand in POPULAR_TARGET_BRANDS:
             if brand in lower_text:
                 impersonated_brand = brand
-                # Check if official domain is absent or replaced by fake domain
                 score += 10.0
                 indicators.append(ThreatIndicator(
                     category="Brand Impersonation",
@@ -74,12 +73,10 @@ class ScamDetectorService:
                 ))
 
         # 5. Check extracted URLs
-        url_threat_scores = []
         for url in extracted_urls:
             url_res = self._analyze_url(url)
             score += url_res["added_score"]
             indicators.extend(url_res["indicators"])
-            url_threat_scores.append(url_res["added_score"])
 
         # 6. Check sender info if provided
         if sender:
@@ -96,7 +93,6 @@ class ScamDetectorService:
 
         # 7. Check DB Blacklist if DB session available
         if self.db:
-            # Check URLs in blacklist
             for url in extracted_urls:
                 domain = get_domain_from_url(url)
                 if domain:
@@ -110,7 +106,6 @@ class ScamDetectorService:
                             description=f"Domain '{domain}' is listed in global threat intelligence blacklist. Reason: {bl.reason or 'Scam reported'}",
                             matched_text=domain
                         ))
-            # Check crypto in blacklist
             for wallet in extracted_crypto:
                 bl = self.db.query(Blacklist).filter(Blacklist.entity_value == wallet).first()
                 if bl:
@@ -125,21 +120,24 @@ class ScamDetectorService:
 
         # Cap score between 0 and 100
         final_score = min(max(round(score, 1), 0.0), 100.0)
-        verdict = self._determine_verdict(final_score)
+        risk_level = self._determine_risk_level(final_score)
         category = self._determine_category(lower_text, extracted_urls, extracted_crypto, impersonated_brand)
-        confidence = self._calculate_confidence(indicators, final_score)
         
-        recommendations = self._generate_recommendations(verdict, category, extracted_urls)
-        
+        recommendations = self._generate_recommendations(risk_level, category, extracted_urls)
         exec_time = round((time.time() - start_time) * 1000, 2)
+        
+        red_flags = [ind.description for ind in indicators]
         
         return ScanResponse(
             scan_type="text",
+            risk_level=risk_level,
             risk_score=final_score,
-            verdict=verdict,
-            primary_category=category,
-            confidence=confidence,
-            summary=self._generate_summary(verdict, final_score, category, len(indicators)),
+            scam_category=category.replace("_", " ").title(),
+            explanation=self._generate_summary(risk_level, final_score, category, len(indicators)),
+            red_flags=red_flags,
+            evidence=f"Matched indicators: {len(indicators)}, Keywords: {matched_keywords}",
+            recommended_actions=recommendations,
+            limitations="Rule-based threat engine assessment. Connect Gemini API for deep LLM reasoning.",
             threat_indicators=indicators,
             extracted_entities={
                 "urls": extracted_urls,
@@ -147,7 +145,6 @@ class ScamDetectorService:
                 "emails": extracted_emails,
                 "crypto_wallets": extracted_crypto
             },
-            safety_recommendations=recommendations,
             execution_time_ms=exec_time,
             timestamp=datetime.now(timezone.utc)
         )
@@ -186,23 +183,24 @@ class ScamDetectorService:
                     matched_text=domain
                 ))
 
-        verdict = self._determine_verdict(score)
+        risk_level = self._determine_risk_level(score)
         category = ScamCategory.PHISHING if score > 30 else ScamCategory.GENERAL
-        confidence = self._calculate_confidence(indicators, score)
         
-        recommendations = self._generate_recommendations(verdict, category, [url])
+        recommendations = self._generate_recommendations(risk_level, category, [url])
         exec_time = round((time.time() - start_time) * 1000, 2)
 
         return ScanResponse(
             scan_type="url",
+            risk_level=risk_level,
             risk_score=score,
-            verdict=verdict,
-            primary_category=category,
-            confidence=confidence,
-            summary=self._generate_summary(verdict, score, category, len(indicators)),
+            scam_category=category.replace("_", " ").title(),
+            explanation=self._generate_summary(risk_level, score, category, len(indicators)),
+            red_flags=[ind.description for ind in indicators],
+            evidence=f"Domain: {domain}, URL: {url}",
+            recommended_actions=recommendations,
+            limitations="URL pattern analysis provides threat probability, not guaranteed immunity.",
             threat_indicators=indicators,
             extracted_entities={"urls": [url], "domain": domain},
-            safety_recommendations=recommendations,
             execution_time_ms=exec_time,
             timestamp=datetime.now(timezone.utc)
         )
@@ -210,7 +208,7 @@ class ScamDetectorService:
     def scan_phone(self, phone_number: str) -> ScanResponse:
         start_time = time.time()
         indicators: List[ThreatIndicator] = []
-        score = 10.0  # Base line score for unknown number
+        score = 10.0
         
         clean_phone = "".join(c for c in phone_number if c.isdigit() or c == "+")
         
@@ -237,9 +235,8 @@ class ScamDetectorService:
                     matched_text=clean_phone
                 ))
 
-        verdict = self._determine_verdict(score)
+        risk_level = self._determine_risk_level(score)
         category = ScamCategory.VISHING if score > 40 else ScamCategory.GENERAL
-        confidence = 0.85 if indicators else 0.65
         
         recommendations = [
             "Do not disclose personal passwords or OTPs over phone calls.",
@@ -251,14 +248,16 @@ class ScamDetectorService:
 
         return ScanResponse(
             scan_type="phone",
+            risk_level=risk_level,
             risk_score=score,
-            verdict=verdict,
-            primary_category=category,
-            confidence=confidence,
-            summary=f"Phone analysis for {clean_phone} resulted in {verdict} verdict with risk score {score}/100.",
+            scam_category=category.replace("_", " ").title(),
+            explanation=f"Phone analysis for {clean_phone} resulted in {risk_level} risk level with score {score}/100.",
+            red_flags=[ind.description for ind in indicators],
+            evidence=f"Phone: {clean_phone}",
+            recommended_actions=recommendations,
+            limitations="Phone risk evaluation based on known scam database records and prefix heuristics.",
             threat_indicators=indicators,
             extracted_entities={"phone_number": clean_phone},
-            safety_recommendations=recommendations,
             execution_time_ms=exec_time,
             timestamp=datetime.now(timezone.utc)
         )
@@ -279,7 +278,6 @@ class ScamDetectorService:
                 )
             ]}
 
-        # Check raw IP host
         if is_ip_address(domain):
             score += 35.0
             indicators.append(ThreatIndicator(
@@ -290,7 +288,6 @@ class ScamDetectorService:
                 matched_text=domain
             ))
 
-        # Check suspicious TLD
         for tld in SUSPICIOUS_TLDS:
             if domain.endswith(tld):
                 score += 25.0
@@ -303,7 +300,6 @@ class ScamDetectorService:
                 ))
                 break
 
-        # Check target brand typosquatting / spoofing (e.g., paypal-secure-login.com)
         for brand in POPULAR_TARGET_BRANDS:
             if brand in domain and not domain.endswith(f".{brand}.com") and not domain == f"{brand}.com":
                 score += 40.0
@@ -316,7 +312,6 @@ class ScamDetectorService:
                 ))
                 break
 
-        # Check domain subdomains length / depth
         parts = domain.split(".")
         if len(parts) > 4:
             score += 20.0
@@ -328,7 +323,6 @@ class ScamDetectorService:
                 matched_text=domain
             ))
 
-        # Check length of URL
         if len(url) > 100:
             score += 10.0
             indicators.append(ThreatIndicator(
@@ -341,15 +335,13 @@ class ScamDetectorService:
 
         return {"added_score": score, "indicators": indicators}
 
-    def _determine_verdict(self, score: float) -> str:
-        if score >= 75.0:
-            return VerdictLevel.CRITICAL_SCAM
-        elif score >= 50.0:
-            return VerdictLevel.HIGH_RISK
-        elif score >= 25.0:
-            return VerdictLevel.SUSPICIOUS
+    def _determine_risk_level(self, score: float) -> str:
+        if score >= 70.0:
+            return "High Risk"
+        elif score >= 35.0:
+            return "Suspicious"
         else:
-            return VerdictLevel.SAFE
+            return "Safe"
 
     def _determine_category(self, text: str, urls: List[str], crypto: List[str], brand: Optional[str]) -> str:
         if crypto:
@@ -366,37 +358,22 @@ class ScamDetectorService:
             return ScamCategory.TECH_SUPPORT
         return ScamCategory.GENERAL
 
-    def _calculate_confidence(self, indicators: List[ThreatIndicator], score: float) -> float:
-        if not indicators:
-            return 0.90 if score < 10 else 0.60
-        num_high = sum(1 for ind in indicators if ind.severity in ["HIGH", "CRITICAL"])
-        if num_high >= 2 or score > 70:
-            return 0.95
-        elif num_high == 1 or score > 40:
-            return 0.85
-        return 0.75
-
-    def _generate_summary(self, verdict: str, score: float, category: str, indicator_count: int) -> str:
-        if verdict == VerdictLevel.CRITICAL_SCAM:
-            return f"CRITICAL DANGER: Highly malicious {category.upper()} scam detected with risk score {score}/100 based on {indicator_count} high-severity threat signals."
-        elif verdict == VerdictLevel.HIGH_RISK:
-            return f"HIGH RISK: Strong indicators of a {category.upper()} scam. Risk score is {score}/100 with {indicator_count} suspicious indicators."
-        elif verdict == VerdictLevel.SUSPICIOUS:
-            return f"SUSPICIOUS: Proceed with caution. Input exhibits {indicator_count} potential risk patterns (Risk Score: {score}/100)."
+    def _generate_summary(self, risk_level: str, score: float, category: str, indicator_count: int) -> str:
+        if risk_level == "High Risk":
+            return f"HIGH DANGER: Malicious {category.upper()} scam attempt identified with risk score {score}/100 based on {indicator_count} threat indicators."
+        elif risk_level == "Suspicious":
+            return f"SUSPICIOUS: Proceed with caution. Input exhibits {indicator_count} risk patterns (Risk Score: {score}/100)."
         else:
             return f"SAFE: No major scam patterns detected (Risk Score: {score}/100)."
 
-    def _generate_recommendations(self, verdict: str, category: str, urls: List[str]) -> List[str]:
+    def _generate_recommendations(self, risk_level: str, category: str, urls: List[str]) -> List[str]:
         recs = []
-        if verdict in [VerdictLevel.CRITICAL_SCAM, VerdictLevel.HIGH_RISK]:
-            recs.append("DO NOT click any links, open attachments, or reply to this message.")
-            recs.append("NEVER share passwords, PINs, OTP codes, or financial details.")
+        if risk_level in ["High Risk", "Suspicious"]:
+            recs.append("DO NOT click links, open attachments, or reply to this sender.")
+            recs.append("NEVER share passwords, OTP codes, PINs, or financial details.")
             if urls:
-                recs.append("Report the malicious link to your email provider or browser threat registry.")
-            recs.append("Block the sender immediately and file a public report on ScamSenseAI.")
-        elif verdict == VerdictLevel.SUSPICIOUS:
-            recs.append("Verify the sender's identity through official phone numbers or websites.")
-            recs.append("Inspect links carefully for slight spelling alterations or fake domains before clicking.")
+                recs.append("Report the suspicious link to Google Safe Browsing and your ISP.")
+            recs.append("Block the sender immediately.")
         else:
-            recs.append("Content appears safe, but always maintain standard cybersecurity awareness.")
+            recs.append("Content appears safe, but maintain standard cybersecurity vigilance.")
         return recs

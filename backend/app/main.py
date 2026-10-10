@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+# Add backend directory to sys.path so 'app' module is always found
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from fastapi import FastAPI, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -24,7 +30,6 @@ init_db()
 async def lifespan(app: FastAPI):
     init_db()
     yield
-    # Shutdown logic if needed
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -46,6 +51,7 @@ app.add_middleware(
 
 # Include API v1 router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="/api")  # Also support /api prefix directly
 
 @app.get("/", tags=["Health Check"])
 def root() -> Dict[str, Any]:
@@ -58,6 +64,7 @@ def root() -> Dict[str, Any]:
     }
 
 @app.get("/health", tags=["Health Check"])
+@app.get("/api/health", tags=["Health Check"])
 def health_check() -> Dict[str, str]:
     return {"status": "healthy", "database": "connected"}
 

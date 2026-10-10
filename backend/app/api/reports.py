@@ -64,7 +64,7 @@ def create_report(
         sender_info=report_in.sender_info,
         proof_url=report_in.proof_url,
         risk_score=scan_res.risk_score,
-        verdict=scan_res.verdict,
+        verdict=scan_res.risk_level,
         indicators=[ind.model_dump() for ind in scan_res.threat_indicators],
         status="verified" if scan_res.risk_score > 70 else "pending",
         is_public=True
