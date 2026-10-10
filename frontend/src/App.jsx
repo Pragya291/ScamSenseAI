@@ -1,122 +1,164 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import LandingNavbar from './components/LandingNavbar';
+import Hero from './components/Hero';
+import TrustStrip from './components/TrustStrip';
+import Features from './components/Features';
+import HowItWorks from './components/HowItWorks';
+import SampleShowcase from './components/SampleShowcase';
+import ThreatIntel from './components/ThreatIntel';
+import CTASection from './components/CTASection';
+import LandingFooter from './components/LandingFooter';
+import SignInPage from './components/SignInPage';
+import SignUpPage from './components/SignUpPage';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+import Dashboard from './components/Dashboard';
 
-function App() {
-  const [count, setCount] = useState(0)
+function AppContent() {
+  const { user, loading } = useAuth();
+  
+  // Current view state: 'landing' | 'signin' | 'signup' | 'forgot-password' | 'dashboard'
+  const [currentView, setCurrentView] = useState('landing');
+  const [activeTab, setActiveTab] = useState('home');
 
+  // Navigation handlers
+  const navigateTo = (view, tab = 'home') => {
+    setCurrentView(view);
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const scrollToHowItWorks = () => {
+    if (currentView !== 'landing') {
+      setCurrentView('landing');
+      setTimeout(() => {
+        const el = document.getElementById('how-it-works');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const el = document.getElementById('how-it-works');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Loading spinner during auth state restoration
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F5F7FC] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+            Initializing ScamSense AI...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is authenticated and navigating to dashboard or any authenticated sub-tab
+  if (currentView === 'dashboard' || (user && (currentView === 'signin' || currentView === 'signup'))) {
+    return (
+      <Dashboard 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onSignOut={() => navigateTo('landing')} 
+        onBackToHome={() => navigateTo('landing')} 
+      />
+    );
+  }
+
+  // View: Sign In
+  if (currentView === 'signin') {
+    return (
+      <SignInPage
+        onNavigateToSignUp={() => navigateTo('signup')}
+        onNavigateToForgotPassword={() => navigateTo('forgot-password')}
+        onBackToHome={() => navigateTo('landing')}
+        onSuccessRedirect={() => navigateTo('dashboard', 'home')}
+      />
+    );
+  }
+
+  // View: Sign Up / Create Account
+  if (currentView === 'signup') {
+    return (
+      <SignUpPage
+        onNavigateToSignIn={() => navigateTo('signin')}
+        onBackToHome={() => navigateTo('landing')}
+        onSuccessRedirect={() => navigateTo('dashboard', 'home')}
+      />
+    );
+  }
+
+  // View: Forgot Password
+  if (currentView === 'forgot-password') {
+    return (
+      <ForgotPasswordPage
+        onNavigateToSignIn={() => navigateTo('signin')}
+        onBackToHome={() => navigateTo('landing')}
+      />
+    );
+  }
+
+  // View: Landing Page (Default)
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-[#F7F9FE] text-[#111827] flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+      {/* Landing Navigation Bar */}
+      <LandingNavbar 
+        onNavigate={(view) => {
+          if (view === 'auth' || view === 'signin') navigateTo('signin');
+          else if (view === 'signup') navigateTo('signup');
+          else navigateTo('landing');
+        }} 
+        currentView={currentView} 
+      />
 
-      <div className="ticks"></div>
+      {/* Main Content Sections */}
+      <main className="flex-grow">
+        {/* 1. Hero with Security Scanner Live Preview */}
+        <Hero 
+          onStartScanning={() => navigateTo('signin')} 
+          onExploreHowItWorks={scrollToHowItWorks} 
+        />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {/* 2. Trust and Credibility Strip */}
+        <TrustStrip />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {/* 3. Features 4-in-1 Suite */}
+        <Features onSelectFeature={() => navigateTo('signin')} />
+
+        {/* 4. How It Works 6-Step Pipeline */}
+        <HowItWorks />
+
+        {/* 5. Live Sample Showcase (Explainable AI Demonstration) */}
+        <SampleShowcase onTryLiveScan={() => navigateTo('signin')} />
+
+        {/* 6. Threat Intelligence Preview */}
+        <ThreatIntel onExploreIntel={() => navigateTo('signin')} />
+
+        {/* 7. Final Call to Action */}
+        <CTASection 
+          onStartScanning={() => navigateTo('signin')} 
+          onCreateAccount={() => navigateTo('signup')} 
+        />
+      </main>
+
+      {/* 8. Dark Navy Footer */}
+      <LandingFooter 
+        onNavigate={(view) => {
+          if (view === 'auth' || view === 'signin') navigateTo('signin');
+          else if (view === 'signup') navigateTo('signup');
+          else navigateTo('landing');
+        }} 
+      />
+    </div>
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
