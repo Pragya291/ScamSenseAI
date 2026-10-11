@@ -83,7 +83,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
       <div className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
         {/* Left Column: Split-screen Branding Panel */}
@@ -100,13 +100,13 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
               Sign in with Email
             </div>
 
-            <div className="bg-white rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] relative">
+            <div className="bg-white dark:bg-[#0D1324] rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] dark:border-[#263247] relative transition-colors">
               
               {/* Back to Home Link */}
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={onBackToHome}
-                  className="text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
+                  className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition cursor-pointer"
                 >
                   &larr; Back to Home
                 </button>
@@ -114,10 +114,10 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
 
               {/* Heading */}
               <div className="mb-6 space-y-1">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
                   Welcome back
                 </h1>
-                <p className="text-xs sm:text-sm text-[#64748B]">
+                <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8]">
                   Sign in to your ScamSense AI account
                 </p>
               </div>
@@ -143,7 +143,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                 
                 {/* Email Address */}
                 <div>
-                  <label className="block text-xs font-bold text-[#111827] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider mb-1.5">
                     Email ID
                   </label>
                   <div className="relative">
@@ -155,14 +155,14 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="pragya.mishra@scamsense.ai"
                       autoComplete="email"
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#E2E8F0] text-sm text-[#111827] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 hover:bg-white transition"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-sm text-[#0F172A] dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 dark:bg-[#111827] hover:bg-white dark:hover:bg-[#172033] transition"
                     />
                   </div>
                 </div>
 
                 {/* Password */}
                 <div>
-                  <label className="block text-xs font-bold text-[#111827] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider mb-1.5">
                     Password
                   </label>
                   <div className="relative">
@@ -174,12 +174,12 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
                       autoComplete="current-password"
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#E2E8F0] text-sm text-[#111827] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 hover:bg-white transition"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-sm text-[#0F172A] dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 dark:bg-[#111827] hover:bg-white dark:hover:bg-[#172033] transition"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 cursor-pointer"
+                      className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                       aria-label="Toggle password visibility"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -189,19 +189,19 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
 
                 {/* Remember Me & Forgot Password */}
                 <div className="flex items-center justify-between pt-1 text-xs">
-                  <label className="flex items-center gap-2 text-[#64748B] cursor-pointer">
+                  <label className="flex items-center gap-2 text-[#64748B] dark:text-[#94A3B8] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-4 h-4 rounded border-gray-300 dark:border-slate-700 text-blue-600 focus:ring-blue-500 cursor-pointer"
                     />
                     <span>Remember me</span>
                   </label>
                   <button
                     type="button"
                     onClick={onNavigateToForgotPassword}
-                    className="font-semibold text-[#2563EB] hover:underline cursor-pointer"
+                    className="font-semibold text-[#2563EB] dark:text-[#3B82F6] hover:underline cursor-pointer"
                   >
                     Forgot password?
                   </button>
@@ -227,8 +227,8 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
 
               {/* Divider */}
               <div className="relative flex items-center justify-center my-5">
-                <div className="border-t border-[#E2E8F0] w-full" />
-                <span className="bg-white px-3 text-xs text-slate-400 font-medium">
+                <div className="border-t border-[#E2E8F0] dark:border-[#263247] w-full" />
+                <span className="bg-white dark:bg-[#0D1324] px-3 text-xs text-slate-400 font-medium">
                   or
                 </span>
               </div>
@@ -238,7 +238,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading || googleLoading}
-                className="w-full py-3 px-4 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed text-xs sm:text-sm font-semibold text-slate-700 flex items-center justify-center gap-3 transition shadow-2xs cursor-pointer"
+                className="w-full py-3 px-4 rounded-xl border border-[#E2E8F0] dark:border-[#263247] bg-white dark:bg-[#111827] hover:bg-slate-50 dark:hover:bg-[#172033] disabled:opacity-60 disabled:cursor-not-allowed text-xs sm:text-sm font-semibold text-slate-700 dark:text-[#F8FAFC] flex items-center justify-center gap-3 transition shadow-2xs cursor-pointer"
               >
                 {googleLoading ? (
                   <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />

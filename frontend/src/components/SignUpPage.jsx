@@ -97,7 +97,7 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
       <div className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
         {/* Left Column: Split-screen Branding Panel */}
@@ -107,13 +107,13 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
 
         {/* Right Column: Sign Up Card */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="bg-white rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] relative">
+          <div className="bg-white dark:bg-[#0D1324] rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] dark:border-[#263247] relative transition-colors">
             
             {/* Top Shield Mark */}
             <div className="flex items-center justify-between mb-4">
               <button
                 onClick={onBackToHome}
-                className="text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
+                className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition cursor-pointer"
               >
                 &larr; Back to Home
               </button>
@@ -124,26 +124,26 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
 
             {/* Header */}
             <div className="mb-6 space-y-1">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
                 Create your account
               </h1>
-              <p className="text-xs sm:text-sm text-[#64748B]">
+              <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8]">
                 Join ScamSense AI and stay safe from scams
               </p>
             </div>
 
             {/* Toggle Tabs (Sign Up / Sign In) */}
-            <div className="flex rounded-xl bg-slate-100 p-1 mb-6 border border-slate-200">
+            <div className="flex rounded-xl bg-slate-100 dark:bg-[#111827] p-1 mb-6 border border-slate-200 dark:border-[#263247]">
               <button
                 type="button"
-                className="flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg bg-white text-[#2563EB] shadow-xs cursor-default transition-all"
+                className="flex-1 py-2 text-xs sm:text-sm font-bold rounded-lg bg-white dark:bg-[#172033] text-[#2563EB] dark:text-[#3B82F6] shadow-xs cursor-default transition-all"
               >
                 Sign Up
               </button>
               <button
                 type="button"
                 onClick={onNavigateToSignIn}
-                className="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition-all cursor-pointer"
+                className="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
               >
                 Sign In
               </button>

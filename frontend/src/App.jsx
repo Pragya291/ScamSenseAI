@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import LandingNavbar from './components/LandingNavbar';
 import Hero from './components/Hero';
 import TrustStrip from './components/TrustStrip';
@@ -7,6 +8,8 @@ import Features from './components/Features';
 import HowItWorks from './components/HowItWorks';
 import SampleShowcase from './components/SampleShowcase';
 import ThreatIntel from './components/ThreatIntel';
+import TechnologyTrustSection from './components/TechnologyTrustSection';
+import WhyScamSense from './components/WhyScamSense';
 import CTASection from './components/CTASection';
 import LandingFooter from './components/LandingFooter';
 import SignInPage from './components/SignInPage';
@@ -44,10 +47,10 @@ function AppContent() {
   // Loading spinner during auth state restoration
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F7FC] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] flex items-center justify-center transition-colors">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-semibold text-slate-500 tracking-wide uppercase">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">
             Initializing ScamSense AI...
           </span>
         </div>
@@ -102,7 +105,7 @@ function AppContent() {
 
   // View: Landing Page (Default)
   return (
-    <div className="min-h-screen bg-[#F7F9FE] text-[#111827] flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] text-[#0F172A] dark:text-[#F8FAFC] flex flex-col justify-between selection:bg-blue-600 selection:text-white transition-colors duration-200">
       {/* Landing Navigation Bar */}
       <LandingNavbar 
         onNavigate={(view, tab = 'home') => {
@@ -134,12 +137,22 @@ function AppContent() {
         {/* 5. Live Sample Showcase (Explainable AI Demonstration) */}
         <SampleShowcase onTryLiveScan={() => navigateTo('signin')} />
 
-        {/* 6. Threat Intelligence Preview */}
+        {/* 6. Technology & Multi-Layer Threat Intelligence */}
+        <TechnologyTrustSection />
+
+        {/* 7. Why ScamSense Core Value Pillars */}
+        <WhyScamSense onStartScanning={() => navigateTo('signin')} />
+
+        {/* 8. Threat Intelligence Advisory Feed */}
         <ThreatIntel onExploreIntel={() => navigateTo('signin')} />
 
-        {/* 7. Final Call to Action */}
+        {/* 9. Final Call to Action */}
         <CTASection 
           onStartScanning={() => navigateTo('signin')} 
+          onTryDemo={() => {
+            const el = document.getElementById('showcase');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }}
           onCreateAccount={() => navigateTo('signup')} 
         />
       </main>
@@ -158,8 +171,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

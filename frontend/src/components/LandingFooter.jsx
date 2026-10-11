@@ -14,7 +14,7 @@ export default function LandingFooter({ onNavigate }) {
   };
 
   return (
-    <footer className="bg-[#0B1224] text-slate-300 border-t border-slate-800">
+    <footer className="bg-[#F8FAFF] dark:bg-[#070B17] text-[#475569] dark:text-[#CBD5E1] border-t border-[#E2E8F0] dark:border-[#263247] transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
         {/* Main 4-column Grid */}
@@ -22,34 +22,29 @@ export default function LandingFooter({ onNavigate }) {
           
           {/* Brand Info (2 cols) */}
           <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-md">
-                <Shield className="w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold text-white tracking-tight">
-                ScamSense <span className="text-blue-400">AI</span>
-              </span>
+            <div className="flex-shrink-0">
+              <Logo onClick={() => handleNav('hero')} />
             </div>
             
-            <p className="text-sm text-slate-400 font-medium">
+            <p className="text-sm font-semibold text-[#0F172A] dark:text-[#F8FAFC]">
               Detect. Explain. Protect.
             </p>
 
-            <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8] max-w-sm leading-relaxed">
               AI-powered scam intelligence and verification system designed to keep individuals and organizations safe from social engineering threats.
             </p>
           </div>
 
           {/* Column: Product */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] dark:text-[#F8FAFC]">
               Product
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
                   onClick={() => handleNav('features')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Features
                 </button>
@@ -57,7 +52,7 @@ export default function LandingFooter({ onNavigate }) {
               <li>
                 <button
                   onClick={() => handleNav('how-it-works')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   How It Works
                 </button>
@@ -65,7 +60,7 @@ export default function LandingFooter({ onNavigate }) {
               <li>
                 <button
                   onClick={() => handleNav('threat-intel')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Threat Intel
                 </button>
@@ -73,7 +68,7 @@ export default function LandingFooter({ onNavigate }) {
               <li>
                 <button
                   onClick={() => handleNav('showcase')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Live Demo
                 </button>
@@ -83,14 +78,14 @@ export default function LandingFooter({ onNavigate }) {
 
           {/* Column: Resources & Safety */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] dark:text-[#F8FAFC]">
               Company
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
                   onClick={() => handleNav('hero')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   About Us
                 </button>
@@ -98,7 +93,7 @@ export default function LandingFooter({ onNavigate }) {
               <li>
                 <button
                   onClick={() => onNavigate('signin')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Help & Support
                 </button>
@@ -106,7 +101,7 @@ export default function LandingFooter({ onNavigate }) {
               <li>
                 <button
                   onClick={() => handleNav('threat-intel')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer"
+                  className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition-colors cursor-pointer text-[#475569] dark:text-[#CBD5E1]"
                 >
                   Security Advisories
                 </button>
@@ -116,22 +111,22 @@ export default function LandingFooter({ onNavigate }) {
 
           {/* Column: Legal */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#0F172A] dark:text-[#F8FAFC]">
               Legal & Privacy
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <span className="text-slate-400 hover:text-slate-200 cursor-pointer">
+                <span className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">
                   Privacy Policy
                 </span>
               </li>
               <li>
-                <span className="text-slate-400 hover:text-slate-200 cursor-pointer">
+                <span className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">
                   Terms of Service
                 </span>
               </li>
               <li>
-                <span className="text-slate-400 hover:text-slate-200 cursor-pointer">
+                <span className="text-[#475569] dark:text-[#CBD5E1] hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">
                   Security Disclosures
                 </span>
               </li>
@@ -141,22 +136,22 @@ export default function LandingFooter({ onNavigate }) {
         </div>
 
         {/* Safety Disclaimer Banner */}
-        <div className="mt-12 pt-8 border-t border-slate-800/80">
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-[11.5px] text-slate-400 leading-relaxed">
-            <span className="font-semibold text-slate-300">Safety Notice: </span>
+        <div className="mt-12 pt-8 border-t border-[#E2E8F0] dark:border-[#263247]">
+          <div className="p-4 rounded-xl bg-white dark:bg-[#0D1324] border border-[#E2E8F0] dark:border-[#263247] text-[11.5px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed shadow-2xs">
+            <span className="font-semibold text-[#0F172A] dark:text-[#F8FAFC]">Safety Notice: </span>
             ScamSense AI provides automated risk assessments and defensive safety guidance. Heuristic results are educational and defensive in nature and should not replace independent verification with official institution channels.
           </div>
         </div>
 
-        {/* Copyright & Team Credits */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        {/* Copyright */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#64748B] dark:text-[#94A3B8] gap-4">
           <div>
-            &copy; {currentYear} ScamSense AI. All rights reserved. • <span className="text-slate-400 font-semibold">Created by Janahvi Loke & Pragya Mishra</span>
+            &copy; {currentYear} ScamSense AI. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
-            <span className="hover:text-slate-400 cursor-pointer">Terms</span>
-            <span className="hover:text-slate-400 cursor-pointer">Cookies</span>
-            <span className="hover:text-slate-400 cursor-pointer">Security</span>
+            <span className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">Terms</span>
+            <span className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">Cookies</span>
+            <span className="hover:text-[#2563EB] dark:hover:text-[#3B82F6] cursor-pointer">Security</span>
           </div>
         </div>
 
@@ -164,5 +159,3 @@ export default function LandingFooter({ onNavigate }) {
     </footer>
   );
 }
-
-export { LandingFooter };

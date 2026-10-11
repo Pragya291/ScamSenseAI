@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
 import ScanWorkspace from './ScanWorkspace';
 import ThreatIntelligenceView from './ThreatIntelligenceView';
@@ -125,11 +126,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   const [selectedScan, setSelectedScan] = useState(null);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [scanError, setScanError] = useState('');
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('scamsense_theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+  const { isDark: darkMode, toggleTheme: handleToggleTheme, setTheme } = useTheme();
 
   // Fetch real authenticated user scan history on mount
   React.useEffect(() => {
@@ -177,13 +174,10 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   }, []);
 
   const handleToggleDarkMode = (val) => {
-    const newMode = val !== undefined ? val : !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem('scamsense_theme', newMode ? 'dark' : 'light');
-    if (newMode) {
-      document.documentElement.classList.add('dark');
+    if (val !== undefined) {
+      setTheme(val ? 'dark' : 'light');
     } else {
-      document.documentElement.classList.remove('dark');
+      handleToggleTheme();
     }
   };
 
@@ -528,7 +522,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="p-2.5 rounded-xl border border-[#E2E8F0] text-slate-600 hover:bg-slate-100 transition relative cursor-pointer"
+                className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#111827] transition relative cursor-pointer"
               >
                 <Bell className="w-4 h-4" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-ping" />
@@ -536,15 +530,15 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-4 z-50 text-slate-800 animate-in fade-in">
-                  <div className="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Notifications</span>
-                    <span className="text-[10px] bg-blue-50 text-blue-600 font-bold px-2 py-0.5 rounded-full">1 New</span>
+                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0D1324] rounded-2xl shadow-xl border border-slate-200 dark:border-[#263247] p-4 z-50 text-slate-800 dark:text-slate-100 animate-in fade-in">
+                  <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#263247] pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Notifications</span>
+                    <span className="text-[10px] bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-full">1 New</span>
                   </div>
                   <div className="space-y-2 text-xs">
-                    <div className="p-2 rounded-lg bg-red-50 border border-red-100 text-red-900">
+                    <div className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 text-red-900 dark:text-red-200">
                       <div className="font-bold">High Risk Alert</div>
-                      <div className="text-[11px] text-red-700">Phishing domain flagged 2 hours ago.</div>
+                      <div className="text-[11px] text-red-700 dark:text-red-300">Phishing domain flagged 2 hours ago.</div>
                     </div>
                   </div>
                 </div>
@@ -555,7 +549,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] bg-slate-50 hover:bg-slate-100 transition cursor-pointer"
+                className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] dark:border-[#263247] bg-slate-50 dark:bg-[#111827] hover:bg-slate-100 dark:hover:bg-[#172033] transition cursor-pointer"
               >
                 <div className="w-7 h-7 rounded-full bg-linear-to-tr from-blue-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
                   {user?.photoURL ? (
@@ -571,35 +565,35 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                   )}
                 </div>
                 <div className="text-left hidden md:block">
-                  <div className="text-xs font-bold text-slate-900 leading-tight truncate max-w-[130px]">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[130px]">
                     {user?.displayName || user?.email?.split('@')[0] || 'Pragya Mishra'}
                   </div>
-                  <div className="text-[10px] text-slate-500 leading-tight truncate max-w-[130px]">
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate max-w-[130px]">
                     {user?.email || 'Free Plan'}
                   </div>
                 </div>
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-200 p-2 z-50 text-slate-800 animate-in fade-in">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0D1324] rounded-2xl shadow-xl border border-slate-200 dark:border-[#263247] p-2 z-50 text-slate-800 dark:text-slate-100 animate-in fade-in">
                   <button
                     onClick={() => { setProfileOpen(false); setActiveTab('settings'); }}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#172033] rounded-xl transition flex items-center gap-2"
                   >
                     <User className="w-4 h-4 text-slate-400" />
                     <span>My Profile</span>
                   </button>
                   <button
                     onClick={() => { setProfileOpen(false); setActiveTab('settings'); }}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#172033] rounded-xl transition flex items-center gap-2"
                   >
                     <Settings className="w-4 h-4 text-slate-400" />
                     <span>Account Settings</span>
                   </button>
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-slate-100 dark:border-[#263247]" />
                   <button
                     onClick={handleSignOut}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition flex items-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Log Out</span>

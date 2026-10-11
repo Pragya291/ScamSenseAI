@@ -49,7 +49,7 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] flex items-center justify-center p-4 sm:p-6 lg:p-8 font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200">
       <div className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
         {/* Left Column: Split-screen Branding Panel */}
@@ -59,35 +59,35 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
 
         {/* Right Column: Forgot Password Card */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="bg-white rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] relative">
+          <div className="bg-white dark:bg-[#0D1324] rounded-[28px] p-6 sm:p-10 shadow-xl border border-[#E2E8F0] dark:border-[#263247] relative transition-colors">
             
             {/* Top Back Link */}
             <div className="flex items-center justify-between mb-6">
               <button
                 onClick={onNavigateToSignIn}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#64748B] dark:text-[#94A3B8] hover:text-[#2563EB] dark:hover:text-[#3B82F6] transition cursor-pointer"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back to Sign In</span>
               </button>
-              <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900 flex items-center justify-center">
                 <KeyRound className="w-4 h-4" />
               </div>
             </div>
 
             {/* Heading */}
             <div className="mb-6 space-y-1">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
                 Reset your password
               </h1>
-              <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#94A3B8] leading-relaxed">
                 Enter your registered email address and we'll send you secure instructions to reset your password.
               </p>
             </div>
 
             {/* Error message */}
             {formError && (
-              <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-start gap-2 animate-in fade-in">
+              <div className="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs font-medium flex items-start gap-2 animate-in fade-in">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
                 <span>{formError}</span>
               </div>
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
 
             {/* Success message */}
             {statusMessage && (
-              <div className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-start gap-2 animate-in fade-in">
+              <div className="mb-5 p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-300 text-xs font-medium flex items-start gap-2 animate-in fade-in">
                 <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
                 <span>{statusMessage.text}</span>
               </div>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-[#111827] uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC] uppercase tracking-wider mb-1.5">
                   Email Address
                 </label>
                 <div className="relative">
@@ -116,7 +116,7 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="pragya.mishra@scamsense.ai"
                     autoComplete="email"
-                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#E2E8F0] text-sm text-[#111827] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 hover:bg-white transition"
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-sm text-[#0F172A] dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 dark:bg-[#111827] hover:bg-white dark:hover:bg-[#172033] transition"
                   />
                 </div>
               </div>

@@ -1,97 +1,104 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --primary-blue: #3B82F6;
-  --deep-blue: #2563EB;
-  --primary-purple: #8B5CF6;
-  --deep-navy: #070C1B;
-  --main-bg: #F7F9FE;
-  --card-bg: #FFFFFF;
-  --primary-text: #111827;
-  --secondary-text: #475569;
+  /* ScamSense Design Tokens - Light Mode (Default) */
+  --bg-page: #F8FAFF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-secondary: #F5F7FC;
+  --bg-surface-tertiary: #EEF3FF;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
   --border-color: #E2E8F0;
-  --safe: #10B981;
-  --suspicious: #F59E0B;
-  --high-risk: #EF4444;
+  
+  --primary-blue: #2563EB;
+  --secondary-purple: #7C3AED;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
 }
 
 .dark {
-  --main-bg: #0B1020;
-  --card-bg: #182338;
-  --primary-text: #F8FAFC;
-  --secondary-text: #CBD5E1;
-  --border-color: #334155;
+  /* ScamSense Design Tokens - Coordinated Dark Mode */
+  --bg-page: #070B17;
+  --bg-surface: #0D1324;
+  --bg-surface-secondary: #111827;
+  --bg-surface-tertiary: #172033;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --border-color: #263247;
+  
+  --primary-blue: #3B82F6;
+  --secondary-purple: #8B5CF6;
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-danger: #F87171;
+}
+
+html {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--main-bg);
-  color: var(--primary-text);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Global Dark Mode Overrides for Hardcoded Light Classes */
-.dark .bg-white {
-  background-color: #182338 !important;
-  color: #F8FAFC !important;
+/* Smooth theme transitions across common container surfaces */
+.theme-transition {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
-.dark .bg-slate-50, 
-.dark .bg-slate-100 {
-  background-color: #202D43 !important;
-  color: #F8FAFC !important;
+/* Comprehensive Dark Mode Fallback Harmonization */
+.dark body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
 
-.dark .bg-blue-50,
-.dark .bg-blue-50\/50 {
-  background-color: #1E293B !important;
-  border-color: #334155 !important;
-  color: #F8FAFC !important;
-}
-
-.dark .text-slate-900, 
-.dark .text-slate-800 {
-  color: #F8FAFC !important;
-}
-
-.dark .text-slate-700,
-.dark .text-slate-600 {
-  color: #CBD5E1 !important;
-}
-
-.dark .text-slate-500, 
-.dark .text-slate-400 {
-  color: #94A3B8 !important;
-}
-
-.dark .border-slate-100, 
-.dark .border-slate-200, 
-.dark .border-slate-300 {
-  border-color: #334155 !important;
-}
-
-.dark input, 
-.dark textarea, 
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
 .dark select {
-  background-color: #1E293B !important;
-  color: #F8FAFC !important;
-  border-color: #334155 !important;
+  background-color: var(--bg-surface-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
 }
 
 .dark input::placeholder,
 .dark textarea::placeholder {
-  color: #94A3B8 !important;
+  color: var(--text-muted) !important;
 }
 
-/* Custom subtle ambient glow and animation utilities */
+/* Subtle ambient glow and animation utilities */
 .glow-mesh {
-  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15), rgba(124, 58, 237, 0.08) 40%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08), rgba(124, 58, 237, 0.05) 40%, transparent 70%);
+}
+
+.dark .glow-mesh {
+  background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.08) 40%, transparent 70%);
 }
 
 .gradient-text {
   background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(135deg, #3B82F6 0%, #A78BFA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -114,4 +121,8 @@ body {
 .card-hover:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 24px -6px rgba(11, 18, 36, 0.08);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4);
 }
