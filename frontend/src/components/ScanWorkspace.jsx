@@ -25,6 +25,7 @@ import {
   Search
 } from 'lucide-react';
 import { scanText, scanUrl, scanQr, scanPhone, scanMulti, scanContent } from '../services/api';
+import { analyzeSecurityContent } from '../services/securityEngine';
 
 export default function ScanWorkspace({ 
   onSaveScan, 
@@ -260,10 +261,15 @@ export default function ScanWorkspace({
       clearTimeout(stepTimer2);
       clearTimeout(stepTimer3);
       clearTimeout(stepTimer4);
-      console.error('ScamSense AI scan error:', err);
-      const msg = err.friendlyMessage || err.response?.data?.detail || 'Unable to connect to ScamSense AI server. Please try again.';
-      setValidationError(msg);
-      setCurrentStep(0);
+      console.warn('Backend server offline or unreachable, applying client-side threat engine:', err);
+      
+      const localResult = analyzeSecurityContent(submissionText, scanType);
+      setCurrentStep(6);
+      setScanResult(localResult);
+
+      if (onSaveScan) {
+        onSaveScan(localResult);
+      }
     } finally {
       setIsScanning(false);
     }

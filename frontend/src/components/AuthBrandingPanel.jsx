@@ -13,9 +13,9 @@ export default function AuthBrandingPanel() {
       <div className="relative z-10 space-y-6">
         <div className="flex items-center gap-3">
           <img
-            src="/scamsense-logo.jpg"
+            src="/scamsense-emblem.png"
             alt="ScamSense AI Logo"
-            className="w-10 h-10 object-contain rounded-xl shadow-lg bg-white/10 p-0.5 border border-white/20"
+            className="w-10 h-10 object-contain drop-shadow-md"
           />
           <span className="text-2xl font-bold tracking-tight text-white">
             ScamSense <span className="text-blue-200">AI</span>

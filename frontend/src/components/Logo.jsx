@@ -9,9 +9,9 @@ export default function Logo({ className = "h-9 w-auto", showText = true, onClic
       {/* Official ScamSense AI Logo Shield Emblem */}
       <div className="relative flex items-center justify-center shrink-0">
         <img
-          src="/scamsense-logo.jpg"
-          alt="ScamSense AI Logo"
-          className="w-9 h-9 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
+          src="/scamsense-emblem.png"
+          alt="ScamSense AI Shield"
+          className="w-9 h-9 object-contain transition-transform duration-300 group-hover:scale-105"
         />
       </div>
 

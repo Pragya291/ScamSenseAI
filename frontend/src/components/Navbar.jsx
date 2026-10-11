@@ -19,9 +19,9 @@ export function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLogout }) 
           {/* Logo */}
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('text')}>
             <img
-              src="/scamsense-logo.jpg"
+              src="/scamsense-emblem.png"
               alt="ScamSense AI Logo"
-              className="w-10 h-10 object-contain rounded-xl shadow-lg"
+              className="w-10 h-10 object-contain drop-shadow-md"
             />
             <div>
               <div className="flex items-center space-x-2">
