@@ -3,7 +3,7 @@ import { auth } from '../lib/firebase';
 
 const normalizeUrl = (url) => {
   if (!url) return 'https://scamsense-backend.onrender.com/api';
-  const clean = url.replace(/\/+$/, '');
+  const clean = String(url).replace(/^["'`]+|["'`]+$/g, '').trim().replace(/\/+$/, '');
   return clean.endsWith('/api') ? clean : `${clean}/api`;
 };
 

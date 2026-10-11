@@ -23,14 +23,25 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 
+// Helper to clean quotes, whitespace, trailing punctuation from env vars
+const cleanEnv = (val, fallback = '') => {
+  if (!val) return fallback;
+  let str = String(val).trim();
+  // Strip wrapping quotes (single or double) accidentally pasted into Vercel
+  str = str.replace(/^["'`]+|["'`]+$/g, '').trim();
+  // Strip trailing periods or slashes
+  str = str.replace(/[./\\]+$/, '').trim();
+  return str || fallback;
+};
+
 // Read Firebase configuration from Vite environment variables with production defaults
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBOVeDV9qpO-ablYz524ECn1hIXyIMhqIk",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "scamsenseai-8bf14.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "scamsenseai-8bf14",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "scamsenseai-8bf14.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "195996572515",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:195996572515:web:1b5465b2afaad30818915"
+  apiKey: cleanEnv(import.meta.env.VITE_FIREBASE_API_KEY, "AIzaSyBOVeDV9qpO-ablYz524ECn1hIXyIMhqIk"),
+  authDomain: cleanEnv(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN, "scamsenseai-8bf14.firebaseapp.com"),
+  projectId: cleanEnv(import.meta.env.VITE_FIREBASE_PROJECT_ID, "scamsenseai-8bf14"),
+  storageBucket: cleanEnv(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET, "scamsenseai-8bf14.firebasestorage.app"),
+  messagingSenderId: cleanEnv(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID, "195996572515"),
+  appId: cleanEnv(import.meta.env.VITE_FIREBASE_APP_ID, "1:195996572515:web:1b5465b2afaad30818915")
 };
 
 // Check if valid Firebase configuration is provided
