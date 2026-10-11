@@ -6,27 +6,49 @@ from app.core.config import settings
 
 logger = logging.getLogger("scamsense.firebase")
 
+import os
+
 class FirebaseService:
     def __init__(self):
         self.is_initialized = False
         self.db = None
 
-        if settings.FIREBASE_PROJECT_ID:
+        project_id = settings.FIREBASE_PROJECT_ID or "scamsenseai-8bf14"
+        try:
+            if not firebase_admin._apps:
+                cred_path = None
+                candidates = [
+                    settings.FIREBASE_CREDENTIALS_PATH,
+                    "serviceAccountKey.json",
+                    "backend/serviceAccountKey.json",
+                    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "serviceAccountKey.json"))
+                ]
+                for c in candidates:
+                    if c and os.path.exists(c):
+                        cred_path = c
+                        break
+
+                if cred_path:
+                    try:
+                        cred = credentials.Certificate(cred_path)
+                        firebase_admin.initialize_app(cred, options={"projectId": project_id})
+                    except Exception as cert_err:
+                        logger.warning(f"Failed to load serviceAccountKey certificate: {cert_err}. Falling back to projectId initialization.")
+                        firebase_admin.initialize_app(options={"projectId": project_id})
+                else:
+                    firebase_admin.initialize_app(options={"projectId": project_id})
+
             try:
-                if not firebase_admin._apps:
-                    if settings.FIREBASE_CREDENTIALS_PATH:
-                        cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
-                        firebase_admin.initialize_app(cred)
-                    else:
-                        # Initialize with default application credentials or project ID
-                        firebase_admin.initialize_app(options={"projectId": settings.FIREBASE_PROJECT_ID})
-                
                 self.db = firestore.client()
-                self.is_initialized = True
-                logger.info(f"Firebase Admin SDK initialized for project '{settings.FIREBASE_PROJECT_ID}'.")
-            except Exception as e:
-                logger.warning(f"Could not initialize Firebase Admin SDK: {e}. Falling back to SQLite database.")
-                self.is_initialized = False
+            except Exception as fs_err:
+                logger.info(f"Firestore client deferred or unavailable ({fs_err}). Using database fallback.")
+                self.db = None
+
+            self.is_initialized = True
+            logger.info(f"Firebase Admin SDK active for project '{project_id}'.")
+        except Exception as e:
+            logger.warning(f"Could not initialize Firebase Admin SDK: {e}. Falling back to local database.")
+            self.is_initialized = False
 
     def verify_token(self, id_token: str) -> Optional[Dict[str, Any]]:
         """Verify Firebase Auth ID Token securely."""

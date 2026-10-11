@@ -59,6 +59,10 @@ def get_current_user(
 
     user_id = None
     role = "user"
+    firebase_uid = None
+    firebase_email = None
+    firebase_name = None
+
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")
@@ -66,13 +70,16 @@ def get_current_user(
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     except JWTError:
-        # Fallback to Firebase Token verification if configured
+        # Fallback to Firebase Token verification
         from app.services.firebase_service import FirebaseService
         fb_svc = FirebaseService()
         if fb_svc.is_initialized:
             fb_token = fb_svc.verify_token(token)
             if fb_token:
-                user_id = fb_token.get("uid") or fb_token.get("email")
+                firebase_uid = fb_token.get("uid")
+                firebase_email = fb_token.get("email") or f"{firebase_uid}@scamsense.internal"
+                firebase_name = fb_token.get("name") or (firebase_email.split("@")[0] if "@" in firebase_email else "User")
+                user_id = firebase_email
             else:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
         else:
@@ -85,8 +92,27 @@ def get_current_user(
     except (ValueError, TypeError):
         user = db.query(User).filter(User.email == str(user_id), User.is_active == True).first()
 
+    # Auto-provision verified Firebase user in SQLite if not yet existing
+    if not user and firebase_uid:
+        user = db.query(User).filter(User.email == firebase_email).first()
+        if not user:
+            user = User(
+                email=firebase_email,
+                full_name=firebase_name,
+                hashed_password="firebase_authenticated_account",
+                role="user",
+                is_active=True,
+                is_verified=True
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found or inactive")
+
+    if firebase_uid:
+        user.firebase_uid = firebase_uid
 
     return user
 

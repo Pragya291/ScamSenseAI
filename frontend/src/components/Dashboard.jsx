@@ -39,6 +39,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { getScanHistory, deleteScanHistory, scanUrl, scanText, scanPhone, scanQr, scanContent } from '../services/api';
 
 // Sample initial scan records
 const INITIAL_SCANS = [
@@ -120,13 +121,60 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
     if (externalSetActiveTab) externalSetActiveTab(tab);
   };
   
-  const [scans, setScans] = useState(INITIAL_SCANS);
-  const [selectedScan, setSelectedScan] = useState(INITIAL_SCANS[0]);
+  const [scans, setScans] = useState([]);
+  const [selectedScan, setSelectedScan] = useState(null);
+  const [loadingHistory, setLoadingHistory] = useState(true);
+  const [scanError, setScanError] = useState('');
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('scamsense_theme');
     if (saved) return saved === 'dark';
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
+
+  // Fetch real authenticated user scan history on mount
+  React.useEffect(() => {
+    let isMounted = true;
+    async function fetchUserHistory() {
+      setLoadingHistory(true);
+      try {
+        const res = await getScanHistory();
+        if (isMounted && res && res.data && Array.isArray(res.data)) {
+          const mapped = res.data.map(item => {
+            const score = Math.round(item.risk_score || 0);
+            const verdict = item.verdict || (score >= 70 ? 'High Risk' : score >= 35 ? 'Suspicious' : 'Safe');
+            return {
+              id: String(item.id),
+              content: item.input_content || item.content || 'Scanned Content',
+              type: (item.scan_type || 'url').toUpperCase(),
+              timestamp: item.created_at ? new Date(item.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently',
+              date: item.created_at ? item.created_at.replace('T', ' ').substring(0, 16) : new Date().toISOString().substring(0, 16),
+              score,
+              verdict,
+              badgeClass: (verdict === 'SCAM' || verdict === 'High Risk' || score >= 70) 
+                ? 'bg-red-50 text-red-700 border-red-200' 
+                : (verdict === 'SUSPICIOUS' || verdict === 'Suspicious' || score >= 35) 
+                ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                : 'bg-emerald-50 text-emerald-700 border-emerald-200',
+              iconBg: (score >= 70) ? 'bg-red-100 text-red-600' : (score >= 35) ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600',
+              indicators: [item.summary || `${item.scam_category || 'Scam'} analysis recorded`],
+              recommendation: 'View scan record for complete threat intelligence breakdown.'
+            };
+          });
+
+          setScans(mapped);
+          if (mapped.length > 0) {
+            setSelectedScan(mapped[0]);
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load user scan history:', err);
+      } finally {
+        if (isMounted) setLoadingHistory(false);
+      }
+    }
+    fetchUserHistory();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleToggleDarkMode = (val) => {
     const newMode = val !== undefined ? val : !darkMode;
@@ -162,11 +210,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
     s.verdict.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Overview Counts
+  // Overview Counts (computed directly from real user scans)
   const totalScans = scans.length;
-  const threatsDetected = scans.filter(s => s.verdict === 'High Risk' || s.verdict === 'Dangerous' || s.verdict === 'Danger').length;
-  const suspiciousCount = scans.filter(s => s.verdict === 'Suspicious').length;
-  const safeCount = scans.filter(s => s.verdict === 'Safe').length;
+  const threatsDetected = scans.filter(s => s.verdict === 'High Risk' || s.verdict === 'SCAM' || s.verdict === 'Dangerous' || s.score >= 70).length;
+  const suspiciousCount = scans.filter(s => s.verdict === 'Suspicious' || (s.score >= 35 && s.score < 70)).length;
+  const safeCount = scans.filter(s => s.verdict === 'Safe' || s.score < 35).length;
 
   const handleSignOut = async () => {
     await signOutUser();
@@ -174,69 +222,87 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   };
 
   const handleSaveNewScan = (newScanObj) => {
-    setScans(prev => [newScanObj, ...prev]);
+    setScans(prev => [newScanObj, ...prev.filter(s => s.id !== newScanObj.id)]);
     setSelectedScan(newScanObj);
   };
 
-  const handleDeleteScan = (id) => {
+  const handleDeleteScan = async (id) => {
+    try {
+      await deleteScanHistory(id);
+    } catch (err) {
+      console.warn('Could not delete scan history item from backend:', err);
+    }
     setScans(prev => prev.filter(s => s.id !== id));
+    if (selectedScan && selectedScan.id === id) {
+      setSelectedScan(null);
+    }
   };
 
   const handleClearAllHistory = () => {
     setScans([]);
+    setSelectedScan(null);
   };
 
-  // Quick Scan Submission on Home Tab
-  const handleRunScan = (overrideValue = null) => {
+  // Real Quick Scan Submission on Home Tab connected to FastAPI
+  const handleRunScan = async (overrideValue = null) => {
     const textToScan = overrideValue || inputValue || (selectedFile ? selectedFile.name : '');
-    if (!textToScan.trim()) return;
+    if (!textToScan.trim() || isScanning) return;
 
     setIsScanning(true);
+    setScanError('');
 
-    setTimeout(() => {
-      setIsScanning(false);
-      
-      const lower = textToScan.toLowerCase();
-      let score = 15;
-      let verdict = 'Safe';
-      let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      let iconBg = 'bg-emerald-100 text-emerald-600';
-      let indicators = ['No known malicious patterns found', 'Domain/Sender passes baseline checks'];
-      let recommendation = 'Proceed with standard caution.';
-
-      if (lower.includes('fake') || lower.includes('verify') || lower.includes('win') || lower.includes('free') || lower.includes('crypto')) {
-        score = 88;
-        verdict = 'High Risk';
-        badgeClass = 'bg-red-50 text-red-700 border-red-200';
-        iconBg = 'bg-red-100 text-red-600';
-        indicators = ['Suspicious domain/keyword match', 'High urgency phishing phrasing', 'Unverified destination'];
-        recommendation = 'Do not proceed or submit sensitive credentials.';
-      } else if (lower.includes('payment') || lower.includes('whatsapp') || lower.includes('support')) {
-        score = 62;
-        verdict = 'Suspicious';
-        badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
-        iconBg = 'bg-amber-100 text-amber-600';
-        indicators = ['Requires verification', 'Non-standard payment query'];
-        recommendation = 'Verify with sender via official phone number.';
+    try {
+      let res = null;
+      if (scanType === 'URL') {
+        res = await scanUrl(textToScan.trim());
+      } else if (scanType === 'Phone' || scanType === 'Phone Number') {
+        res = await scanPhone(textToScan.trim());
+      } else if (scanType === 'QR Code' || scanType === 'QR') {
+        if (selectedFile) {
+          const fd = new FormData();
+          fd.append('file', selectedFile);
+          res = await scanQr(fd);
+        } else {
+          res = await scanContent({ content: textToScan.trim(), scan_type: 'qr' });
+        }
+      } else {
+        res = await scanText(textToScan.trim());
       }
 
-      const newScanObj = {
-        id: 'scan-' + Date.now(),
-        content: textToScan,
-        type: scanType,
-        timestamp: 'Just now',
-        date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-        score,
-        verdict,
-        badgeClass,
-        iconBg,
-        indicators,
-        recommendation
-      };
+      if (res && res.data) {
+        const data = res.data;
+        const score = Math.round(data.risk_score !== undefined ? data.risk_score : 0);
+        const verdict = (data.verdict === 'SCAM' || data.verdict === 'High Risk' || score >= 70) 
+          ? 'High Risk' 
+          : (data.verdict === 'SUSPICIOUS' || data.verdict === 'Suspicious' || score >= 35) 
+          ? 'Suspicious' 
+          : 'Safe';
 
-      setScans([newScanObj, ...scans]);
-      setSelectedScan(newScanObj);
-    }, 1200);
+        const newScanObj = {
+          id: data.scan_id || 'scan-' + Date.now(),
+          content: textToScan.trim(),
+          type: scanType,
+          timestamp: 'Just now',
+          date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+          score,
+          verdict,
+          badgeClass: verdict === 'High Risk' ? 'bg-red-50 text-red-700 border-red-200' : verdict === 'Suspicious' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          iconBg: verdict === 'High Risk' ? 'bg-red-100 text-red-600' : verdict === 'Suspicious' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600',
+          indicators: data.indicators || data.red_flags || ['Analysis verified by security engine.'],
+          recommendation: (data.recommendations && data.recommendations[0]) || data.explanation || 'Proceed with standard caution.'
+        };
+
+        setScans(prev => [newScanObj, ...prev.filter(s => s.id !== newScanObj.id)]);
+        setSelectedScan(newScanObj);
+        setInputValue('');
+        setSelectedFile(null);
+      }
+    } catch (err) {
+      console.error('Quick scan error:', err);
+      setScanError(err.friendlyMessage || 'Unable to connect to ScamSense AI server. Please try again.');
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   const handleNavigateToScanFromThreat = (suggestedType) => {
@@ -769,6 +835,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       </button>
                     </div>
 
+                    {scanError && (
+                      <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                        <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                        <span>{scanError}</span>
+                      </div>
+                    )}
+
                     {/* Sample try links */}
                     <div className="flex flex-wrap items-center gap-2 text-xs">
                       <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px]">Try Sample:</span>
@@ -871,35 +944,48 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                     </div>
 
                     <div className="space-y-3">
-                      {filteredScans.slice(0, 5).map((scan) => (
-                        <div
-                          key={scan.id}
-                          onClick={() => setSelectedScan(scan)}
-                          className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                            selectedScan.id === scan.id
-                              ? 'border-blue-500 bg-blue-50/30'
-                              : 'border-slate-200 hover:bg-slate-50'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3 min-w-0 pr-2">
-                            <div className={`w-9 h-9 rounded-xl ${scan.iconBg || 'bg-red-100 text-red-600'} flex items-center justify-center shrink-0`}>
-                              <ShieldCheck className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0">
-                              <div className="text-xs font-bold text-slate-900 truncate">
-                                {scan.content}
-                              </div>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scan.badgeClass}`}>
-                                  {scan.verdict}
-                                </span>
-                                <span className="text-[10px] text-slate-400">{scan.timestamp}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                      {loadingHistory ? (
+                        <div className="py-6 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                          <span>Loading scan history...</span>
                         </div>
-                      ))}
+                      ) : filteredScans.length === 0 ? (
+                        <div className="py-8 px-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center">
+                          <Scan className="w-7 h-7 text-slate-300 mx-auto mb-1.5" />
+                          <div className="text-xs font-bold text-slate-700">No scans recorded yet</div>
+                          <p className="text-[11px] text-slate-400 mt-0.5">Run a scan above to see your verified results here.</p>
+                        </div>
+                      ) : (
+                        filteredScans.slice(0, 5).map((scan) => (
+                          <div
+                            key={scan.id}
+                            onClick={() => setSelectedScan(scan)}
+                            className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
+                              selectedScan && selectedScan.id === scan.id
+                                ? 'border-blue-500 bg-blue-50/30'
+                                : 'border-slate-200 hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0 pr-2">
+                              <div className={`w-9 h-9 rounded-xl ${scan.iconBg || 'bg-red-100 text-red-600'} flex items-center justify-center shrink-0`}>
+                                <ShieldCheck className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-xs font-bold text-slate-900 truncate">
+                                  {scan.content}
+                                </div>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scan.badgeClass}`}>
+                                    {scan.verdict}
+                                  </span>
+                                  <span className="text-[10px] text-slate-400">{scan.timestamp}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
 

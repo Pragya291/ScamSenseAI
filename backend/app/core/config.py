@@ -1,6 +1,24 @@
 import os
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Union
+
+# Look for .env in current directory, backend directory, or project root
+current_dir = Path(__file__).resolve().parent
+backend_dir = current_dir.parent.parent
+root_dir = backend_dir.parent
+
+env_files = [
+    Path.cwd() / ".env",
+    backend_dir / ".env",
+    root_dir / ".env",
+    ".env"
+]
+selected_env_file = ".env"
+for ef in env_files:
+    if ef.exists() and ef.is_file():
+        selected_env_file = str(ef)
+        break
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "ScamSense AI — Scam & Fraud Defense Agent"
@@ -30,13 +48,19 @@ class Settings(BaseSettings):
     GOOGLE_SAFE_BROWSING_API_KEY: str = os.getenv("GOOGLE_SAFE_BROWSING_API_KEY", "")
     VIRUSTOTAL_API_KEY: str = os.getenv("VIRUSTOTAL_API_KEY", "")
     TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
-    FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "")
+    FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "scamsenseai-8bf14")
     FIREBASE_CREDENTIALS_PATH: str = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
     
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
+    model_config = SettingsConfigDict(env_file=selected_env_file, case_sensitive=True, extra="ignore")
+
+    def __init__(self, **values):
+        super().__init__(**values)
+        if self.FRONTEND_URL and self.FRONTEND_URL not in self.CORS_ORIGINS:
+            self.CORS_ORIGINS.append(self.FRONTEND_URL)
 
 settings = Settings()
+

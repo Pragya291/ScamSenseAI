@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BarChart3, 
   ShieldAlert, 
@@ -16,21 +16,49 @@ import {
   QrCode,
   Image as ImageIcon
 } from 'lucide-react';
+import { getAnalyticsSummary } from '../services/api';
 
 export default function AnalyticsView({ scans = [] }) {
   const [dateRange, setDateRange] = useState('Last 30 Days');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [analyticsData, setAnalyticsData] = useState(null);
 
-  // Derive counts from actual dataset plus baseline hackathon demonstration metrics
-  const extraScansCount = scans ? scans.length : 0;
-  const totalScans = 1842 + extraScansCount;
-  const threatsDetected = 97 + scans.filter(s => s.verdict === 'High Risk' || s.verdict === 'Danger').length;
-  const suspiciousCount = 386 + scans.filter(s => s.verdict === 'Suspicious').length;
-  const safeCount = 1248 + scans.filter(s => s.verdict === 'Safe').length;
+  const fetchAnalytics = async () => {
+    try {
+      const res = await getAnalyticsSummary();
+      if (res && res.data) {
+        setAnalyticsData(res.data);
+      }
+    } catch (err) {
+      console.warn('Could not fetch analytics summary:', err);
+    }
+  };
 
-  const handleRefresh = () => {
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
+  // Derive counts from actual live data or authenticated user scan records
+  const totalScans = analyticsData?.total_scans !== undefined 
+    ? analyticsData.total_scans 
+    : (scans ? scans.length : 0);
+
+  const threatsDetected = analyticsData?.scams_detected !== undefined 
+    ? analyticsData.scams_detected 
+    : (scans ? scans.filter(s => s.verdict === 'High Risk' || s.verdict === 'Danger' || s.verdict === 'SCAM' || (s.score && s.score >= 70)).length : 0);
+
+  const suspiciousCount = analyticsData?.suspicious_scans !== undefined 
+    ? analyticsData.suspicious_scans 
+    : (scans ? scans.filter(s => s.verdict === 'Suspicious' || (s.score && s.score >= 35 && s.score < 70)).length : 0);
+
+  const safeCount = analyticsData?.safe_scans !== undefined 
+    ? analyticsData.safe_scans 
+    : (scans ? scans.filter(s => s.verdict === 'Safe' || (s.score && s.score < 35)).length : 0);
+
+  const handleRefresh = async () => {
     setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 800);
+    await fetchAnalytics();
+    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   const handleExportAnalytics = () => {

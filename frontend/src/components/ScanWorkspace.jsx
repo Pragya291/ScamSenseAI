@@ -24,7 +24,7 @@ import {
   X,
   Search
 } from 'lucide-react';
-import { scanText, scanUrl, scanQr } from '../services/api';
+import { scanText, scanUrl, scanQr, scanPhone, scanMulti, scanContent } from '../services/api';
 
 export default function ScanWorkspace({ 
   onSaveScan, 
@@ -153,124 +153,119 @@ export default function ScanWorkspace({
       return;
     }
 
+    if (isScanning) return; // Prevent duplicate scan submissions
+
     setIsScanning(true);
+    setValidationError('');
     setSavedSuccess(false);
 
-    // Multi-step progress animation
-    setCurrentStep(1);
-    await new Promise(r => setTimeout(r, 250));
-    setCurrentStep(2);
-    await new Promise(r => setTimeout(r, 300));
-    setCurrentStep(3);
-    await new Promise(r => setTimeout(r, 300));
-    setCurrentStep(4);
-    await new Promise(r => setTimeout(r, 350));
-    setCurrentStep(5);
-    await new Promise(r => setTimeout(r, 250));
-    setCurrentStep(6);
+    // Multi-step progress animation reflecting actual workflow
+    setCurrentStep(1); // 01 Input
+    const stepTimer1 = setTimeout(() => setCurrentStep(2), 250); // 02 Extract
+    const stepTimer2 = setTimeout(() => setCurrentStep(3), 550); // 03 Check Signals
+    const stepTimer3 = setTimeout(() => setCurrentStep(4), 950); // 04 AI Analysis
+    const stepTimer4 = setTimeout(() => setCurrentStep(5), 1400); // 05 Risk + Evidence
 
     const submissionText = inputValue || (selectedFile ? selectedFile.name : '');
-    const lower = submissionText.toLowerCase();
 
-    // Check backend API if available, or generate evidence-based assessment
-    let realApiResponse = null;
     try {
-      if (scanType === 'URL' && inputValue) {
-        realApiResponse = await scanUrl(inputValue);
-      } else if (scanType === 'Message' && inputValue) {
-        realApiResponse = await scanText(inputValue);
-      } else if (scanType === 'QR Code' && selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        realApiResponse = await scanQr(formData);
+      let response = null;
+
+      if (scanType === 'URL') {
+        response = await scanUrl(inputValue.trim());
+      } else if (scanType === 'Message') {
+        response = await scanText(inputValue.trim());
+      } else if (scanType === 'Email') {
+        const sender = emailSender.trim() || undefined;
+        response = await scanText(inputValue.trim() || emailSubject.trim(), sender);
+      } else if (scanType === 'Phone Number') {
+        const fullPhone = phoneCountry ? `${phoneCountry} ${inputValue.trim()}` : inputValue.trim();
+        response = await scanPhone(fullPhone);
+      } else if (scanType === 'QR Code' || scanType === 'Screenshot') {
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append('file', selectedFile);
+          response = await scanQr(formData);
+        } else {
+          response = await scanContent({ content: inputValue.trim(), scan_type: 'qr' });
+        }
+      } else {
+        response = await scanContent({ content: submissionText });
+      }
+
+      clearTimeout(stepTimer1);
+      clearTimeout(stepTimer2);
+      clearTimeout(stepTimer3);
+      clearTimeout(stepTimer4);
+      setCurrentStep(6); // 06 Next Action
+
+      if (!response || !response.data) {
+        throw new Error('Empty response received from ScamSense AI server.');
+      }
+
+      const data = response.data;
+      const score = Math.round(data.risk_score !== undefined ? data.risk_score : 0);
+      const verdict = (data.verdict === 'SCAM' || data.verdict === 'High Risk' || data.risk_level === 'High Risk' || score >= 70) 
+        ? 'High Risk' 
+        : (data.verdict === 'SUSPICIOUS' || data.verdict === 'Suspicious' || data.risk_level === 'Suspicious' || score >= 35) 
+        ? 'Suspicious' 
+        : 'Safe';
+
+      const badgeClass = verdict === 'High Risk'
+        ? 'bg-red-50 text-red-600 border-red-200'
+        : verdict === 'Suspicious'
+        ? 'bg-amber-50 text-amber-700 border-amber-200'
+        : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+
+      const indicators = (data.indicators && data.indicators.length > 0)
+        ? data.indicators
+        : (data.red_flags && data.red_flags.length > 0)
+        ? data.red_flags
+        : (data.threat_indicators && data.threat_indicators.length > 0)
+        ? data.threat_indicators.map(t => t.description)
+        : ['Content analyzed: no anomalous threat indicators detected.'];
+
+      const explanation = data.explanation || data.summary || data.analysis || 'Analysis successfully completed by ScamSense AI security engine.';
+      
+      const saferSteps = (data.recommendations && data.recommendations.length > 0)
+        ? data.recommendations
+        : (data.recommended_actions && data.recommended_actions.length > 0)
+        ? data.recommended_actions
+        : ['Exercise standard verification caution before submitting sensitive credentials.'];
+
+      const newResult = {
+        id: data.scan_id || `scan-${Date.now().toString().slice(-6)}`,
+        type: scanType,
+        content: submissionText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        score,
+        verdict,
+        badgeClass,
+        indicators,
+        explanation,
+        saferSteps,
+        securityChecks: data.security_checks || {},
+        sources: data.sources || data.web_evidence || [],
+        executionTime: data.execution_time_ms || 0,
+        isSimulated: false
+      };
+
+      setScanResult(newResult);
+
+      if (onSaveScan) {
+        onSaveScan(newResult);
       }
     } catch (err) {
-      // Backend not running locally or endpoint offline; continue safely in evidence demonstration mode
-    }
-
-    let score = 18;
-    let verdict = 'Safe';
-    let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-    let indicators = ['Standard domain registration parameters', 'No known phishing or deceptive lures detected'];
-    let explanation = 'Content passes standard structural heuristics with no immediate high-risk threat markers.';
-    let saferSteps = [
-      'Content appears low risk; verify normal sender context.',
-      'Exercise usual caution when entering credentials.',
-      'Report any unexpected behavior to your security team.'
-    ];
-
-    if (realApiResponse && realApiResponse.data) {
-      const data = realApiResponse.data;
-      score = data.risk_score || data.score || 50;
-      verdict = score >= 70 ? 'High Risk' : score >= 40 ? 'Suspicious' : 'Safe';
-      badgeClass = score >= 70 ? 'bg-red-50 text-red-600 border-red-200' : score >= 40 ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      if (data.reasons && data.reasons.length) indicators = data.reasons;
-      if (data.explanation) explanation = data.explanation;
-      if (data.recommendations && data.recommendations.length) saferSteps = data.recommendations;
-    } else {
-      // Evidence-based heuristics
-      if (
-        lower.includes('crypto') || 
-        lower.includes('verify') || 
-        lower.includes('bank') || 
-        lower.includes('otp') || 
-        lower.includes('login') || 
-        lower.includes('winner') || 
-        lower.includes('prize') || 
-        lower.includes('blocked') ||
-        lower.includes('urgent')
-      ) {
-        score = 88;
-        verdict = 'High Risk';
-        badgeClass = 'bg-red-50 text-red-600 border-red-200';
-        indicators = [
-          'Urgent payment or credential request',
-          `Suspicious keywords: matching deceptive lure patterns`,
-          'Impersonation cues: mimicking official institution layout',
-          'Unverified destination hostname'
-        ];
-        explanation = 'The input contains high-frequency social engineering cues: urgency pressure and unverified credential collection.';
-        saferSteps = [
-          "Don't click, pay, or submit personal information.",
-          'Verify through the official app or official verified phone numbers.',
-          'Block & report this sender.'
-        ];
-      } else if (lower.includes('payment') || lower.includes('whatsapp') || lower.includes('support') || lower.includes('bonus')) {
-        score = 64;
-        verdict = 'Suspicious';
-        badgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
-        indicators = [
-          'Ambiguous sender authority and payment prompt',
-          'Potential redirection mechanism detected'
-        ];
-        explanation = 'The input exhibits non-standard communication patterns that require secondary manual verification.';
-        saferSteps = [
-          'Call the sender on a known official contact number before responding.',
-          'Do not share one-time authentication codes.',
-          'Inspect redirect domains.'
-        ];
-      }
-    }
-
-    const newResult = {
-      id: `scan-${Date.now().toString().slice(-6)}`,
-      type: scanType,
-      content: submissionText,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      score,
-      verdict,
-      badgeClass,
-      indicators,
-      explanation,
-      saferSteps,
-      isSimulated: !realApiResponse
-    };
-
-    setScanResult(newResult);
-    setIsScanning(false);
-
-    if (onSaveScan) {
-      onSaveScan(newResult);
+      clearTimeout(stepTimer1);
+      clearTimeout(stepTimer2);
+      clearTimeout(stepTimer3);
+      clearTimeout(stepTimer4);
+      console.error('ScamSense AI scan error:', err);
+      const msg = err.friendlyMessage || err.response?.data?.detail || 'Unable to connect to ScamSense AI server. Please try again.';
+      setValidationError(msg);
+      setCurrentStep(0);
+    } finally {
+      setIsScanning(false);
     }
   };
 
@@ -544,9 +539,17 @@ export default function ScanWorkspace({
 
               {/* Field Validation Error */}
               {validationError && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
-                  <span>{validationError}</span>
+                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center justify-between gap-2 animate-in fade-in">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                    <span>{validationError}</span>
+                  </div>
+                  <button
+                    onClick={handleAnalyze}
+                    className="px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-bold transition cursor-pointer"
+                  >
+                    Retry
+                  </button>
                 </div>
               )}
 

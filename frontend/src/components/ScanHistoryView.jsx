@@ -81,7 +81,8 @@ const INITIAL_MOCK_HISTORY = [
 ];
 
 export default function ScanHistoryView({ scans = [], onNavigateToScan, onDeleteScan }) {
-  const [historyList, setHistoryList] = useState(INITIAL_MOCK_HISTORY);
+  const [historyList, setHistoryList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedVerdict, setSelectedVerdict] = useState('All');
   const [dateRange, setDateRange] = useState('Last 30 days');
   const [searchQuery, setSearchQuery] = useState('');
@@ -90,31 +91,79 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Sync external scans if provided
+  // Load real history from API on mount
   useEffect(() => {
-    if (scans && scans.length > 0) {
-      const formattedExternal = scans.map(s => ({
-        id: s.id || `hist-${Date.now()}`,
-        content: s.content || s.input_content || 'Scanned Content',
-        type: s.type || s.scan_type || 'URL',
-        subType: `${s.type || 'Scan'} • ${s.verdict || 'Analysis'}`,
-        date: s.date || (s.created_at ? new Date(s.created_at).toLocaleString() : 'Just now'),
-        rawDate: s.rawDate || new Date().toISOString(),
-        score: s.score !== undefined ? s.score : (s.risk_score || 0),
-        verdict: s.verdict === 'High Risk' || s.verdict === 'Dangerous' ? 'Danger' : (s.verdict || 'Safe'),
-        badgeClass: s.badgeClass || (s.verdict === 'High Risk' || s.verdict === 'Danger' ? 'bg-red-50 text-red-700 border-red-200' : s.verdict === 'Suspicious' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'),
-        iconBg: s.iconBg || 'bg-[#2563EB]/10 text-[#2563EB]',
-        indicators: s.indicators || ['Observed signal analysis complete'],
-        recommendation: s.recommendation || 'Follow standard verification rules.'
-      }));
+    let isMounted = true;
+    async function loadBackendHistory() {
+      setLoading(true);
+      try {
+        const res = await getScanHistory();
+        if (isMounted && res && res.data && Array.isArray(res.data)) {
+          const formatted = res.data.map(s => {
+            const score = Math.round(s.risk_score || 0);
+            const verdict = s.verdict === 'High Risk' || s.verdict === 'SCAM' || score >= 70
+              ? 'Danger'
+              : s.verdict === 'Suspicious' || score >= 35
+              ? 'Suspicious'
+              : 'Safe';
 
-      // Combine and deduplicate
-      setHistoryList(prev => {
-        const combined = [...formattedExternal, ...prev];
-        const unique = Array.from(new Map(combined.map(item => [item.content, item])).values());
-        return unique;
-      });
+            return {
+              id: String(s.id),
+              content: s.input_content || s.content || 'Scanned Content',
+              type: (s.scan_type || 'URL').toUpperCase(),
+              subType: `${(s.scan_type || 'Scan').toUpperCase()} • ${s.scam_category || s.verdict || 'Analysis'}`,
+              date: s.created_at ? new Date(s.created_at).toLocaleString() : 'Just now',
+              rawDate: s.created_at || new Date().toISOString(),
+              score,
+              verdict,
+              badgeClass: verdict === 'Danger'
+                ? 'bg-red-50 text-red-700 border-red-200'
+                : verdict === 'Suspicious'
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-emerald-50 text-emerald-700 border-emerald-200',
+              iconBg: verdict === 'Danger' ? 'bg-red-100 text-red-600' : verdict === 'Suspicious' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600',
+              indicators: [s.summary || 'Security analysis complete.'],
+              recommendation: 'Follow standard verification rules before submitting credentials.'
+            };
+          });
+
+          // Merge with any in-memory external scans passed from parent
+          if (scans && scans.length > 0) {
+            const externalFormatted = scans.map(s => ({
+              id: String(s.id),
+              content: s.content || s.input_content || 'Scanned Content',
+              type: (s.type || s.scan_type || 'URL').toUpperCase(),
+              subType: `${(s.type || 'Scan').toUpperCase()} • ${s.verdict || 'Analysis'}`,
+              date: s.date || 'Just now',
+              rawDate: s.rawDate || new Date().toISOString(),
+              score: Math.round(s.score !== undefined ? s.score : (s.risk_score || 0)),
+              verdict: s.verdict === 'High Risk' || s.verdict === 'Danger' || s.verdict === 'SCAM' ? 'Danger' : (s.verdict || 'Safe'),
+              badgeClass: s.badgeClass || 'bg-emerald-50 text-emerald-700 border-emerald-200',
+              iconBg: s.iconBg || 'bg-[#2563EB]/10 text-[#2563EB]',
+              indicators: s.indicators || ['Observed signal analysis complete'],
+              recommendation: s.recommendation || 'Follow standard verification rules.'
+            }));
+            const combined = [...externalFormatted, ...formatted];
+            const unique = Array.from(new Map(combined.map(item => [item.id, item])).values());
+            setHistoryList(unique);
+          } else {
+            setHistoryList(formatted);
+          }
+        } else if (scans && scans.length > 0) {
+          setHistoryList(scans);
+        }
+      } catch (err) {
+        console.warn('Scan history load error:', err);
+        if (scans && scans.length > 0) {
+          setHistoryList(scans);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     }
+
+    loadBackendHistory();
+    return () => { isMounted = false; };
   }, [scans]);
 
   // Filtering
@@ -132,10 +181,10 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
     return matchesVerdict && matchesSearch;
   });
 
-  // Calculate top summary card metrics
-  const totalCount = 1842 + (historyList.length - INITIAL_MOCK_HISTORY.length);
-  const dangerCount = 97 + historyList.filter(h => h.verdict === 'Danger').length - 2;
-  const safeCount = 1248 + historyList.filter(h => h.verdict === 'Safe').length - 1;
+  // Calculate real top summary card metrics without mock offsets
+  const totalCount = historyList.length;
+  const dangerCount = historyList.filter(h => h.verdict === 'Danger' || h.verdict === 'High Risk').length;
+  const safeCount = historyList.filter(h => h.verdict === 'Safe').length;
 
   const handleCopySummary = (item) => {
     const summary = `ScamSense AI Report\nTarget: ${item.content}\nVerdict: ${item.verdict} (${item.score}/100)\nDate: ${item.date}\nIndicators:\n${item.indicators.map(i => '- ' + i).join('\n')}`;
@@ -144,7 +193,12 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleDeleteRecord = (id) => {
+  const handleDeleteRecord = async (id) => {
+    try {
+      await deleteScanHistory(id);
+    } catch (err) {
+      console.warn("Could not delete record from backend:", err);
+    }
     setHistoryList(prev => prev.filter(item => item.id !== id));
     setDeleteConfirmId(null);
     if (onDeleteScan) onDeleteScan(id);

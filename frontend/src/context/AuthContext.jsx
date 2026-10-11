@@ -51,8 +51,16 @@ export function AuthProvider({ children }) {
       setUser(currentUser);
       setLoading(false);
       clearTimeout(timer);
-      if (currentUser) {
+      if (currentUser && !currentUser.isMock) {
+        try {
+          const idToken = await currentUser.getIdToken();
+          localStorage.setItem('scamsense_token', idToken);
+        } catch (tokenErr) {
+          console.warn("Could not retrieve Firebase ID token:", tokenErr);
+        }
         await syncUserProfileWithFirestore(currentUser);
+      } else if (!currentUser) {
+        localStorage.removeItem('scamsense_token');
       }
     });
 
@@ -212,6 +220,7 @@ export function AuthProvider({ children }) {
   // Sign Out
   const signOutUser = async () => {
     try {
+      localStorage.removeItem('scamsense_token');
       if (isFirebaseConfigured) {
         await fbSignOut(auth);
       }

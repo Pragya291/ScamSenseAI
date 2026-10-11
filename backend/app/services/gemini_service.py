@@ -22,11 +22,19 @@ class GeminiScamAnalysis(BaseModel):
 class GeminiService:
     def __init__(self):
         self.api_key = settings.GEMINI_API_KEY
+        self.model = None
+        self.is_configured = False
         if self.api_key:
             try:
                 genai.configure(api_key=self.api_key)
-                self.model = genai.GenerativeModel("gemini-1.5-flash")
-                self.is_configured = True
+                # Try candidate models supported by current Gemini API
+                for model_candidate in ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-pro"]:
+                    try:
+                        self.model = genai.GenerativeModel(model_candidate)
+                        self.is_configured = True
+                        break
+                    except Exception:
+                        continue
             except Exception as e:
                 logger.error(f"Failed to configure Gemini SDK: {e}")
                 self.is_configured = False
