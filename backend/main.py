@@ -51,6 +51,7 @@ app.add_middleware(
 
 # Include API v1 router
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router, prefix="/api")  # Also support /api prefix directly
 
 @app.get("/", tags=["Health Check"])
 def root() -> Dict[str, Any]:
@@ -63,6 +64,7 @@ def root() -> Dict[str, Any]:
     }
 
 @app.get("/health", tags=["Health Check"])
+@app.get("/api/health", tags=["Health Check"])
 def health_check() -> Dict[str, str]:
     return {"status": "healthy", "database": "connected"}
 

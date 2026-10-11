@@ -59,8 +59,12 @@ class Settings(BaseSettings):
 
     def __init__(self, **values):
         super().__init__(**values)
-        if self.FRONTEND_URL and self.FRONTEND_URL not in self.CORS_ORIGINS:
-            self.CORS_ORIGINS.append(self.FRONTEND_URL)
+        if self.FRONTEND_URL:
+            cleaned = self.FRONTEND_URL.strip().rstrip("/")
+            if cleaned and cleaned not in self.CORS_ORIGINS:
+                self.CORS_ORIGINS.append(cleaned)
+            if cleaned and f"{cleaned}/" not in self.CORS_ORIGINS:
+                self.CORS_ORIGINS.append(f"{cleaned}/")
 
 settings = Settings()
 
