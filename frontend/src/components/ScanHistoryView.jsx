@@ -230,10 +230,10 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
       {/* Header with Title & Primary CTAs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] dark:text-[#F1F5F9] tracking-tight">
             Scan History
           </h1>
-          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+          <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#A8B6CC] mt-1">
             Track your past scans, risk assessments and safety actions
           </p>
         </div>
@@ -241,15 +241,15 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
         <div className="flex items-center gap-3">
           <button
             onClick={handleExportCSV}
-            className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-2 transition shadow-2xs cursor-pointer"
+            className="px-4 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-50 dark:hover:bg-[#17243A] text-xs font-semibold text-slate-700 dark:text-[#F1F5F9] flex items-center gap-2 transition shadow-2xs cursor-pointer"
           >
-            <Download className="w-4 h-4 text-slate-500" />
+            <Download className="w-4 h-4 text-slate-500 dark:text-[#8494AD]" />
             <span>Export History</span>
           </button>
 
           <button
             onClick={() => onNavigateToScan && onNavigateToScan()}
-            className="px-5 py-2.5 rounded-xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#1D4ED8] hover:to-[#6D28D9] text-xs font-bold text-white shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl bg-linear-to-r from-[#4F46E5] to-[#9333EA] hover:from-[#4338CA] hover:to-[#7E22CE] text-xs font-bold text-white shadow-md shadow-indigo-500/20 transition cursor-pointer flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             <span>New Scan</span>
@@ -261,43 +261,43 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         
         {/* Total Scans Card */}
-        <div className="bg-linear-to-br from-[#2563EB]/10 via-purple-50/50 to-white rounded-3xl p-6 border border-blue-100 shadow-2xs flex items-center justify-between">
+        <div className="bg-linear-to-br from-[#2563EB]/10 via-purple-50/50 to-white dark:from-[#111C32] dark:via-[#162238] dark:to-[#17243A] rounded-3xl p-6 border border-blue-100 dark:border-[#293953] shadow-2xs flex items-center justify-between">
           <div className="space-y-1">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Scans</div>
-            <div className="text-3xl font-black text-[#111827] tracking-tight">{totalCount.toLocaleString()}</div>
-            <div className="text-xs font-semibold text-[#2563EB] flex items-center gap-1">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Total Scans</div>
+            <div className="text-3xl font-black text-[#111827] dark:text-[#F1F5F9] tracking-tight">{totalCount.toLocaleString()}</div>
+            <div className="text-xs font-semibold text-[#2563EB] dark:text-[#6366F1] flex items-center gap-1">
               <span>+124 this month ↑</span>
             </div>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-linear-to-tr from-[#2563EB] to-[#7C3AED] text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-linear-to-tr from-[#4F46E5] to-[#9333EA] text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
             <BrainCircuit className="w-7 h-7" />
           </div>
         </div>
 
         {/* Threats Blocked Card */}
-        <div className="bg-linear-to-br from-emerald-50/60 to-white rounded-3xl p-6 border border-emerald-100 shadow-2xs flex items-center justify-between">
+        <div className="bg-linear-to-br from-emerald-50/60 to-white dark:from-[#111C32] dark:via-[#162238] dark:to-[#0F1E2A] rounded-3xl p-6 border border-emerald-100 dark:border-[#293953] shadow-2xs flex items-center justify-between">
           <div className="space-y-1">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Threats Blocked</div>
-            <div className="text-3xl font-black text-[#111827] tracking-tight">{dangerCount}</div>
-            <div className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Threats Blocked</div>
+            <div className="text-3xl font-black text-[#111827] dark:text-[#F1F5F9] tracking-tight">{dangerCount}</div>
+            <div className="text-xs font-semibold text-emerald-600 dark:text-[#34D399] flex items-center gap-1">
               <span>+12 this month ↑</span>
             </div>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500 dark:bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0">
             <ShieldCheck className="w-7 h-7" />
           </div>
         </div>
 
         {/* Safe Links Card */}
-        <div className="bg-linear-to-br from-amber-50/60 to-white rounded-3xl p-6 border border-amber-100 shadow-2xs flex items-center justify-between">
+        <div className="bg-linear-to-br from-amber-50/60 to-white dark:from-[#111C32] dark:via-[#162238] dark:to-[#23202E] rounded-3xl p-6 border border-amber-100 dark:border-[#293953] shadow-2xs flex items-center justify-between">
           <div className="space-y-1">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Safe Links</div>
-            <div className="text-3xl font-black text-[#111827] tracking-tight">{safeCount.toLocaleString()}</div>
-            <div className="text-xs font-semibold text-amber-700 flex items-center gap-1">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Safe Links</div>
+            <div className="text-3xl font-black text-[#111827] dark:text-[#F1F5F9] tracking-tight">{safeCount.toLocaleString()}</div>
+            <div className="text-xs font-semibold text-amber-700 dark:text-[#FBBF24] flex items-center gap-1">
               <span>+89 this month ↑</span>
             </div>
           </div>
-          <div className="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500 dark:bg-amber-600 text-white flex items-center justify-center shadow-md shadow-amber-500/20 shrink-0">
             <ShieldAlert className="w-7 h-7" />
           </div>
         </div>
@@ -313,8 +313,8 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             onClick={() => setSelectedVerdict('All')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
               selectedVerdict === 'All'
-                ? 'bg-[#0B1224] text-white shadow-xs'
-                : 'bg-white border border-[#E2E8F0] text-slate-600 hover:bg-slate-50'
+                ? 'bg-[#0B1224] dark:bg-[#6366F1] text-white shadow-xs'
+                : 'bg-white dark:bg-[#162238] border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-50 dark:hover:bg-[#17243A]'
             }`}
           >
             All
@@ -324,11 +324,11 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             onClick={() => setSelectedVerdict('Safe')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               selectedVerdict === 'Safe'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                ? 'bg-emerald-600 dark:bg-[#34D399] text-white dark:text-[#0B1120] shadow-xs'
+                : 'bg-emerald-50 dark:bg-[#162238] text-emerald-700 dark:text-[#34D399] border border-emerald-200 dark:border-[#293953] hover:bg-emerald-100 dark:hover:bg-[#17243A]'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#34D399]" />
             <span>Safe</span>
           </button>
 
@@ -336,11 +336,11 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             onClick={() => setSelectedVerdict('Suspicious')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               selectedVerdict === 'Suspicious'
-                ? 'bg-amber-600 text-white shadow-xs'
-                : 'bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100'
+                ? 'bg-amber-600 dark:bg-[#FBBF24] text-white dark:text-[#0B1120] shadow-xs'
+                : 'bg-amber-50 dark:bg-[#162238] text-amber-700 dark:text-[#FBBF24] border border-amber-200 dark:border-[#293953] hover:bg-amber-100 dark:hover:bg-[#17243A]'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            <span className="w-2 h-2 rounded-full bg-amber-500 dark:bg-[#FBBF24]" />
             <span>Suspicious</span>
           </button>
 
@@ -348,11 +348,11 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             onClick={() => setSelectedVerdict('Danger')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               selectedVerdict === 'Danger'
-                ? 'bg-red-600 text-white shadow-xs'
-                : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'
+                ? 'bg-red-600 dark:bg-[#FB7185] text-white dark:text-[#0B1120] shadow-xs'
+                : 'bg-red-50 dark:bg-[#162238] text-red-700 dark:text-[#FB7185] border border-red-200 dark:border-[#293953] hover:bg-red-100 dark:hover:bg-[#17243A]'
             }`}
           >
-            <span className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="w-2 h-2 rounded-full bg-red-500 dark:bg-[#FB7185]" />
             <span>Danger</span>
           </button>
         </div>
@@ -363,7 +363,7 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="pl-9 pr-8 py-2 rounded-xl border border-[#E2E8F0] bg-white text-xs font-semibold text-slate-700 focus:outline-hidden cursor-pointer"
+              className="pl-9 pr-8 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] text-xs font-semibold text-slate-700 dark:text-[#F1F5F9] focus:outline-hidden cursor-pointer"
             >
               <option value="Last 30 days">📅 Last 30 days</option>
               <option value="Last 7 days">📅 Last 7 days</option>
@@ -372,13 +372,13 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
           </div>
 
           <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-slate-400 dark:text-[#8494AD] absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search in history..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E2E8F0] bg-white text-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] text-xs text-slate-900 dark:text-[#F1F5F9] placeholder-slate-400 dark:placeholder-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1]"
             />
           </div>
         </div>
@@ -386,10 +386,10 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
       </div>
 
       {/* SCAN RECORDS TABLE / CARDS (Matching Reference Screenshot 1) */}
-      <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+      <div className="bg-white dark:bg-[#0F1A2D] rounded-3xl border border-[#E2E8F0] dark:border-[#293953] shadow-sm overflow-hidden">
         
         {/* Desktop Table Header */}
-        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 border-b border-[#E2E8F0] text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-slate-50 dark:bg-[#17243A] border-b border-[#E2E8F0] dark:border-[#293953] text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">
           <div className="col-span-5">Input / Type</div>
           <div className="col-span-2 text-center">Risk Score</div>
           <div className="col-span-3">Verdict</div>
@@ -397,12 +397,12 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
         </div>
 
         {/* Records Rows */}
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-slate-100 dark:divide-[#293953]/60">
           {filteredList.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 space-y-2">
-              <History className="w-10 h-10 mx-auto text-slate-300" />
-              <div className="font-bold text-slate-700">No scan history records found.</div>
-              <p className="text-xs text-slate-500">Try clearing your search query or run a new scan.</p>
+            <div className="p-12 text-center text-slate-400 dark:text-[#8494AD] space-y-2 dark:bg-[#0F1A2D]">
+              <History className="w-10 h-10 mx-auto text-slate-300 dark:text-[#8494AD]" />
+              <div className="font-bold text-slate-700 dark:text-[#F1F5F9]">No scan history records found.</div>
+              <p className="text-xs text-slate-500 dark:text-[#8494AD]">Try clearing your search query or run a new scan.</p>
             </div>
           ) : (
             filteredList.map((item) => {
@@ -410,31 +410,31 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
               const isSuspicious = item.verdict === 'Suspicious';
               
               const rowBorderClass = isDanger 
-                ? 'border-l-4 border-l-red-500 bg-red-50/20' 
+                ? 'border-l-4 border-l-red-500 dark:border-l-[#FB7185] bg-red-50/20 dark:bg-rose-950/20' 
                 : isSuspicious 
-                ? 'border-l-4 border-l-amber-500 bg-amber-50/20' 
-                : 'border-l-4 border-l-emerald-500 bg-emerald-50/20';
+                ? 'border-l-4 border-l-amber-500 dark:border-l-[#FBBF24] bg-amber-50/20 dark:bg-amber-950/20' 
+                : 'border-l-4 border-l-emerald-500 dark:border-l-[#34D399] bg-emerald-50/20 dark:bg-emerald-950/20';
 
               return (
                 <div 
                   key={item.id}
-                  className={`p-4 sm:px-6 transition hover:bg-slate-50/80 ${rowBorderClass}`}
+                  className={`p-4 sm:px-6 transition hover:bg-slate-50/80 dark:hover:bg-[#162238]/60 ${rowBorderClass}`}
                 >
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                     
                     {/* Input / Type */}
                     <div className="md:col-span-5 flex items-center gap-3.5">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                        isDanger ? 'bg-red-500 text-white' : isSuspicious ? 'bg-amber-500 text-white' : 'bg-emerald-500 text-white'
+                        isDanger ? 'bg-red-500 dark:bg-[#FB7185] text-white' : isSuspicious ? 'bg-amber-500 dark:bg-[#FBBF24] text-white' : 'bg-emerald-500 dark:bg-[#34D399] text-white'
                       }`}>
                         <ShieldCheck className="w-5 h-5" />
                       </div>
 
                       <div className="min-w-0">
-                        <div className="text-sm font-bold text-slate-900 truncate font-mono">
+                        <div className="text-sm font-bold text-slate-900 dark:text-[#F1F5F9] truncate font-mono">
                           {item.content}
                         </div>
-                        <div className="text-xs text-slate-500 font-medium">
+                        <div className="text-xs text-slate-500 dark:text-[#A8B6CC] font-medium">
                           {item.subType || `${item.type} • Inspection`}
                         </div>
                       </div>
@@ -444,10 +444,10 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
                     <div className="md:col-span-2 flex justify-start md:justify-center">
                       <div className={`w-11 h-11 rounded-full font-black text-sm flex items-center justify-center border-2 ${
                         isDanger 
-                          ? 'border-red-500 text-red-600 bg-red-50' 
+                          ? 'border-red-500 dark:border-[#FB7185] text-red-600 dark:text-[#FB7185] bg-red-50 dark:bg-rose-950/40' 
                           : isSuspicious 
-                          ? 'border-amber-500 text-amber-600 bg-amber-50' 
-                          : 'border-emerald-500 text-emerald-600 bg-emerald-50'
+                          ? 'border-amber-500 dark:border-[#FBBF24] text-amber-600 dark:text-[#FBBF24] bg-amber-50 dark:bg-amber-950/40' 
+                          : 'border-emerald-500 dark:border-[#34D399] text-emerald-600 dark:text-[#34D399] bg-emerald-50 dark:bg-emerald-950/40'
                       }`}>
                         {item.score}
                       </div>
@@ -457,15 +457,15 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
                     <div className="md:col-span-3 space-y-0.5">
                       <div className="flex items-center gap-1.5">
                         <span className={`w-2 h-2 rounded-full ${
-                          isDanger ? 'bg-red-500' : isSuspicious ? 'bg-amber-500' : 'bg-emerald-500'
+                          isDanger ? 'bg-red-500 dark:bg-[#FB7185]' : isSuspicious ? 'bg-amber-500 dark:bg-[#FBBF24]' : 'bg-emerald-500 dark:bg-[#34D399]'
                         }`} />
                         <span className={`text-xs font-bold ${
-                          isDanger ? 'text-red-700' : isSuspicious ? 'text-amber-700' : 'text-emerald-700'
+                          isDanger ? 'text-red-700 dark:text-[#FB7185]' : isSuspicious ? 'text-amber-700 dark:text-[#FBBF24]' : 'text-emerald-700 dark:text-[#34D399]'
                         }`}>
                           {item.verdict}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-400 font-medium">
+                      <div className="text-[11px] text-slate-400 dark:text-[#8494AD] font-medium">
                         {item.date}
                       </div>
                     </div>
@@ -474,22 +474,22 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
                     <div className="md:col-span-2 flex items-center justify-end gap-2">
                       <button
                         onClick={() => setActiveReportModal(item)}
-                        className="px-4 py-2 rounded-xl border border-blue-200 bg-white hover:bg-blue-50 text-xs font-bold text-[#2563EB] transition cursor-pointer shadow-2xs"
+                        className="px-4 py-2 rounded-xl border border-blue-200 dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-blue-50 dark:hover:bg-[#17243A] text-xs font-bold text-[#2563EB] dark:text-[#6366F1] transition cursor-pointer shadow-2xs"
                       >
                         View Report &rarr;
                       </button>
 
                       <button
                         onClick={() => handleCopySummary(item)}
-                        className="p-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                        className="p-2 rounded-lg text-slate-400 dark:text-[#8494AD] hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#162238] transition"
                         title="Copy Summary"
                       >
-                        {copiedId === item.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                        {copiedId === item.id ? <Check className="w-4 h-4 text-emerald-600 dark:text-[#34D399]" /> : <Copy className="w-4 h-4" />}
                       </button>
 
                       <button
                         onClick={() => handleDeleteRecord(item.id)}
-                        className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                        className="p-2 rounded-lg text-slate-400 dark:text-[#8494AD] hover:text-red-600 dark:hover:text-[#FB7185] hover:bg-red-50 dark:hover:bg-rose-950/40 transition"
                         title="Delete Record"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -504,7 +504,7 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
         </div>
 
         {/* PAGINATION FOOTER (Matching Reference Screenshot 1) */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-semibold">
+        <div className="px-6 py-4 bg-slate-50 dark:bg-[#17243A] border-t border-[#E2E8F0] dark:border-[#293953] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-[#8494AD] font-semibold">
           <div>
             Showing 1-{filteredList.length} of {totalCount.toLocaleString()} results
           </div>
@@ -513,7 +513,7 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-50 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] disabled:opacity-50 cursor-pointer text-slate-700 dark:text-[#F1F5F9]"
             >
               Previous
             </button>
@@ -521,7 +521,7 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             <button
               onClick={() => setCurrentPage(1)}
               className={`w-8 h-8 rounded-lg font-bold transition cursor-pointer ${
-                currentPage === 1 ? 'bg-[#2563EB] text-white' : 'bg-white border border-slate-200 text-slate-700'
+                currentPage === 1 ? 'bg-[#4F46E5] text-white' : 'bg-white dark:bg-[#162238] border border-slate-200 dark:border-[#293953] text-slate-700 dark:text-[#F1F5F9]'
               }`}
             >
               1
@@ -530,7 +530,7 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             <button
               onClick={() => setCurrentPage(2)}
               className={`w-8 h-8 rounded-lg font-bold transition cursor-pointer ${
-                currentPage === 2 ? 'bg-[#2563EB] text-white' : 'bg-white border border-slate-200 text-slate-700'
+                currentPage === 2 ? 'bg-[#4F46E5] text-white' : 'bg-white dark:bg-[#162238] border border-slate-200 dark:border-[#293953] text-slate-700 dark:text-[#F1F5F9]'
               }`}
             >
               2
@@ -539,24 +539,24 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
             <button
               onClick={() => setCurrentPage(3)}
               className={`w-8 h-8 rounded-lg font-bold transition cursor-pointer ${
-                currentPage === 3 ? 'bg-[#2563EB] text-white' : 'bg-white border border-slate-200 text-slate-700'
+                currentPage === 3 ? 'bg-[#4F46E5] text-white' : 'bg-white dark:bg-[#162238] border border-slate-200 dark:border-[#293953] text-slate-700 dark:text-[#F1F5F9]'
               }`}
             >
               3
             </button>
 
-            <span className="px-1 text-slate-400">...</span>
+            <span className="px-1 text-slate-400 dark:text-[#8494AD]">...</span>
 
             <button
               onClick={() => setCurrentPage(462)}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-700"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] text-slate-700 dark:text-[#F1F5F9]"
             >
               462
             </button>
 
             <button
               onClick={() => setCurrentPage(p => p + 1)}
-              className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] cursor-pointer flex items-center gap-1 text-slate-700 dark:text-[#F1F5F9]"
             >
               <span>Next</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -568,74 +568,74 @@ export default function ScanHistoryView({ scans = [], onNavigateToScan, onDelete
 
       {/* DETAILED REPORT MODAL */}
       {activeReportModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#111C32] rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-[#293953] space-y-6 animate-in zoom-in-95">
             
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#293953] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-blue-600 to-purple-600 text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-[#4F46E5] to-[#9333EA] text-white flex items-center justify-center">
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Historical Scan Record</h3>
-                  <div className="text-xs text-slate-400 font-mono">ID: {activeReportModal.id} • {activeReportModal.date}</div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-[#F1F5F9]">Historical Scan Record</h3>
+                  <div className="text-xs text-slate-400 dark:text-[#8494AD] font-mono">ID: {activeReportModal.id} • {activeReportModal.date}</div>
                 </div>
               </div>
               <button
                 onClick={() => setActiveReportModal(null)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                className="p-2 rounded-xl text-slate-400 dark:text-[#8494AD] hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#162238] transition"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-1.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Inspected Content</span>
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs text-slate-800 break-all">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-[#8494AD]">Inspected Content</span>
+              <div className="p-3 bg-slate-50 dark:bg-[#162238] rounded-xl border border-slate-200 dark:border-[#293953] font-mono text-xs text-slate-800 dark:text-[#F1F5F9] break-all">
                 {activeReportModal.content}
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <div className="text-xs text-slate-500 font-semibold">Classification</div>
-                <div className="text-lg font-extrabold text-slate-900 mt-0.5">{activeReportModal.verdict}</div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
+                <div className="text-xs text-slate-500 dark:text-[#8494AD] font-semibold">Classification</div>
+                <div className="text-lg font-extrabold text-slate-900 dark:text-[#F1F5F9] mt-0.5">{activeReportModal.verdict}</div>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <div className="text-xs text-slate-500 font-semibold">Threat Score</div>
-                <div className="text-lg font-extrabold text-red-600 mt-0.5">{activeReportModal.score} / 100</div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
+                <div className="text-xs text-slate-500 dark:text-[#8494AD] font-semibold">Threat Score</div>
+                <div className="text-lg font-extrabold text-red-600 dark:text-[#FB7185] mt-0.5">{activeReportModal.score} / 100</div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider">
                 Confirmed Evidence Indicators
               </h4>
-              <ul className="space-y-1.5 text-xs text-slate-700">
+              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-[#A8B6CC]">
                 {activeReportModal.indicators.map((ind, i) => (
-                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-red-50/60 border border-red-100">
-                    <span className="text-red-600 font-bold">•</span>
+                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-red-50/60 dark:bg-rose-950/30 border border-red-100 dark:border-[#FB7185]/30">
+                    <span className="text-red-600 dark:text-[#FB7185] font-bold">•</span>
                     <span>{ind}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
+            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-900 dark:text-[#34D399]">
               <div className="font-bold">Recommended Guidance:</div>
-              <p className="mt-0.5 text-emerald-800">{activeReportModal.recommendation}</p>
+              <p className="mt-0.5 text-emerald-800 dark:text-[#A8B6CC]">{activeReportModal.recommendation}</p>
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
                 onClick={() => handleCopySummary(activeReportModal)}
-                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-[#293953] text-xs font-bold text-slate-700 dark:text-[#F1F5F9] hover:bg-slate-50 dark:hover:bg-[#162238]"
               >
                 Copy Summary
               </button>
               <button
                 onClick={() => setActiveReportModal(null)}
-                className="px-5 py-2 rounded-xl bg-[#2563EB] text-white text-xs font-bold"
+                className="px-5 py-2 rounded-xl bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white text-xs font-bold"
               >
                 Done
               </button>

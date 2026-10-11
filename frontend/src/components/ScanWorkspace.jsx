@@ -300,10 +300,10 @@ export default function ScanWorkspace({
       
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
-          Scan Anything <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2563EB] to-[#7C3AED]">Suspicious</span>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] dark:text-[#F1F5F9] tracking-tight">
+          Scan Anything <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2563EB] to-[#7C3AED] dark:from-[#6366F1] dark:to-[#9333EA]">Suspicious</span>
         </h1>
-        <p className="text-xs sm:text-sm text-[#64748B] mt-1.5">
+        <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#A8B6CC] mt-1.5">
           Paste a message or URL, or upload a QR code / screenshot — Detect. Explain. Protect.
         </p>
       </div>
@@ -314,7 +314,7 @@ export default function ScanWorkspace({
         {/* LEFT COLUMN: Input Card & Detection Workflow (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
           
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6">
+          <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] dark:border-[#293953] shadow-sm space-y-6">
             
             {/* Scan Type Selectors */}
             <div className="flex flex-wrap items-center gap-2">
@@ -337,8 +337,8 @@ export default function ScanWorkspace({
                     }}
                     className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition cursor-pointer ${
                       isActive
-                        ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-sm shadow-blue-500/20'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-sm shadow-blue-500/20'
+                        : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#1E2D4A] dark:hover:text-[#F1F5F9]'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -358,8 +358,8 @@ export default function ScanWorkspace({
               }}
               className={`border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center transition cursor-pointer relative overflow-hidden ${
                 dragOver 
-                  ? 'border-blue-500 bg-blue-50/60' 
-                  : 'border-purple-200/80 bg-linear-to-br from-blue-50/40 via-purple-50/40 to-slate-50 hover:border-blue-400'
+                  ? 'border-blue-500 bg-blue-50/60 dark:bg-blue-950/30' 
+                  : 'border-purple-200/80 dark:border-[#293953] bg-linear-to-br from-blue-50/40 via-purple-50/40 to-slate-50 dark:from-[#162238]/60 dark:via-[#111C32] dark:to-[#0B1120] hover:border-blue-400 dark:hover:border-[#6366F1]'
               }`}
             >
               <input
@@ -371,23 +371,23 @@ export default function ScanWorkspace({
               />
 
               {selectedFile ? (
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 bg-white rounded-2xl border border-purple-200 shadow-xs">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-2 bg-white dark:bg-[#162238] rounded-2xl border border-purple-200 dark:border-[#293953] shadow-xs">
                   <div className="flex items-center gap-3">
                     {filePreview ? (
-                      <img src={filePreview} alt="Preview" className="w-14 h-14 object-cover rounded-xl border border-slate-200" />
+                      <img src={filePreview} alt="Preview" className="w-14 h-14 object-cover rounded-xl border border-slate-200 dark:border-[#293953]" />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                         <ImageIcon className="w-6 h-6" />
                       </div>
                     )}
                     <div className="text-left">
-                      <div className="text-xs sm:text-sm font-bold text-slate-900 truncate max-w-xs">{selectedFile.name}</div>
-                      <div className="text-[11px] text-slate-500">{(selectedFile.size / 1024).toFixed(1)} KB • Image ready for analysis</div>
+                      <div className="text-xs sm:text-sm font-bold text-slate-900 dark:text-[#F1F5F9] truncate max-w-xs">{selectedFile.name}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-[#8494AD]">{(selectedFile.size / 1024).toFixed(1)} KB • Image ready for analysis</div>
                     </div>
                   </div>
                   <button
                     onClick={(e) => { e.stopPropagation(); clearFile(); }}
-                    className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition"
+                    className="p-2 rounded-xl text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition"
                     title="Remove File"
                   >
                     <X className="w-4 h-4" />
@@ -403,10 +403,10 @@ export default function ScanWorkspace({
                       <ImageIcon className="w-6 h-6" />
                     </div>
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#F1F5F9]">
                     Drag & drop QR code or screenshot here
                   </h3>
-                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-[#A8B6CC] max-w-md mx-auto leading-relaxed">
                     PNG, JPG up to 10MB — or use the field below to paste a suspicious link or message
                   </p>
                 </div>
@@ -417,8 +417,8 @@ export default function ScanWorkspace({
             <div className="space-y-3">
               {scanType === 'Message' && (
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
-                    <span className="font-semibold uppercase text-[10px] tracking-wider text-slate-400">Message Content</span>
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-[#8494AD]">
+                    <span className="font-semibold uppercase text-[10px] tracking-wider text-slate-400 dark:text-[#8494AD]">Message Content</span>
                     <span>{inputValue.length} characters</span>
                   </div>
                   <textarea
@@ -426,7 +426,7 @@ export default function ScanWorkspace({
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Paste a suspicious SMS, WhatsApp message, or direct message here..."
-                    className="w-full p-3.5 rounded-2xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                    className="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                   />
                 </div>
               )}
@@ -439,14 +439,14 @@ export default function ScanWorkspace({
                       value={emailSender}
                       onChange={(e) => setEmailSender(e.target.value)}
                       placeholder="Sender email (e.g. support@official-bank.xyz)"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                     />
                     <input
                       type="text"
                       value={emailSubject}
                       onChange={(e) => setEmailSubject(e.target.value)}
                       placeholder="Subject line (e.g. Urgent KYC Verification)"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                     />
                   </div>
                   <textarea
@@ -454,7 +454,7 @@ export default function ScanWorkspace({
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Paste email body or headers..."
-                    className="w-full p-3.5 rounded-2xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                    className="w-full p-3.5 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                   />
                 </div>
               )}
@@ -464,20 +464,20 @@ export default function ScanWorkspace({
                   <select
                     value={phoneCountry}
                     onChange={(e) => setPhoneCountry(e.target.value)}
-                    className="px-3 py-3 rounded-2xl border border-slate-300 text-xs sm:text-sm bg-slate-50 font-semibold focus:outline-hidden"
+                    className="px-3 py-3 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm bg-slate-50 dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9] font-semibold focus:outline-hidden"
                   >
-                    <option value="+91">🇮🇳 +91</option>
-                    <option value="+1">🇺🇸 +1</option>
-                    <option value="+44">🇬🇧 +44</option>
-                    <option value="+61">🇦🇺 +61</option>
-                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+91" className="bg-white dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9]">🇮🇳 +91</option>
+                    <option value="+1" className="bg-white dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9]">🇺🇸 +1</option>
+                    <option value="+44" className="bg-white dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9]">🇬🇧 +44</option>
+                    <option value="+61" className="bg-white dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9]">🇦🇺 +61</option>
+                    <option value="+971" className="bg-white dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9]">🇦🇪 +971</option>
                   </select>
                   <input
                     type="tel"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Enter phone number (e.g. 98765 43210)"
-                    className="w-full px-4 py-3 rounded-2xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                    className="w-full px-4 py-3 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                   />
                 </div>
               )}
@@ -486,7 +486,7 @@ export default function ScanWorkspace({
               {(scanType === 'URL' || scanType === 'QR Code' || scanType === 'Screenshot') && (
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   <div className="relative w-full">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <Search className="w-4 h-4 text-slate-400 dark:text-[#8494AD] absolute left-3.5 top-3.5" />
                     <input
                       type="text"
                       value={inputValue}
@@ -496,14 +496,14 @@ export default function ScanWorkspace({
                           ? "Paste a suspicious link (e.g. https://example.com) or enter a message..."
                           : "Or paste the decoded URL/text from the QR or image..."
                       }
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] bg-slate-50/50"
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] placeholder:text-slate-400 dark:placeholder:text-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] dark:focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238]"
                     />
                   </div>
                   
                   <button
                     onClick={handleAnalyze}
                     disabled={isScanning}
-                    className="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#1D4ED8] hover:to-[#6D28D9] shadow-md shadow-blue-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] dark:from-[#4F46E5] dark:to-[#9333EA] hover:from-[#1D4ED8] hover:to-[#6D28D9] shadow-md shadow-blue-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
                   >
                     {isScanning ? (
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -523,7 +523,7 @@ export default function ScanWorkspace({
                   <button
                     onClick={handleAnalyze}
                     disabled={isScanning}
-                    className="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] hover:from-[#1D4ED8] hover:to-[#6D28D9] shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto px-7 py-3 rounded-2xl font-bold text-white bg-linear-to-r from-[#2563EB] to-[#7C3AED] dark:from-[#4F46E5] dark:to-[#9333EA] hover:from-[#1D4ED8] hover:to-[#6D28D9] shadow-md shadow-blue-500/20 transition cursor-pointer flex items-center justify-center gap-2"
                   >
                     {isScanning ? (
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -539,14 +539,14 @@ export default function ScanWorkspace({
 
               {/* Field Validation Error */}
               {validationError && (
-                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center justify-between gap-2 animate-in fade-in">
+                <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs font-semibold flex items-center justify-between gap-2 animate-in fade-in">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                    <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
                     <span>{validationError}</span>
                   </div>
                   <button
                     onClick={handleAnalyze}
-                    className="px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg text-xs font-bold transition cursor-pointer"
+                    className="px-2.5 py-1 bg-red-100 dark:bg-red-900/50 hover:bg-red-200 dark:hover:bg-red-900/80 text-red-800 dark:text-red-200 rounded-lg text-xs font-bold transition cursor-pointer"
                   >
                     Retry
                   </button>
@@ -558,12 +558,12 @@ export default function ScanWorkspace({
           </div>
 
           {/* Detection Workflow • 6-step review */}
-          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] shadow-sm space-y-4">
+          <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] dark:border-[#293953] shadow-sm space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-900 tracking-tight">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-[#F1F5F9] tracking-tight">
                 Detection Workflow • 6-step review
               </h3>
-              <span className="text-[11px] font-semibold text-slate-400">
+              <span className="text-[11px] font-semibold text-slate-400 dark:text-[#8494AD]">
                 {isScanning ? `Analyzing step ${currentStep}/6...` : 'Automated AI Pipeline'}
               </span>
             </div>
@@ -580,25 +580,25 @@ export default function ScanWorkspace({
                     key={idx}
                     className={`p-3 rounded-2xl border text-center transition flex flex-col items-center justify-between min-h-[105px] ${
                       isCurrent
-                        ? 'border-blue-500 bg-blue-50/50 shadow-xs'
+                        ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 dark:border-[#6366F1] shadow-xs'
                         : isPassed
-                        ? 'border-purple-200 bg-purple-50/30'
-                        : 'border-slate-200 bg-slate-50/50'
+                        ? 'border-purple-200 dark:border-[#293953] bg-purple-50/30 dark:bg-[#162238]'
+                        : 'border-slate-200 dark:border-[#293953]/70 bg-slate-50/50 dark:bg-[#162238]/50'
                     }`}
                   >
                     <div className={`w-8 h-8 rounded-full font-bold text-xs flex items-center justify-center transition ${
                       isCurrent
-                        ? 'bg-blue-600 text-white animate-pulse'
+                        ? 'bg-blue-600 dark:bg-[#6366F1] text-white animate-pulse'
                         : isPassed
-                        ? 'bg-linear-to-tr from-blue-600 to-purple-600 text-white'
-                        : 'bg-slate-200 text-slate-600'
+                        ? 'bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white'
+                        : 'bg-slate-200 dark:bg-[#293953] text-slate-600 dark:text-[#A8B6CC]'
                     }`}>
                       {step.num}
                     </div>
 
                     <div className="mt-2 space-y-0.5">
-                      <div className="text-[11px] font-bold text-slate-900 leading-tight">{step.title}</div>
-                      <div className="text-[9.5px] text-slate-500 leading-tight">{step.sub}</div>
+                      <div className="text-[11px] font-bold text-slate-900 dark:text-[#F1F5F9] leading-tight">{step.title}</div>
+                      <div className="text-[9.5px] text-slate-500 dark:text-[#8494AD] leading-tight">{step.sub}</div>
                     </div>
                   </div>
                 );
@@ -611,15 +611,15 @@ export default function ScanWorkspace({
         {/* RIGHT COLUMN: Live Result Preview Card (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm space-y-6 relative overflow-hidden">
+          <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] dark:border-[#293953] shadow-sm space-y-6 relative overflow-hidden">
             
             {/* Top Badge: HIGH RISK / SUSPICIOUS / SAFE */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center shadow-xs">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900 tracking-tight">
+                <h3 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9] tracking-tight">
                   Live Result Preview
                 </h3>
               </div>
@@ -645,6 +645,7 @@ export default function ScanWorkspace({
                     cy="50"
                     r="40"
                     stroke="#F1F5F9"
+                    className="dark:stroke-[#162238]"
                     strokeWidth="8"
                     fill="none"
                   />
@@ -671,11 +672,11 @@ export default function ScanWorkspace({
 
                 {/* Score numbers */}
                 <div className="absolute flex flex-col items-center justify-center text-center">
-                  <span className="text-4xl font-black text-slate-900 tracking-tight leading-none">
+                  <span className="text-4xl font-black text-slate-900 dark:text-[#F1F5F9] tracking-tight leading-none">
                     {scanResult.score}
                   </span>
-                  <span className="text-xs text-slate-400 font-semibold mt-0.5">/100</span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mt-1">
+                  <span className="text-xs text-slate-400 dark:text-[#8494AD] font-semibold mt-0.5">/100</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#A8B6CC] mt-1">
                     Risk Score
                   </span>
                 </div>
@@ -683,14 +684,14 @@ export default function ScanWorkspace({
             </div>
 
             {/* Evidence Indicators Box */}
-            <div className="p-4 rounded-2xl bg-red-50/60 border border-red-200/80 space-y-2.5">
-              <div className="text-xs font-bold text-red-950 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5 text-red-600" />
+            <div className="p-4 rounded-2xl bg-red-50/60 dark:bg-red-950/30 border border-red-200/80 dark:border-red-900/50 space-y-2.5">
+              <div className="text-xs font-bold text-red-950 dark:text-red-300 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
                 <span>Detected Risk Indicators</span>
               </div>
               <ul className="space-y-1.5">
                 {scanResult.indicators.map((ind, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-red-900 leading-snug">
+                  <li key={idx} className="flex items-start gap-2 text-xs text-red-900 dark:text-red-200 leading-snug">
                     <span className="w-3.5 h-3.5 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">!</span>
                     <span>{ind}</span>
                   </li>
@@ -699,18 +700,18 @@ export default function ScanWorkspace({
             </div>
 
             {/* Safer Next Step Card */}
-            <div className="p-4 rounded-2xl bg-linear-to-br from-blue-50/70 to-purple-50/70 border border-blue-200/80 space-y-2.5">
+            <div className="p-4 rounded-2xl bg-linear-to-br from-blue-50/70 to-purple-50/70 dark:from-[#162238] dark:to-[#111C32] border border-blue-200/80 dark:border-[#293953] space-y-2.5">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-linear-to-tr from-blue-600 to-purple-600 text-white flex items-center justify-center">
+                <div className="w-6 h-6 rounded-lg bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center">
                   <ShieldCheck className="w-3.5 h-3.5" />
                 </div>
-                <span className="text-xs font-bold text-slate-900">Safer Next Step:</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Safer Next Step:</span>
               </div>
 
-              <ul className="space-y-1.5 text-xs text-slate-700">
+              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-[#A8B6CC]">
                 {scanResult.saferSteps.map((step, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-blue-600 font-bold">•</span>
+                    <span className="text-blue-600 dark:text-[#60A5FA] font-bold">•</span>
                     <span>{step}</span>
                   </li>
                 ))}
@@ -719,7 +720,7 @@ export default function ScanWorkspace({
               <div className="pt-2">
                 <button
                   onClick={() => setShowFullReportModal(true)}
-                  className="w-full py-2.5 rounded-xl border border-purple-300 bg-white hover:bg-purple-50/60 text-xs font-bold text-purple-700 transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
+                  className="w-full py-2.5 rounded-xl border border-purple-300 dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-purple-50/60 dark:hover:bg-[#1E2D4A] text-xs font-bold text-purple-700 dark:text-[#A8B6CC] hover:dark:text-[#F1F5F9] transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
                 >
                   <span>View full detailed report</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -728,18 +729,18 @@ export default function ScanWorkspace({
             </div>
 
             {/* Quick Actions Row */}
-            <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+            <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-[#293953] text-xs">
               <button
                 onClick={handleCopySummary}
-                className="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-700 flex items-center gap-1.5 cursor-pointer transition"
+                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-[#293953] bg-slate-50 dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#1E2D4A] font-semibold text-slate-700 dark:text-[#A8B6CC] hover:dark:text-[#F1F5F9] flex items-center gap-1.5 cursor-pointer transition"
               >
-                {copiedSummary ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedSummary ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-[#34D399]" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copiedSummary ? 'Copied' : 'Copy Summary'}</span>
               </button>
 
               <button
                 onClick={handleSaveToHistory}
-                className="px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 font-semibold text-slate-700 flex items-center gap-1.5 cursor-pointer transition"
+                className="px-3 py-2 rounded-xl border border-slate-200 dark:border-[#293953] bg-slate-50 dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#1E2D4A] font-semibold text-slate-700 dark:text-[#A8B6CC] hover:dark:text-[#F1F5F9] flex items-center gap-1.5 cursor-pointer transition"
               >
                 <Bookmark className="w-3.5 h-3.5" />
                 <span>{savedSuccess ? 'Saved!' : 'Save to History'}</span>
@@ -754,23 +755,23 @@ export default function ScanWorkspace({
 
       {/* FULL DETAILED REPORT MODAL */}
       {showFullReportModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#111C32] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-[#293953] space-y-6 animate-in zoom-in-95">
             
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-[#293953] pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-blue-600 to-purple-600 text-white flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center">
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">Complete Threat Assessment Report</h3>
-                  <div className="text-xs text-slate-400 font-mono">ID: {scanResult.id} • {scanResult.timestamp}</div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-[#F1F5F9]">Complete Threat Assessment Report</h3>
+                  <div className="text-xs text-slate-400 dark:text-[#8494AD] font-mono">ID: {scanResult.id} • {scanResult.timestamp}</div>
                 </div>
               </div>
               <button
                 onClick={() => setShowFullReportModal(false)}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#162238] transition"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -778,43 +779,43 @@ export default function ScanWorkspace({
 
             {/* Scanned Input */}
             <div className="space-y-1.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Target Content</span>
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs text-slate-800 break-all select-all">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-[#8494AD]">Target Content</span>
+              <div className="p-3 bg-slate-50 dark:bg-[#162238] rounded-xl border border-slate-200 dark:border-[#293953] font-mono text-xs text-slate-800 dark:text-[#F1F5F9] break-all select-all">
                 {scanResult.content}
               </div>
             </div>
 
             {/* Verdict & Score */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <div className="text-xs text-slate-500 font-semibold">Classification Verdict</div>
-                <div className="text-xl font-extrabold text-slate-900 mt-0.5">{scanResult.verdict}</div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
+                <div className="text-xs text-slate-500 dark:text-[#8494AD] font-semibold">Classification Verdict</div>
+                <div className="text-xl font-extrabold text-slate-900 dark:text-[#F1F5F9] mt-0.5">{scanResult.verdict}</div>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <div className="text-xs text-slate-500 font-semibold">Calculated Threat Score</div>
-                <div className="text-xl font-extrabold text-red-600 mt-0.5">{scanResult.score} / 100</div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
+                <div className="text-xs text-slate-500 dark:text-[#8494AD] font-semibold">Calculated Threat Score</div>
+                <div className="text-xl font-extrabold text-red-600 dark:text-[#FB7185] mt-0.5">{scanResult.score} / 100</div>
               </div>
             </div>
 
             {/* Why this result? Detailed explanation */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider">
                 Why this result? (Signal Analysis)
               </h4>
-              <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+              <p className="text-xs text-slate-600 dark:text-[#A8B6CC] leading-relaxed bg-slate-50 dark:bg-[#162238] p-3.5 rounded-xl border border-slate-200 dark:border-[#293953]">
                 {scanResult.explanation}
               </p>
             </div>
 
             {/* Evidence points */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider">
                 Confirmed Evidence Indicators
               </h4>
-              <ul className="space-y-1.5 text-xs text-slate-700">
+              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-[#A8B6CC]">
                 {scanResult.indicators.map((ind, i) => (
-                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-red-50/50 border border-red-100">
-                    <span className="text-red-600 font-bold">•</span>
+                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-red-50/50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 text-red-900 dark:text-red-200">
+                    <span className="text-red-600 dark:text-red-400 font-bold">•</span>
                     <span>{ind}</span>
                   </li>
                 ))}
@@ -823,13 +824,13 @@ export default function ScanWorkspace({
 
             {/* Recommended Protective Action */}
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider">
                 Recommended Actions
               </h4>
-              <ul className="space-y-1.5 text-xs text-slate-700">
+              <ul className="space-y-1.5 text-xs text-slate-700 dark:text-[#A8B6CC]">
                 {scanResult.saferSteps.map((step, i) => (
-                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-emerald-50/50 border border-emerald-100">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2 p-2 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 text-emerald-900 dark:text-emerald-200">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-[#34D399] shrink-0 mt-0.5" />
                     <span>{step}</span>
                   </li>
                 ))}
@@ -837,16 +838,16 @@ export default function ScanWorkspace({
             </div>
 
             {/* Footer Buttons */}
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-[#293953]">
               <button
                 onClick={handleCopySummary}
-                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-[#293953] text-xs font-bold text-slate-700 dark:text-[#A8B6CC] hover:bg-slate-50 dark:hover:bg-[#162238] dark:hover:text-[#F1F5F9] transition"
               >
                 Copy Report Summary
               </button>
               <button
                 onClick={() => setShowFullReportModal(false)}
-                className="px-5 py-2 rounded-xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white text-xs font-bold shadow-xs hover:opacity-95 transition"
+                className="px-5 py-2 rounded-xl bg-linear-to-r from-[#2563EB] to-[#7C3AED] dark:from-[#4F46E5] dark:to-[#9333EA] text-white text-xs font-bold shadow-xs hover:opacity-95 transition"
               >
                 Done
               </button>

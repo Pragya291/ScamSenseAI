@@ -305,10 +305,10 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-slate-900 text-slate-100' : 'bg-[#F5F7FC] text-[#111827]'} font-sans flex selection:bg-blue-600 selection:text-white`}>
+    <div className={`min-h-screen ${darkMode ? 'bg-[#0B1120] text-[#F1F5F9]' : 'bg-[#F5F7FC] text-[#111827]'} font-sans flex selection:bg-indigo-600 selection:text-white`}>
       
       {/* 1. LEFT SIDEBAR NAVIGATION */}
-      <aside className={`w-64 shrink-0 hidden lg:flex flex-col justify-between p-6 border-r ${darkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-[#E2E8F0]'} sticky top-0 h-screen`}>
+      <aside className={`w-64 shrink-0 hidden lg:flex flex-col justify-between p-6 border-r ${darkMode ? 'bg-[#070C19] border-[#293953]' : 'bg-white border-[#E2E8F0]'} sticky top-0 h-screen`}>
         <div className="space-y-8">
           
           {/* Brand Logo */}
@@ -320,11 +320,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               onClick={() => setActiveTab('home')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'home'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <Home className="w-5 h-5" />
+              <Home className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Home</span>
             </button>
 
@@ -335,11 +335,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'scan'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <Scan className="w-5 h-5" />
+              <Scan className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Scan</span>
             </button>
 
@@ -347,11 +347,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               onClick={() => setActiveTab('threat-intel')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'threat-intel'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <ShieldAlert className="w-5 h-5" />
+              <ShieldAlert className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Threat Intelligence</span>
             </button>
 
@@ -359,11 +359,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               onClick={() => setActiveTab('scan-history')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'scan-history'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <History className="w-5 h-5" />
+              <History className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Scan History</span>
             </button>
 
@@ -371,11 +371,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               onClick={() => setActiveTab('analytics')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'analytics'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <BarChart3 className="w-5 h-5" />
+              <BarChart3 className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Analytics</span>
             </button>
 
@@ -383,11 +383,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               onClick={() => setActiveTab('settings')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
                 activeTab === 'settings'
-                  ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
               }`}
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
               <span>Settings</span>
             </button>
           </nav>
@@ -395,19 +395,19 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
         {/* Bottom Sidebar Info Card */}
         <div className="space-y-4">
-          <div className="rounded-2xl bg-linear-to-br from-[#2563EB]/10 via-[#7C3AED]/10 to-blue-50 p-4 border border-blue-100 text-left space-y-2">
-            <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 text-white flex items-center justify-center shadow-xs">
+          <div className="rounded-2xl bg-linear-to-br from-[#2563EB]/10 via-[#7C3AED]/10 to-blue-50 dark:from-[#162238] dark:via-[#111C32] dark:to-[#0F172A] p-4 border border-blue-100 dark:border-[#293953] text-left space-y-2">
+            <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center shadow-xs">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <h4 className="text-xs font-bold text-slate-900">Smarter, Safer Internet</h4>
-            <p className="text-[11px] text-slate-500 leading-snug">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Smarter, Safer Internet</h4>
+            <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-snug">
               Analyze suspicious content and make informed security decisions.
             </p>
           </div>
 
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 transition cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#A8B6CC] hover:text-red-600 dark:hover:text-[#FB7185] hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-[#293953] transition cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Log Out</span>
@@ -418,16 +418,16 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div 
-            className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileSidebarOpen(false)} 
           />
-          <aside className={`relative w-72 max-w-[85vw] h-full p-6 flex flex-col justify-between shadow-2xl z-10 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900'}`}>
+          <aside className={`relative w-72 max-w-[85vw] h-full p-6 flex flex-col justify-between shadow-2xl z-10 ${darkMode ? 'bg-[#070C19] text-[#F1F5F9] border-r border-[#293953]' : 'bg-white text-slate-900'}`}>
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <Logo onClick={() => { setMobileSidebarOpen(false); onBackToHome(); }} />
                 <button 
                   onClick={() => setMobileSidebarOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                  className="p-2 rounded-xl text-slate-400 dark:text-[#8494AD] hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#111C32]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -479,13 +479,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         
         {/* 2. TOP NAVIGATION BAR */}
-        <header className={`sticky top-0 z-30 px-4 sm:px-6 py-4 border-b ${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#E2E8F0]'} backdrop-blur-md flex items-center justify-between gap-4`}>
+        <header className={`sticky top-0 z-30 px-4 sm:px-6 py-4 border-b ${darkMode ? 'bg-[#0F172A]/95 border-[#293953]' : 'bg-white/90 border-[#E2E8F0]'} backdrop-blur-md flex items-center justify-between gap-4`}>
           
           <div className="flex items-center gap-3 w-full max-w-md">
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-xl border border-[#E2E8F0] text-slate-600 hover:bg-slate-100 transition cursor-pointer shrink-0"
+              className="lg:hidden p-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#162238] transition cursor-pointer shrink-0"
               title="Open Navigation"
             >
               <Menu className="w-5 h-5" />
@@ -493,13 +493,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
             {/* Global Search Input */}
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-400 dark:text-slate-400 absolute left-3.5 top-3" />
+              <Search className="w-4 h-4 text-slate-400 dark:text-[#8494AD] absolute left-3.5 top-3" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search scans, URLs, messages..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-[#293953] bg-slate-50/70 dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9] placeholder-slate-400 dark:placeholder-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1]"
               />
             </div>
           </div>
@@ -511,7 +511,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <button
               onClick={() => handleToggleDarkMode()}
               className={`p-2.5 rounded-xl border transition cursor-pointer ${
-                darkMode ? 'border-slate-700 bg-slate-800 text-amber-400 hover:bg-slate-700' : 'border-[#E2E8F0] text-slate-600 hover:bg-slate-100'
+                darkMode ? 'border-[#293953] bg-[#162238] text-amber-400 hover:bg-[#17243A]' : 'border-[#E2E8F0] text-slate-600 hover:bg-slate-100'
               }`}
               title="Toggle Theme"
             >
@@ -522,23 +522,23 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#111827] transition relative cursor-pointer"
+                className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#162238] transition relative cursor-pointer"
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FB7185] animate-ping" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FB7185]" />
               </button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#0D1324] rounded-2xl shadow-xl border border-slate-200 dark:border-[#263247] p-4 z-50 text-slate-800 dark:text-slate-100 animate-in fade-in">
-                  <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#263247] pb-2">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Notifications</span>
-                    <span className="text-[10px] bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold px-2 py-0.5 rounded-full">1 New</span>
+                <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#111C32] rounded-2xl shadow-xl border border-slate-200 dark:border-[#293953] p-4 z-50 text-slate-800 dark:text-[#F1F5F9] animate-in fade-in">
+                  <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#293953] pb-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Notifications</span>
+                    <span className="text-[10px] bg-blue-50 dark:bg-indigo-950/60 text-blue-600 dark:text-[#6366F1] font-bold px-2 py-0.5 rounded-full">1 New</span>
                   </div>
                   <div className="space-y-2 text-xs">
-                    <div className="p-2 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/50 text-red-900 dark:text-red-200">
+                    <div className="p-2 rounded-lg bg-red-50 dark:bg-rose-950/40 border border-red-100 dark:border-[#FB7185]/40 text-red-900 dark:text-[#FB7185]">
                       <div className="font-bold">High Risk Alert</div>
-                      <div className="text-[11px] text-red-700 dark:text-red-300">Phishing domain flagged 2 hours ago.</div>
+                      <div className="text-[11px] text-red-700 dark:text-[#F1F5F9]">Phishing domain flagged 2 hours ago.</div>
                     </div>
                   </div>
                 </div>
@@ -549,9 +549,9 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] dark:border-[#263247] bg-slate-50 dark:bg-[#111827] hover:bg-slate-100 dark:hover:bg-[#172033] transition cursor-pointer"
+                className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] dark:border-[#293953] bg-slate-50 dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] transition cursor-pointer"
               >
-                <div className="w-7 h-7 rounded-full bg-linear-to-tr from-blue-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                <div className="w-7 h-7 rounded-full bg-linear-to-tr from-[#4F46E5] to-[#9333EA] text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
                   {user?.photoURL ? (
                     <img 
                       src={user.photoURL} 
@@ -565,35 +565,35 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                   )}
                 </div>
                 <div className="text-left hidden md:block">
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[130px]">
+                  <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] leading-tight truncate max-w-[130px]">
                     {user?.displayName || user?.email?.split('@')[0] || 'Pragya Mishra'}
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate max-w-[130px]">
+                  <div className="text-[10px] text-slate-500 dark:text-[#8494AD] leading-tight truncate max-w-[130px]">
                     {user?.email || 'Free Plan'}
                   </div>
                 </div>
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#0D1324] rounded-2xl shadow-xl border border-slate-200 dark:border-[#263247] p-2 z-50 text-slate-800 dark:text-slate-100 animate-in fade-in">
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#111C32] rounded-2xl shadow-xl border border-slate-200 dark:border-[#293953] p-2 z-50 text-slate-800 dark:text-[#F1F5F9] animate-in fade-in">
                   <button
                     onClick={() => { setProfileOpen(false); setActiveTab('settings'); }}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#172033] rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#162238] rounded-xl transition flex items-center gap-2"
                   >
-                    <User className="w-4 h-4 text-slate-400" />
+                    <User className="w-4 h-4 text-slate-400 dark:text-[#8494AD]" />
                     <span>My Profile</span>
                   </button>
                   <button
                     onClick={() => { setProfileOpen(false); setActiveTab('settings'); }}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#172033] rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-[#162238] rounded-xl transition flex items-center gap-2"
                   >
-                    <Settings className="w-4 h-4 text-slate-400" />
+                    <Settings className="w-4 h-4 text-slate-400 dark:text-[#8494AD]" />
                     <span>Account Settings</span>
                   </button>
-                  <div className="my-1 border-t border-slate-100 dark:border-[#263247]" />
+                  <div className="my-1 border-t border-slate-100 dark:border-[#293953]" />
                   <button
                     onClick={handleSignOut}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl transition flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 dark:text-[#FB7185] hover:bg-red-50 dark:hover:bg-rose-950/30 rounded-xl transition flex items-center gap-2"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Log Out</span>
@@ -686,46 +686,46 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
               {/* SECURITY STATISTICS CARDS */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Scans</div>
-                    <div className="text-2xl font-black text-slate-900 mt-1">{totalScans}</div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">All completed analyses</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Total Scans</div>
+                    <div className="text-2xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1">{totalScans}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">All completed analyses</div>
                   </div>
-                  <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-blue-50 dark:bg-[#162238] text-blue-600 dark:text-[#6366F1] flex items-center justify-center font-bold">
                     <Scan className="w-5 h-5" />
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Threats Detected</div>
-                    <div className="text-2xl font-black text-red-600 mt-1">{threatsDetected}</div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">High risk threats</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Threats Detected</div>
+                    <div className="text-2xl font-black text-red-600 dark:text-[#FB7185] mt-1">{threatsDetected}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">High risk threats</div>
                   </div>
-                  <div className="w-11 h-11 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-red-50 dark:bg-rose-950/40 text-red-600 dark:text-[#FB7185] flex items-center justify-center font-bold">
                     <ShieldAlert className="w-5 h-5" />
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Suspicious Items</div>
-                    <div className="text-2xl font-black text-amber-600 mt-1">{suspiciousCount}</div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">Needs verification</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Suspicious Items</div>
+                    <div className="text-2xl font-black text-amber-600 dark:text-[#FBBF24] mt-1">{suspiciousCount}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Needs verification</div>
                   </div>
-                  <div className="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-[#FBBF24] flex items-center justify-center font-bold">
                     <AlertTriangle className="w-5 h-5" />
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex items-center justify-between">
+                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
                   <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500">Safe Results</div>
-                    <div className="text-2xl font-black text-emerald-600 mt-1">{safeCount}</div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">Clean checkups</div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Safe Results</div>
+                    <div className="text-2xl font-black text-emerald-600 dark:text-[#34D399] mt-1">{safeCount}</div>
+                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Clean checkups</div>
                   </div>
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] flex items-center justify-center font-bold">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                 </div>
@@ -739,20 +739,20 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                 <div className="lg:col-span-8 space-y-8">
                   
                   {/* QUICK SCAN PANEL */}
-                  <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-xl space-y-6">
+                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] dark:border-[#293953] shadow-xl space-y-6">
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                        <h3 className="text-xl font-extrabold text-slate-900 dark:text-[#F1F5F9] tracking-tight">
                           Check Before You Trust
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-[#A8B6CC] mt-1">
                           Analyze suspicious messages, links, and digital content in seconds.
                         </p>
                       </div>
                       <button
                         onClick={() => setActiveTab('scan')}
-                        className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>Open Workspace</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -764,7 +764,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       <button
                         onClick={() => setScanType('URL')}
                         className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'URL' ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          scanType === 'URL' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
                         }`}
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -774,7 +774,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       <button
                         onClick={() => setScanType('Message')}
                         className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Message' ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          scanType === 'Message' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
                         }`}
                       >
                         <MessageSquare className="w-3.5 h-3.5" />
@@ -784,7 +784,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       <button
                         onClick={() => setScanType('Email')}
                         className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Email' ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          scanType === 'Email' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
                         }`}
                       >
                         <Mail className="w-3.5 h-3.5" />
@@ -794,7 +794,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       <button
                         onClick={() => setScanType('Phone')}
                         className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Phone' ? 'bg-linear-to-r from-blue-600 to-purple-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          scanType === 'Phone' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
                         }`}
                       >
                         <Phone className="w-3.5 h-3.5" />
@@ -810,13 +810,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                           value={inputValue}
                           onChange={(e) => setInputValue(e.target.value)}
                           placeholder="Paste a suspicious link (e.g. https://example.com) or enter a message..."
-                          className="w-full pl-4 pr-4 py-3.5 rounded-2xl border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500 bg-slate-50/50"
+                          className="w-full pl-4 pr-4 py-3.5 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238] placeholder-slate-400 dark:placeholder-[#8494AD]"
                         />
                       </div>
                       <button
                         onClick={() => handleRunScan()}
                         disabled={isScanning}
-                        className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold text-white bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-md shadow-blue-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                        className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold text-white bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] hover:from-blue-700 hover:to-purple-700 shadow-md shadow-indigo-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
                       >
                         {isScanning ? (
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -830,68 +830,68 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                     </div>
 
                     {scanError && (
-                      <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                        <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                      <div className="p-3 rounded-xl bg-red-50 dark:bg-rose-950/40 border border-red-200 dark:border-[#FB7185]/40 text-red-700 dark:text-[#FB7185] text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                        <AlertTriangle className="w-4 h-4 text-red-600 dark:text-[#FB7185] shrink-0" />
                         <span>{scanError}</span>
                       </div>
                     )}
 
                     {/* Sample try links */}
                     <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px]">Try Sample:</span>
+                      <span className="font-bold text-slate-400 dark:text-[#8494AD] uppercase tracking-wider text-[10px]">Try Sample:</span>
                       <button
                         onClick={() => { setInputValue('https://fake-login.com'); handleRunScan('https://fake-login.com'); }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-mono text-[11px] cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer"
                       >
                         https://fake-login.com
                       </button>
                       <button
                         onClick={() => { setInputValue('whatsapp scam promo'); handleRunScan('whatsapp scam promo'); }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-mono text-[11px] cursor-pointer"
+                        className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer"
                       >
                         whatsapp scam
                       </button>
                     </div>
 
                     {/* 3 Core Value Pill Props */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100">
-                      <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-100 space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 dark:border-[#293953]">
+                      <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-[#162238] border border-blue-100 dark:border-[#293953] space-y-1">
+                        <div className="w-7 h-7 rounded-lg bg-blue-600 dark:bg-[#6366F1] text-white flex items-center justify-center">
                           <ShieldCheck className="w-4 h-4" />
                         </div>
-                        <div className="font-bold text-xs text-slate-900">Detect</div>
-                        <div className="text-[11px] text-slate-500">Identify red flags and suspicious patterns.</div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Detect</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Identify red flags and suspicious patterns.</div>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-purple-50/60 border border-purple-100 space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center">
+                      <div className="p-3 rounded-xl bg-purple-50/60 dark:bg-[#162238] border border-purple-100 dark:border-[#293953] space-y-1">
+                        <div className="w-7 h-7 rounded-lg bg-purple-600 dark:bg-[#9333EA] text-white flex items-center justify-center">
                           <Sparkles className="w-4 h-4" />
                         </div>
-                        <div className="font-bold text-xs text-slate-900">Explain</div>
-                        <div className="text-[11px] text-slate-500">Understand the risk with clear insights.</div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Explain</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Understand the risk with clear insights.</div>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-100 space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                      <div className="p-3 rounded-xl bg-emerald-50/60 dark:bg-[#162238] border border-emerald-100 dark:border-[#293953] space-y-1">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-[#34D399] text-white flex items-center justify-center">
                           <CheckCircle2 className="w-4 h-4" />
                         </div>
-                        <div className="font-bold text-xs text-slate-900">Protect</div>
-                        <div className="text-[11px] text-slate-500">Get safe next steps and recommendations.</div>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Protect</div>
+                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Get safe next steps and recommendations.</div>
                       </div>
                     </div>
 
                   </div>
 
                   {/* THREAT INTELLIGENCE PREVIEW ON HOME */}
-                  <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-4">
+                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="text-base font-bold text-slate-900">Threat Intelligence</h4>
-                        <p className="text-xs text-slate-500">Latest scam trends, tactics and safety tips to keep you informed.</p>
+                        <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Threat Intelligence</h4>
+                        <p className="text-xs text-slate-500 dark:text-[#A8B6CC]">Latest scam trends, tactics and safety tips to keep you informed.</p>
                       </div>
                       <button
                         onClick={() => setActiveTab('threat-intel')}
-                        className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>View all</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -899,22 +899,22 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="p-4 rounded-2xl bg-red-50/60 border border-red-100 space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-700">Phishing</span>
-                        <div className="font-bold text-xs text-slate-900">WhatsApp Giveaway Scams</div>
-                        <p className="text-[11px] text-slate-500">Fake rewards spreading via WhatsApp messaging loops.</p>
+                      <div className="p-4 rounded-2xl bg-red-50/60 dark:bg-[#162238] border border-red-100 dark:border-[#293953] space-y-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 dark:bg-rose-950/60 text-red-700 dark:text-[#FB7185]">Phishing</span>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">WhatsApp Giveaway Scams</div>
+                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Fake rewards spreading via WhatsApp messaging loops.</p>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Investment</span>
-                        <div className="font-bold text-xs text-slate-900">Crypto Investment Fraud</div>
-                        <p className="text-[11px] text-slate-500">Fake platforms promising high guaranteed returns.</p>
+                      <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-[#162238] border border-amber-100 dark:border-[#293953] space-y-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-[#FBBF24]">Investment</span>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Crypto Investment Fraud</div>
+                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Fake platforms promising high guaranteed returns.</p>
                       </div>
 
-                      <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">Malware</span>
-                        <div className="font-bold text-xs text-slate-900">Malware in APK Files</div>
-                        <p className="text-[11px] text-slate-500">Malicious mobile apps posing as popular utility tools.</p>
+                      <div className="p-4 rounded-2xl bg-purple-50/60 dark:bg-[#162238] border border-purple-100 dark:border-[#293953] space-y-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-[#A78BFA]">Malware</span>
+                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Malware in APK Files</div>
+                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Malicious mobile apps posing as popular utility tools.</p>
                       </div>
                     </div>
                   </div>
@@ -925,12 +925,12 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                 <div className="lg:col-span-4 space-y-6">
                   
                   {/* RECENT SCANS LIST CARD */}
-                  <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-4">
+                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-base font-bold text-slate-900">Recent Scans</h4>
+                      <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Recent Scans</h4>
                       <button
                         onClick={() => setActiveTab('scan-history')}
-                        className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>View all</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -939,15 +939,15 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
                     <div className="space-y-3">
                       {loadingHistory ? (
-                        <div className="py-6 text-center text-xs text-slate-400 flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                        <div className="py-6 text-center text-xs text-slate-400 dark:text-[#8494AD] flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
                           <span>Loading scan history...</span>
                         </div>
                       ) : filteredScans.length === 0 ? (
-                        <div className="py-8 px-4 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center">
-                          <Scan className="w-7 h-7 text-slate-300 mx-auto mb-1.5" />
-                          <div className="text-xs font-bold text-slate-700">No scans recorded yet</div>
-                          <p className="text-[11px] text-slate-400 mt-0.5">Run a scan above to see your verified results here.</p>
+                        <div className="py-8 px-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-dashed border-slate-200 dark:border-[#293953] text-center">
+                          <Scan className="w-7 h-7 text-slate-300 dark:text-[#8494AD] mx-auto mb-1.5" />
+                          <div className="text-xs font-bold text-slate-700 dark:text-[#F1F5F9]">No scans recorded yet</div>
+                          <p className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Run a scan above to see your verified results here.</p>
                         </div>
                       ) : (
                         filteredScans.slice(0, 5).map((scan) => (
@@ -956,8 +956,8 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                             onClick={() => setSelectedScan(scan)}
                             className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
                               selectedScan && selectedScan.id === scan.id
-                                ? 'border-blue-500 bg-blue-50/30'
-                                : 'border-slate-200 hover:bg-slate-50'
+                                ? 'border-[#6366F1] bg-blue-50/30 dark:bg-[#162238]'
+                                : 'border-slate-200 dark:border-[#293953] hover:bg-slate-50 dark:hover:bg-[#162238]/60'
                             }`}
                           >
                             <div className="flex items-center gap-3 min-w-0 pr-2">
@@ -965,18 +965,18 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                                 <ShieldCheck className="w-4 h-4" />
                               </div>
                               <div className="min-w-0">
-                                <div className="text-xs font-bold text-slate-900 truncate">
+                                <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] truncate">
                                   {scan.content}
                                 </div>
                                 <div className="flex items-center gap-2 mt-0.5">
                                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scan.badgeClass}`}>
                                     {scan.verdict}
                                   </span>
-                                  <span className="text-[10px] text-slate-400">{scan.timestamp}</span>
+                                  <span className="text-[10px] text-slate-400 dark:text-[#8494AD]">{scan.timestamp}</span>
                                 </div>
                               </div>
                             </div>
-                            <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                            <ChevronRight className="w-4 h-4 text-slate-400 dark:text-[#8494AD] shrink-0" />
                           </div>
                         ))
                       )}
@@ -985,22 +985,22 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
                   {/* RISK ANALYSIS DETAIL CARD */}
                   {selectedScan && (
-                    <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-xs space-y-4 animate-in fade-in">
+                    <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4 animate-in fade-in">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-base font-bold text-slate-900">Risk Analysis</h4>
-                        <span className="text-xs font-bold text-slate-400">{selectedScan.type}</span>
+                        <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Risk Analysis</h4>
+                        <span className="text-xs font-bold text-slate-400 dark:text-[#8494AD]">{selectedScan.type}</span>
                       </div>
 
                       {/* Circular Risk Meter */}
-                      <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                        <div className="relative w-16 h-16 rounded-full bg-slate-200 border-4 border-red-500 flex items-center justify-center shrink-0">
-                          <div className="text-lg font-black text-slate-900">{selectedScan.score}</div>
+                      <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
+                        <div className="relative w-16 h-16 rounded-full bg-slate-200 dark:bg-[#111C32] border-4 border-[#FB7185] flex items-center justify-center shrink-0">
+                          <div className="text-lg font-black text-slate-900 dark:text-[#F1F5F9]">{selectedScan.score}</div>
                         </div>
                         <div>
                           <div className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full border ${selectedScan.badgeClass}`}>
                             {selectedScan.verdict}
                           </div>
-                          <div className="text-xs font-bold text-slate-800 mt-1">
+                          <div className="text-xs font-bold text-slate-800 dark:text-[#F1F5F9] mt-1">
                             {selectedScan.score > 70 ? 'Likely Scam Threat' : selectedScan.score > 40 ? 'Suspicious Indicators' : 'Low Threat Level'}
                           </div>
                         </div>
@@ -1008,13 +1008,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
                       {/* Evidence Indicators */}
                       <div className="space-y-2">
-                        <div className="text-xs font-bold text-slate-900 uppercase tracking-wider text-[10px]">
+                        <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider text-[10px]">
                           Evidence Indicators
                         </div>
-                        <ul className="space-y-1.5 text-xs text-slate-600">
+                        <ul className="space-y-1.5 text-xs text-slate-600 dark:text-[#A8B6CC]">
                           {selectedScan.indicators.map((ind, i) => (
                             <li key={i} className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#FB7185] shrink-0 mt-0.5" />
                               <span>{ind}</span>
                             </li>
                           ))}
@@ -1022,12 +1022,12 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       </div>
 
                       {/* Recommendation */}
-                      <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900">
-                        <div className="font-bold flex items-center gap-1.5 text-emerald-800">
-                          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-900 dark:text-[#34D399]">
+                        <div className="font-bold flex items-center gap-1.5 text-emerald-800 dark:text-[#34D399]">
+                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-[#34D399]" />
                           <span>Recommended Action</span>
                         </div>
-                        <p className="mt-1 text-[11px] text-emerald-700 leading-snug">
+                        <p className="mt-1 text-[11px] text-emerald-700 dark:text-[#A8B6CC] leading-snug">
                           {selectedScan.recommendation}
                         </p>
                       </div>
@@ -1035,7 +1035,7 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                   )}
 
                   {/* Security CTA Card */}
-                  <div className="rounded-3xl bg-linear-to-r from-blue-600 to-purple-600 p-6 text-white space-y-3 shadow-lg">
+                  <div className="rounded-3xl bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] p-6 text-white space-y-3 shadow-lg">
                     <div className="flex items-center gap-2">
                       <ShieldCheck className="w-6 h-6" />
                       <span className="font-bold text-sm">ScamSense AI</span>

@@ -78,10 +78,10 @@ export default function AnalyticsView({ scans = [] }) {
       {/* Header with Title & Date Range Filters */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#111827] dark:text-[#F1F5F9] tracking-tight">
             Analytics
           </h1>
-          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+          <p className="text-xs sm:text-sm text-[#64748B] dark:text-[#A8B6CC] mt-1">
             Insights into your scans, threats detected and safety trends.
           </p>
         </div>
@@ -91,18 +91,18 @@ export default function AnalyticsView({ scans = [] }) {
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] bg-white text-xs font-bold text-slate-700 focus:outline-hidden cursor-pointer shadow-2xs"
+              className="px-3.5 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] text-xs font-bold text-slate-700 dark:text-[#F1F5F9] focus:outline-hidden cursor-pointer shadow-2xs"
             >
-              <option value="Last 7 Days">📅 Last 7 Days</option>
-              <option value="Last 30 Days">📅 Last 30 Days</option>
-              <option value="Last 90 Days">📅 Last 90 Days</option>
-              <option value="All Time">📅 All Time</option>
+              <option value="Last 7 Days" className="bg-white dark:bg-[#162238] text-slate-700 dark:text-[#F1F5F9]">📅 Last 7 Days</option>
+              <option value="Last 30 Days" className="bg-white dark:bg-[#162238] text-slate-700 dark:text-[#F1F5F9]">📅 Last 30 Days</option>
+              <option value="Last 90 Days" className="bg-white dark:bg-[#162238] text-slate-700 dark:text-[#F1F5F9]">📅 Last 90 Days</option>
+              <option value="All Time" className="bg-white dark:bg-[#162238] text-slate-700 dark:text-[#F1F5F9]">📅 All Time</option>
             </select>
           </div>
 
           <button
             onClick={handleRefresh}
-            className="p-2.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 text-slate-600 transition cursor-pointer shadow-2xs"
+            className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-50 dark:hover:bg-[#1E2D4A] text-slate-600 dark:text-[#A8B6CC] hover:dark:text-[#F1F5F9] transition cursor-pointer shadow-2xs"
             title="Refresh Metrics"
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -110,9 +110,9 @@ export default function AnalyticsView({ scans = [] }) {
 
           <button
             onClick={handleExportAnalytics}
-            className="px-4 py-2 rounded-xl border border-[#E2E8F0] bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] bg-white dark:bg-[#162238] hover:bg-slate-50 dark:hover:bg-[#1E2D4A] text-xs font-bold text-slate-700 dark:text-[#A8B6CC] hover:dark:text-[#F1F5F9] flex items-center gap-1.5 transition shadow-2xs cursor-pointer"
           >
-            <Download className="w-4 h-4 text-slate-500" />
+            <Download className="w-4 h-4 text-slate-500 dark:text-[#8494AD]" />
             <span>Export Report</span>
           </button>
         </div>
@@ -122,16 +122,16 @@ export default function AnalyticsView({ scans = [] }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
         {/* Card 1: Total Scans */}
-        <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-2xs flex flex-col justify-between space-y-3">
+        <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-[#60A5FA] flex items-center justify-center font-bold">
               <BarChart3 className="w-6 h-6" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Scans</div>
-            <div className="text-3xl font-black text-slate-900 mt-1 tracking-tight">{totalScans.toLocaleString()}</div>
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 mt-2">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Total Scans</div>
+            <div className="text-3xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1 tracking-tight">{totalScans.toLocaleString()}</div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] text-xs font-bold border border-emerald-200 dark:border-emerald-800/60 mt-2">
               <TrendingUp className="w-3 h-3" />
               <span>+12%</span>
             </div>
@@ -139,16 +139,16 @@ export default function AnalyticsView({ scans = [] }) {
         </div>
 
         {/* Card 2: Threats Detected */}
-        <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-2xs flex flex-col justify-between space-y-3">
+        <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-[#FB7185] flex items-center justify-center font-bold">
               <ShieldAlert className="w-6 h-6" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Threats Detected</div>
-            <div className="text-3xl font-black text-slate-900 mt-1 tracking-tight">{threatsDetected}</div>
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 mt-2">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Threats Detected</div>
+            <div className="text-3xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1 tracking-tight">{threatsDetected}</div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] text-xs font-bold border border-emerald-200 dark:border-emerald-800/60 mt-2">
               <TrendingUp className="w-3 h-3" />
               <span>+31%</span>
             </div>
@@ -156,16 +156,16 @@ export default function AnalyticsView({ scans = [] }) {
         </div>
 
         {/* Card 3: Suspicious */}
-        <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-2xs flex flex-col justify-between space-y-3">
+        <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-[#FBBF24] flex items-center justify-center font-bold">
               <AlertTriangle className="w-6 h-6" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Suspicious</div>
-            <div className="text-3xl font-black text-slate-900 mt-1 tracking-tight">{suspiciousCount}</div>
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 mt-2">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Suspicious</div>
+            <div className="text-3xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1 tracking-tight">{suspiciousCount}</div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] text-xs font-bold border border-emerald-200 dark:border-emerald-800/60 mt-2">
               <TrendingUp className="w-3 h-3" />
               <span>+19%</span>
             </div>
@@ -173,16 +173,16 @@ export default function AnalyticsView({ scans = [] }) {
         </div>
 
         {/* Card 4: Safe */}
-        <div className="bg-white rounded-3xl p-6 border border-[#E2E8F0] shadow-2xs flex flex-col justify-between space-y-3">
+        <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs flex flex-col justify-between space-y-3">
           <div className="flex items-center justify-between">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] flex items-center justify-center font-bold">
               <ShieldCheck className="w-6 h-6" />
             </div>
           </div>
           <div>
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">Safe</div>
-            <div className="text-3xl font-black text-slate-900 mt-1 tracking-tight">{safeCount.toLocaleString()}</div>
-            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 text-xs font-bold border border-emerald-200 mt-2">
+            <div className="text-xs font-bold text-slate-500 dark:text-[#8494AD] uppercase tracking-wider">Safe</div>
+            <div className="text-3xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1 tracking-tight">{safeCount.toLocaleString()}</div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] text-xs font-bold border border-emerald-200 dark:border-emerald-800/60 mt-2">
               <TrendingUp className="w-3 h-3" />
               <span>+12%</span>
             </div>
@@ -195,15 +195,15 @@ export default function AnalyticsView({ scans = [] }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Left: Scam Trends Area Chart (7 cols) */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] shadow-2xs space-y-5 flex flex-col justify-between">
+        <div className="lg:col-span-7 bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs space-y-5 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Scam Trends ({dateRange})</h3>
-                <p className="text-xs text-slate-500">Daily threats detected over the past 30 days</p>
+                <h3 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Scam Trends ({dateRange})</h3>
+                <p className="text-xs text-slate-500 dark:text-[#8494AD]">Daily threats detected over the past 30 days</p>
               </div>
-              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                <span className="w-3 h-3 rounded-full bg-purple-600" />
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-[#A8B6CC]">
+                <span className="w-3 h-3 rounded-full bg-purple-600 dark:bg-[#9333EA]" />
                 <span>Detected Threats</span>
               </div>
             </div>
@@ -220,10 +220,10 @@ export default function AnalyticsView({ scans = [] }) {
               </defs>
 
               {/* Grid lines */}
-              <line x1="0" y1="20" x2="500" y2="20" stroke="#F1F5F9" strokeWidth="1" />
-              <line x1="0" y1="60" x2="500" y2="60" stroke="#F1F5F9" strokeWidth="1" />
-              <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F5F9" strokeWidth="1" />
-              <line x1="0" y1="140" x2="500" y2="140" stroke="#F1F5F9" strokeWidth="1" />
+              <line x1="0" y1="20" x2="500" y2="20" stroke="#F1F5F9" className="dark:stroke-[#162238]" strokeWidth="1" />
+              <line x1="0" y1="60" x2="500" y2="60" stroke="#F1F5F9" className="dark:stroke-[#162238]" strokeWidth="1" />
+              <line x1="0" y1="100" x2="500" y2="100" stroke="#F1F5F9" className="dark:stroke-[#162238]" strokeWidth="1" />
+              <line x1="0" y1="140" x2="500" y2="140" stroke="#F1F5F9" className="dark:stroke-[#162238]" strokeWidth="1" />
 
               {/* Y Axis values */}
               <text x="0" y="24" fill="#94A3B8" fontSize="10" className="font-sans">20</text>
@@ -270,10 +270,10 @@ export default function AnalyticsView({ scans = [] }) {
         </div>
 
         {/* Right: Scam Types Distribution Donut Chart (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] shadow-2xs space-y-5 flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs space-y-5 flex flex-col justify-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Scam Types Distribution</h3>
-            <p className="text-xs text-slate-500">Breakdown by category</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Scam Types Distribution</h3>
+            <p className="text-xs text-slate-500 dark:text-[#8494AD]">Breakdown by category</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 py-2">
@@ -291,13 +291,13 @@ export default function AnalyticsView({ scans = [] }) {
                 <circle cx="50" cy="50" r="38" stroke="#EF4444" strokeWidth="16" strokeDasharray="28.7 210.6" strokeDashoffset="-210.5" fill="none" />
               </svg>
               <div className="absolute text-center">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Threats</span>
-                <span className="text-lg font-black text-slate-900">100%</span>
+                <span className="text-xs font-bold text-slate-400 dark:text-[#8494AD] uppercase tracking-wider block">Threats</span>
+                <span className="text-lg font-black text-slate-900 dark:text-[#F1F5F9]">100%</span>
               </div>
             </div>
 
             {/* Donut Legend */}
-            <div className="space-y-2.5 text-xs font-semibold text-slate-700">
+            <div className="space-y-2.5 text-xs font-semibold text-slate-700 dark:text-[#A8B6CC]">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-blue-600 shrink-0" />
                 <span>Phishing — 42%</span>
@@ -325,55 +325,55 @@ export default function AnalyticsView({ scans = [] }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         {/* Left: Detection Sources Progress Bars (6 cols) */}
-        <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] shadow-2xs space-y-5">
+        <div className="lg:col-span-6 bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs space-y-5">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Detection Sources</h3>
-            <p className="text-xs text-slate-500">Where threats were identified</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Detection Sources</h3>
+            <p className="text-xs text-slate-500 dark:text-[#8494AD]">Where threats were identified</p>
           </div>
 
           <div className="space-y-4 pt-1">
             
             {/* Message Bar */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-bold text-slate-700">
+              <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-[#A8B6CC]">
                 <span>Message (SMS / WhatsApp)</span>
                 <span>42%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div className="bg-linear-to-r from-blue-600 to-purple-600 h-full rounded-full w-[42%]" />
+              <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-[#162238] overflow-hidden">
+                <div className="bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] h-full rounded-full w-[42%]" />
               </div>
             </div>
 
             {/* URL Bar */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-bold text-slate-700">
+              <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-[#A8B6CC]">
                 <span>URL & Domain</span>
                 <span>31%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div className="bg-blue-600 h-full rounded-full w-[31%]" />
+              <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-[#162238] overflow-hidden">
+                <div className="bg-blue-600 dark:bg-[#60A5FA] h-full rounded-full w-[31%]" />
               </div>
             </div>
 
             {/* QR Bar */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-bold text-slate-700">
+              <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-[#A8B6CC]">
                 <span>QR Code</span>
                 <span>18%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div className="bg-purple-600 h-full rounded-full w-[18%]" />
+              <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-[#162238] overflow-hidden">
+                <div className="bg-purple-600 dark:bg-[#A855F7] h-full rounded-full w-[18%]" />
               </div>
             </div>
 
             {/* Screenshot Bar */}
             <div className="space-y-1.5">
-              <div className="flex justify-between text-xs font-bold text-slate-700">
+              <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-[#A8B6CC]">
                 <span>Screenshot OCR</span>
                 <span>12%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden">
-                <div className="bg-pink-500 h-full rounded-full w-[12%]" />
+              <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-[#162238] overflow-hidden">
+                <div className="bg-pink-500 dark:bg-[#EC4899] h-full rounded-full w-[12%]" />
               </div>
             </div>
 
@@ -381,70 +381,70 @@ export default function AnalyticsView({ scans = [] }) {
         </div>
 
         {/* Right: Recent Activity List (6 cols) */}
-        <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] shadow-2xs space-y-5">
+        <div className="lg:col-span-6 bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-7 border border-[#E2E8F0] dark:border-[#293953] shadow-2xs space-y-5">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Recent Activity</h3>
-            <p className="text-xs text-slate-500">Latest detections with risk score</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Recent Activity</h3>
+            <p className="text-xs text-slate-500 dark:text-[#8494AD]">Latest detections with risk score</p>
           </div>
 
           <div className="space-y-3">
             
-            <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between gap-3">
+            <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-[#293953] bg-slate-50/50 dark:bg-[#162238] flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-[#FB7185] flex items-center justify-center font-bold">
                   <ShieldAlert className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Suspicious bank domain flagged</div>
-                  <div className="text-[11px] text-slate-400">Today • 10:32 AM</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Suspicious bank domain flagged</div>
+                  <div className="text-[11px] text-slate-400 dark:text-[#8494AD]">Today • 10:32 AM</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-bold">
+              <span className="px-2.5 py-1 rounded-full bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-[#FB7185] border border-red-200 dark:border-red-800/60 text-xs font-bold">
                 Risk: 89
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between gap-3">
+            <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-[#293953] bg-slate-50/50 dark:bg-[#162238] flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-[#FBBF24] flex items-center justify-center font-bold">
                   <AlertTriangle className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">OTP phishing SMS detected</div>
-                  <div className="text-[11px] text-slate-400">2 days ago • 2:10 PM</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">OTP phishing SMS detected</div>
+                  <div className="text-[11px] text-slate-400 dark:text-[#8494AD]">2 days ago • 2:10 PM</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold">
+              <span className="px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-[#FBBF24] border border-amber-200 dark:border-amber-800/60 text-xs font-bold">
                 Risk: 62
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between gap-3">
+            <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-[#293953] bg-slate-50/50 dark:bg-[#162238] flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-[#34D399] flex items-center justify-center font-bold">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Safe URL — no threats found</div>
-                  <div className="text-[11px] text-slate-400">2 days ago • 2:10 PM</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Safe URL — no threats found</div>
+                  <div className="text-[11px] text-slate-400 dark:text-[#8494AD]">2 days ago • 2:10 PM</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+              <span className="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-[#34D399] border border-emerald-200 dark:border-emerald-800/60 text-xs font-bold">
                 Risk: 12
               </span>
             </div>
 
-            <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 flex items-center justify-between gap-3">
+            <div className="p-3.5 rounded-2xl border border-slate-200 dark:border-[#293953] bg-slate-50/50 dark:bg-[#162238] flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-[#C084FC] flex items-center justify-center font-bold">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Investment scam link blocked</div>
-                  <div className="text-[11px] text-slate-400">3 days ago • 11:05 AM</div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Investment scam link blocked</div>
+                  <div className="text-[11px] text-slate-400 dark:text-[#8494AD]">3 days ago • 11:05 AM</div>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-bold">
+              <span className="px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-[#C084FC] border border-purple-200 dark:border-purple-800/60 text-xs font-bold">
                 Risk: 74
               </span>
             </div>

@@ -21,21 +21,29 @@
 }
 
 .dark {
-  /* ScamSense Design Tokens - Coordinated Dark Mode */
-  --bg-page: #070B17;
-  --bg-surface: #0D1324;
-  --bg-surface-secondary: #111827;
-  --bg-surface-tertiary: #172033;
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --border-color: #263247;
+  /* ScamSense Design Tokens - User Dark Theme Palette */
+  --bg-page: #0B1120;
+  --bg-sidebar: #070C19;
+  --bg-top-nav: #0F172A;
+  --bg-surface: #111C32;
+  --bg-surface-elevated: #162238;
+  --bg-surface-secondary: #162238;
+  --bg-surface-tertiary: #17243A;
+  --bg-table: #0F1A2D;
+  --bg-table-header: #17243A;
+
+  --text-primary: #F1F5F9;
+  --text-secondary: #A8B6CC;
+  --text-muted: #8494AD;
+  --border-color: #293953;
   
-  --primary-blue: #3B82F6;
-  --secondary-purple: #8B5CF6;
+  --primary-accent: #6366F1;
+  --primary-blue: #6366F1;
+  --secondary-purple: #9333EA;
   --color-success: #34D399;
   --color-warning: #FBBF24;
-  --color-danger: #F87171;
+  --color-danger: #FB7185;
+  --color-info: #60A5FA;
 }
 
 html {

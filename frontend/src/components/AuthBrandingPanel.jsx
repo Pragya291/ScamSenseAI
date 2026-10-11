@@ -12,9 +12,11 @@ export default function AuthBrandingPanel() {
       {/* Top Header & Logo */}
       <div className="relative z-10 space-y-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg">
-            <ShieldCheck className="w-6 h-6 text-white" />
-          </div>
+          <img
+            src="/scamsense-logo.jpg"
+            alt="ScamSense AI Logo"
+            className="w-10 h-10 object-contain rounded-xl shadow-lg bg-white/10 p-0.5 border border-white/20"
+          />
           <span className="text-2xl font-bold tracking-tight text-white">
             ScamSense <span className="text-blue-200">AI</span>
           </span>

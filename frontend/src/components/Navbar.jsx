@@ -18,19 +18,21 @@ export function Navbar({ activeTab, setActiveTab, user, onOpenAuth, onLogout }) 
           
           {/* Logo */}
           <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('text')}>
-            <div className="p-2.5 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-xl shadow-lg shadow-cyan-500/20">
-              <Shield className="w-7 h-7 text-white" />
-            </div>
+            <img
+              src="/scamsense-logo.jpg"
+              alt="ScamSense AI Logo"
+              className="w-10 h-10 object-contain rounded-xl shadow-lg"
+            />
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-2xl font-extrabold bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent tracking-tight">
-                  ScamSense <span className="text-cyan-400">AI</span>
+                <span className="text-2xl font-extrabold text-[#F1F5F9] tracking-tight">
+                  ScamSense <span className="text-[#6366F1]">AI</span>
                 </span>
-                <span className="px-2 py-0.5 text-xs font-semibold bg-cyan-950 text-cyan-400 border border-cyan-800/60 rounded-full">
+                <span className="px-2 py-0.5 text-xs font-semibold bg-indigo-950 text-[#6366F1] border border-indigo-800/60 rounded-full">
                   v1.0 Agent
                 </span>
               </div>
-              <p className="text-xs text-slate-400">AI Scam & Fraud Defense Agent</p>
+              <p className="text-xs text-[#8494AD]">AI Scam & Fraud Defense Agent</p>
             </div>
           </div>
 
