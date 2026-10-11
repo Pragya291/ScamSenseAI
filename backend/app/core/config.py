@@ -12,13 +12,16 @@ env_files = [
     Path.cwd() / ".env",
     backend_dir / ".env",
     root_dir / ".env",
-    ".env"
+    Path(".env")
 ]
-selected_env_file = ".env"
+selected_env_file = None
 for ef in env_files:
-    if ef.exists() and ef.is_file():
-        selected_env_file = str(ef)
-        break
+    try:
+        if isinstance(ef, Path) and ef.is_file():
+            selected_env_file = str(ef)
+            break
+    except Exception:
+        pass
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "ScamSense AI — Scam & Fraud Defense Agent"
