@@ -2,6 +2,7 @@
   "name": "scamsense-ai",
   "scripts": {
     "dev": "npm --prefix frontend run dev",
+    "backend": "python backend/main.py",
     "build": "npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview"
   },
