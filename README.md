@@ -67,15 +67,5 @@ VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
-
----
-
-## 👩‍💻 Team Credits
-
-- **Janahvi Loke** — Full-stack Developer & Cybersecurity Architect
-- **Pragya Mishra** — Security Researcher & UI/UX Specialist
-
----
-
 ## 📜 License & Safety Notice
 ScamSense AI provides automated heuristic risk assessments for educational and defensive verification purposes.
