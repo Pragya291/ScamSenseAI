@@ -26,3 +26,9 @@ services:
         sync: false
       - key: TAVILY_API_KEY
         sync: false
+      - key: FIREBASE_PROJECT_ID
+        value: scamsenseai-8bf14
+      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: CORS_ORIGINS
+        value: '["https://scamsenseai.vercel.app","https://scamsense-ai.vercel.app","https://scamsense-backend.onrender.com","https://scamsenseai-8bf14.web.app"]'

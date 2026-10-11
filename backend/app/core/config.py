@@ -43,7 +43,13 @@ class Settings(BaseSettings):
         "http://localhost:8000",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
-        "http://127.0.0.1:8000"
+        "http://127.0.0.1:8000",
+        "https://scamsenseai.vercel.app",
+        "https://scamsense-ai.vercel.app",
+        "https://scam-sense-ai-kappa.vercel.app",
+        "https://scamsense-backend.onrender.com",
+        "https://scamsenseai-8bf14.web.app",
+        "https://scamsenseai-8bf14.firebaseapp.com"
     ]
     
     # External API Keys (Optional with safe fallbacks)
@@ -53,6 +59,7 @@ class Settings(BaseSettings):
     TAVILY_API_KEY: str = os.getenv("TAVILY_API_KEY", "")
     FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "scamsenseai-8bf14")
     FIREBASE_CREDENTIALS_PATH: str = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
+    FIREBASE_SERVICE_ACCOUNT_JSON: str = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON", os.getenv("FIREBASE_CREDENTIALS_JSON", ""))
     
     # Environment
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
@@ -62,6 +69,23 @@ class Settings(BaseSettings):
 
     def __init__(self, **values):
         super().__init__(**values)
+        import json
+        # Parse custom CORS_ORIGINS from environment if provided as string or JSON
+        env_cors = os.getenv("CORS_ORIGINS")
+        if env_cors:
+            try:
+                parsed = json.loads(env_cors)
+                if isinstance(parsed, list):
+                    for origin in parsed:
+                        o_clean = origin.strip().rstrip("/")
+                        if o_clean and o_clean not in self.CORS_ORIGINS:
+                            self.CORS_ORIGINS.append(o_clean)
+            except Exception:
+                for origin in env_cors.split(","):
+                    o_clean = origin.strip().rstrip("/")
+                    if o_clean and o_clean not in self.CORS_ORIGINS:
+                        self.CORS_ORIGINS.append(o_clean)
+
         if self.FRONTEND_URL:
             cleaned = self.FRONTEND_URL.strip().rstrip("/")
             if cleaned and cleaned not in self.CORS_ORIGINS:

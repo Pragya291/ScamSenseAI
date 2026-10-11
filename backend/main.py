@@ -40,10 +40,11 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Set up CORS middleware
+# Set up CORS middleware supporting explicit origins and Vercel/Render preview/production regex
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.onrender\.com|https://.*\.firebaseapp\.com|https://.*\.web\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

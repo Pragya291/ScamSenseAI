@@ -23,21 +23,21 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 
-// Read Firebase configuration from Vite environment variables
+// Read Firebase configuration from Vite environment variables with production defaults
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyMockKeyForFrontendEnvironment99",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "scamsense-ai.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "scamsense-ai",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "scamsense-ai.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789012",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789012:web:abcdef123456"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBOVeDV9qpO-ablYz524ECn1hIXyIMhqIk",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "scamsenseai-8bf14.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "scamsenseai-8bf14",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "scamsenseai-8bf14.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "195996572515",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:195996572515:web:1b5465b2afaad30818915"
 };
 
 // Check if valid Firebase configuration is provided
 export const isFirebaseConfigured = Boolean(
-  import.meta.env.VITE_FIREBASE_API_KEY && 
-  import.meta.env.VITE_FIREBASE_PROJECT_ID &&
-  !import.meta.env.VITE_FIREBASE_API_KEY.includes("MockKey")
+  firebaseConfig.apiKey && 
+  firebaseConfig.projectId &&
+  !firebaseConfig.apiKey.includes("MockKey")
 );
 
 // Initialize Firebase App instance

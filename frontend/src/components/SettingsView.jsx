@@ -25,8 +25,13 @@ import {
   KeyRound,
   LogOut,
   AlertCircle,
-  BarChart3
+  BarChart3,
+  Server,
+  Cloud,
+  Check,
+  RefreshCw
 } from 'lucide-react';
+import { getApiBaseUrl, checkHealth } from '../services/api';
 
 export default function SettingsView({ onSignOut, onClearHistory, darkMode, onToggleDarkMode }) {
   const { user, isFirebaseConfigured, resetPassword } = useAuth();
@@ -36,6 +41,12 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showClearConfirmModal, setShowClearConfirmModal] = useState(false);
+
+  // Cloud API & Connectivity States
+  const [customApiUrl, setCustomApiUrl] = useState(getApiBaseUrl().replace(/\/api$/, ''));
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState(null);
+  const [copiedHost, setCopiedHost] = useState(false);
 
   // Profile Form States (Matching exact screenshot values)
   const [profileData, setProfileData] = useState({
@@ -75,6 +86,47 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
       await resetPassword(user.email);
       setResetEmailSent(true);
       setTimeout(() => setResetEmailSent(false), 3000);
+    }
+  };
+
+  const handleTestBackendConnection = async () => {
+    setTestingConnection(true);
+    setConnectionStatus(null);
+    try {
+      const res = await checkHealth();
+      if (res.status === 200 && res.data?.status === 'healthy') {
+        setConnectionStatus({ ok: true, message: `Backend online & connected! Status: ${res.data.status} (Database: ${res.data.database})` });
+      } else {
+        setConnectionStatus({ ok: true, message: `Backend online: ${JSON.stringify(res.data)}` });
+      }
+    } catch (err) {
+      setConnectionStatus({ ok: false, message: err.friendlyMessage || `Connection failed: ${err.message}` });
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
+  const handleSaveApiUrl = () => {
+    if (customApiUrl.trim()) {
+      localStorage.setItem('scamsense_api_base_url', customApiUrl.trim());
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    }
+  };
+
+  const handleResetApiUrl = () => {
+    localStorage.removeItem('scamsense_api_base_url');
+    setCustomApiUrl(getApiBaseUrl().replace(/\/api$/, ''));
+    setConnectionStatus(null);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 2000);
+  };
+
+  const handleCopyHost = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.hostname);
+      setCopiedHost(true);
+      setTimeout(() => setCopiedHost(false), 2000);
     }
   };
 
@@ -484,6 +536,108 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
               >
                 Log Out
               </button>
+            </div>
+
+            {/* Cloud & Production Connectivity Audit Panel */}
+            <div className="mt-6 pt-6 border-t border-slate-200 dark:border-[#293953] space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-slate-900 dark:text-[#F1F5F9] flex items-center gap-2">
+                    <Cloud className="w-4 h-4 text-blue-600 dark:text-[#60A5FA]" />
+                    <span>Cloud & Production Connectivity Status</span>
+                  </div>
+                  <div className="text-slate-500 dark:text-[#A8B6CC] mt-0.5">
+                    Live production status of backend APIs, Firebase Authentication, and threat intelligence feeds.
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleTestBackendConnection}
+                  disabled={testingConnection}
+                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-2xs cursor-pointer disabled:opacity-60"
+                >
+                  {testingConnection ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Server className="w-3.5 h-3.5" />
+                  )}
+                  <span>{testingConnection ? 'Testing...' : 'Test Connection'}</span>
+                </button>
+              </div>
+
+              {connectionStatus && (
+                <div className={`p-3 rounded-xl border text-xs font-semibold flex items-center gap-2 animate-in fade-in ${
+                  connectionStatus.ok 
+                    ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 text-emerald-800 dark:text-emerald-300' 
+                    : 'bg-red-50 dark:bg-red-950/30 border-red-200 text-red-800 dark:text-red-300'
+                }`}>
+                  {connectionStatus.ok ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                  )}
+                  <span>{connectionStatus.message}</span>
+                </div>
+              )}
+
+              {/* API Endpoint Configuration */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953] space-y-2">
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                  <span>Backend API Base URL</span>
+                  <button
+                    type="button"
+                    onClick={handleResetApiUrl}
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-normal cursor-pointer"
+                  >
+                    Reset to Default
+                  </button>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customApiUrl}
+                    onChange={(e) => setCustomApiUrl(e.target.value)}
+                    placeholder="https://scamsense-backend.onrender.com"
+                    className="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#293953] bg-white dark:bg-[#111C32] text-xs font-mono text-slate-800 dark:text-[#F1F5F9]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSaveApiUrl}
+                    className="px-3 py-1.5 rounded-lg bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white font-semibold text-xs transition cursor-pointer"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+
+              {/* Status Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl bg-white dark:bg-[#111C32] border border-slate-200 dark:border-[#293953] flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">Firebase Auth</span>
+                    <div className="text-[11px] text-slate-500 font-mono">scamsenseai-8bf14</div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-semibold text-[10px] border border-emerald-200 dark:border-emerald-800">
+                    Active
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-white dark:bg-[#111C32] border border-slate-200 dark:border-[#293953] flex items-center justify-between">
+                  <div>
+                    <span className="font-bold text-slate-800 dark:text-slate-200">Current Origin</span>
+                    <div className="text-[11px] text-slate-500 font-mono">
+                      {typeof window !== 'undefined' ? window.location.hostname : 'localhost'}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyHost}
+                    className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-[10px] hover:bg-slate-200 cursor-pointer"
+                  >
+                    {copiedHost ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

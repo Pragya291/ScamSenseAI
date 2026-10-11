@@ -16,27 +16,43 @@ class FirebaseService:
         project_id = settings.FIREBASE_PROJECT_ID or "scamsenseai-8bf14"
         try:
             if not firebase_admin._apps:
-                cred_path = None
-                candidates = [
-                    settings.FIREBASE_CREDENTIALS_PATH,
-                    "serviceAccountKey.json",
-                    "backend/serviceAccountKey.json",
-                    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "serviceAccountKey.json"))
-                ]
-                for c in candidates:
-                    if c and os.path.exists(c):
-                        cred_path = c
-                        break
-
-                if cred_path:
+                cred = None
+                json_raw = settings.FIREBASE_SERVICE_ACCOUNT_JSON or os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON") or os.getenv("FIREBASE_CREDENTIALS_JSON")
+                if json_raw and json_raw.strip():
                     try:
-                        cred = credentials.Certificate(cred_path)
+                        import json, base64
+                        raw_str = json_raw.strip()
+                        if raw_str.startswith("{"):
+                            cert_dict = json.loads(raw_str)
+                        else:
+                            cert_dict = json.loads(base64.b64decode(raw_str).decode("utf-8"))
+                        cred = credentials.Certificate(cert_dict)
                         firebase_admin.initialize_app(cred, options={"projectId": project_id})
-                    except Exception as cert_err:
-                        logger.warning(f"Failed to load serviceAccountKey certificate: {cert_err}. Falling back to projectId initialization.")
+                    except Exception as json_err:
+                        logger.warning(f"Could not parse FIREBASE_SERVICE_ACCOUNT_JSON from environment: {json_err}")
+
+                if not firebase_admin._apps:
+                    cred_path = None
+                    candidates = [
+                        settings.FIREBASE_CREDENTIALS_PATH,
+                        "serviceAccountKey.json",
+                        "backend/serviceAccountKey.json",
+                        os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "serviceAccountKey.json"))
+                    ]
+                    for c in candidates:
+                        if c and os.path.exists(c):
+                            cred_path = c
+                            break
+
+                    if cred_path:
+                        try:
+                            cred = credentials.Certificate(cred_path)
+                            firebase_admin.initialize_app(cred, options={"projectId": project_id})
+                        except Exception as cert_err:
+                            logger.warning(f"Failed to load serviceAccountKey certificate: {cert_err}. Falling back to projectId initialization.")
+                            firebase_admin.initialize_app(options={"projectId": project_id})
+                    else:
                         firebase_admin.initialize_app(options={"projectId": project_id})
-                else:
-                    firebase_admin.initialize_app(options={"projectId": project_id})
 
             try:
                 self.db = firestore.client()
@@ -55,7 +71,7 @@ class FirebaseService:
         if not self.is_initialized:
             return None
         try:
-            decoded_token = auth.verify_id_token(id_token)
+            decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=10)
             return decoded_token
         except Exception as e:
             logger.error(f"Firebase ID Token verification failed: {e}")

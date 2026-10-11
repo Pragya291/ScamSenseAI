@@ -26,13 +26,38 @@ export function AuthProvider({ children }) {
   const postLoginDestination = import.meta.env.VITE_POST_LOGIN_REDIRECT || '/dashboard';
 
   useEffect(() => {
-    // Check for redirect result if mobile redirect or popup fallback was used
+    // Restore saved session immediately on mount if available
+    try {
+      const savedUserJson = localStorage.getItem('scamsense_user');
+      if (savedUserJson) {
+        const parsed = JSON.parse(savedUserJson);
+        if (parsed && parsed.uid) {
+          setUser(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn("Session restore check:", e);
+    }
+
+    // Check for redirect result if mobile redirect was used
     if (isFirebaseConfigured) {
       getRedirectResult(auth)
         .then(async (result) => {
           if (result && result.user) {
             setUser(result.user);
-            await syncUserProfileWithFirestore(result.user);
+            try {
+              const idToken = await result.user.getIdToken();
+              localStorage.setItem('scamsense_token', idToken);
+              localStorage.setItem('scamsense_user', JSON.stringify({
+                uid: result.user.uid,
+                displayName: result.user.displayName,
+                email: result.user.email,
+                photoURL: result.user.photoURL,
+                emailVerified: result.user.emailVerified,
+                providerId: result.user.providerData?.[0]?.providerId || 'google.com'
+              }));
+            } catch (tokErr) {}
+            syncUserProfileWithFirestore(result.user);
           }
         })
         .catch((error) => {
@@ -48,20 +73,32 @@ export function AuthProvider({ children }) {
 
     // Subscribe to Firebase auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
       clearTimeout(timer);
       if (currentUser && !currentUser.isMock) {
+        setUser(currentUser);
         try {
           const idToken = await currentUser.getIdToken();
           localStorage.setItem('scamsense_token', idToken);
+          localStorage.setItem('scamsense_user', JSON.stringify({
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            email: currentUser.email,
+            photoURL: currentUser.photoURL,
+            emailVerified: currentUser.emailVerified,
+            providerId: currentUser.providerData?.[0]?.providerId || 'google.com'
+          }));
         } catch (tokenErr) {
           console.warn("Could not retrieve Firebase ID token:", tokenErr);
         }
-        await syncUserProfileWithFirestore(currentUser);
+        syncUserProfileWithFirestore(currentUser);
       } else if (!currentUser) {
-        localStorage.removeItem('scamsense_token');
+        const savedUserJson = localStorage.getItem('scamsense_user');
+        if (!savedUserJson) {
+          localStorage.removeItem('scamsense_token');
+          setUser(null);
+        }
       }
+      setLoading(false);
     });
 
     return () => {
@@ -74,6 +111,7 @@ export function AuthProvider({ children }) {
   const mapAuthError = (error) => {
     if (!error) return 'An unexpected error occurred.';
     const code = error.code || '';
+    const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'this domain';
     
     switch (code) {
       case 'auth/invalid-email':
@@ -91,7 +129,7 @@ export function AuthProvider({ children }) {
       case 'auth/popup-closed-by-user':
         return 'Google sign-in popup was closed before completing.';
       case 'auth/popup-blocked':
-        return 'Google sign-in popup was blocked by your browser. Please allow popups or try redirect sign-in.';
+        return 'Google sign-in popup was blocked by your browser. Please allow popups or use Google Redirect sign-in.';
       case 'auth/popup-timeout':
         return 'Google sign-in popup timed out or browser blocked cross-origin communication.';
       case 'auth/cancelled-popup-request':
@@ -102,9 +140,9 @@ export function AuthProvider({ children }) {
         return 'Too many unsuccessful attempts. Please try again later or reset your password.';
       case 'auth/invalid-api-key':
       case 'auth/api-key-not-valid':
-        return 'Firebase API key is not configured. Please add your credentials in .env file.';
+        return 'Firebase API key is invalid or not yet configured.';
       case 'auth/unauthorized-domain':
-        return 'This domain is not authorized for Google Sign-In in Firebase Console.';
+        return `Domain '${currentHost}' is not authorized for Google Sign-In in Firebase Console. Add '${currentHost}' to Firebase Console -> Authentication -> Settings -> Authorized domains.`;
       case 'auth/operation-not-allowed':
         return 'Google Sign-In is not enabled in Firebase Console. Please enable Google in Firebase Console -> Authentication -> Sign-in method.';
       case 'auth/account-exists-with-different-credential':
@@ -188,6 +226,7 @@ export function AuthProvider({ children }) {
       isMock: true
     };
     localStorage.setItem('scamsense_token', 'google-demo-token-' + Date.now());
+    localStorage.setItem('scamsense_user', JSON.stringify(demoGoogleUser));
     setUser(demoGoogleUser);
     return { success: true, user: demoGoogleUser };
   };
@@ -226,20 +265,22 @@ export function AuthProvider({ children }) {
 
       const result = await Promise.race([popupPromise, timeoutPromise]);
       setUser(result.user);
+      try {
+        const idToken = await result.user.getIdToken();
+        localStorage.setItem('scamsense_token', idToken);
+        localStorage.setItem('scamsense_user', JSON.stringify({
+          uid: result.user.uid,
+          displayName: result.user.displayName,
+          email: result.user.email,
+          photoURL: result.user.photoURL,
+          emailVerified: result.user.emailVerified,
+          providerId: result.user.providerData?.[0]?.providerId || 'google.com'
+        }));
+      } catch (tokErr) {}
       syncUserProfileWithFirestore(result.user);
       return { success: true, user: result.user };
     } catch (popupError) {
       console.warn("Google Sign-In caught error:", popupError);
-
-      // If popup was blocked by browser, attempt automatic fallback redirect
-      if (popupError.code === 'auth/popup-blocked') {
-        try {
-          await signInWithRedirect(auth, googleProvider);
-          return { redirecting: true };
-        } catch (redirectError) {
-          console.warn("Redirect sign in error:", redirectError);
-        }
-      }
 
       const friendlyMsg = mapAuthError(popupError);
       setAuthError(friendlyMsg);
@@ -248,6 +289,7 @@ export function AuthProvider({ children }) {
         error: friendlyMsg, 
         errorCode: popupError.code, 
         canFallbackToDemo: true,
+        canUseRedirect: popupError.code === 'auth/popup-blocked',
         rawError: popupError 
       };
     }
@@ -279,6 +321,7 @@ export function AuthProvider({ children }) {
   const signOutUser = async () => {
     try {
       localStorage.removeItem('scamsense_token');
+      localStorage.removeItem('scamsense_user');
       if (isFirebaseConfigured) {
         await fbSignOut(auth);
       }

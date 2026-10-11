@@ -15,7 +15,7 @@ import {
 import AuthBrandingPanel from './AuthBrandingPanel';
 
 export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccessRedirect }) {
-  const { signUpWithEmail, signInWithGoogle, signInWithGoogleDemo, isFirebaseConfigured } = useAuth();
+  const { signUpWithEmail, signInWithGoogle, signInWithGoogleDemo, signInWithGoogleRedirect, isFirebaseConfigured } = useAuth();
   
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,6 +27,9 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const [formError, setFormError] = useState('');
+  const [canRedirect, setCanRedirect] = useState(false);
+  const [unauthorizedDomain, setUnauthorizedDomain] = useState('');
+  const [copiedDomain, setCopiedDomain] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [successInfo, setSuccessInfo] = useState('');
@@ -58,6 +61,8 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
     e.preventDefault();
     setFormError('');
     setSuccessInfo('');
+    setCanRedirect(false);
+    setUnauthorizedDomain('');
 
     const error = validateForm();
     if (error) {
@@ -82,6 +87,8 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
   const handleGoogleSignUp = async () => {
     setFormError('');
     setSuccessInfo('');
+    setCanRedirect(false);
+    setUnauthorizedDomain('');
     setGoogleLoading(true);
 
     try {
@@ -95,10 +102,31 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
         }, 700);
       } else if (!result.redirecting) {
         setFormError(result.error);
+        if (result.canUseRedirect) {
+          setCanRedirect(true);
+        }
+        if (result.errorCode === 'auth/unauthorized-domain') {
+          const host = typeof window !== 'undefined' ? window.location.hostname : '';
+          setUnauthorizedDomain(host);
+        }
       }
     } catch (err) {
       setGoogleLoading(false);
-      setFormError('Google sign in encountered an issue. Click below to bypass popup.');
+      setFormError('Google sign-in encountered an issue. Try Google redirect or instant access below.');
+    }
+  };
+
+  const handleRedirectSignUp = async () => {
+    setFormError('');
+    setGoogleLoading(true);
+    await signInWithGoogleRedirect();
+  };
+
+  const handleCopyDomain = () => {
+    if (unauthorizedDomain) {
+      navigator.clipboard.writeText(unauthorizedDomain);
+      setCopiedDomain(true);
+      setTimeout(() => setCopiedDomain(false), 2000);
     }
   };
 
@@ -171,14 +199,42 @@ export default function SignUpPage({ onNavigateToSignIn, onBackToHome, onSuccess
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
                   <span>{formError}</span>
                 </div>
+
+                {unauthorizedDomain && (
+                  <div className="p-2.5 rounded-lg bg-white/70 dark:bg-[#111827]/70 border border-red-200 dark:border-red-900/50 space-y-1.5 text-[11px]">
+                    <div className="text-slate-700 dark:text-slate-300 font-semibold flex items-center justify-between">
+                      <span>Domain to whitelist: <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">{unauthorizedDomain}</code></span>
+                      <button
+                        type="button"
+                        onClick={handleCopyDomain}
+                        className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 hover:bg-blue-100 font-semibold cursor-pointer"
+                      >
+                        {copiedDomain ? 'Copied!' : 'Copy'}
+                      </button>
+                    </div>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                      Firebase Console → Authentication → Settings → Authorized domains → Add Domain
+                    </p>
+                  </div>
+                )}
+
                 <div className="pt-1 flex flex-wrap items-center gap-2">
+                  {canRedirect && (
+                    <button
+                      type="button"
+                      onClick={handleRedirectSignUp}
+                      className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                    >
+                      <span>Try Google Redirect Flow</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={handleInstantGoogleSignUp}
                     className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Sign In as Pragya Mishra (Instant Google Bypass)</span>
+                    <span>Sign In as Pragya Mishra (Instant 1-Click Access)</span>
                   </button>
                 </div>
               </div>
