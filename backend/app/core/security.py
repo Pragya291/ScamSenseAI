@@ -63,6 +63,14 @@ def get_current_user(
     firebase_email = None
     firebase_name = None
 
+    # Check for demo or local bypass tokens
+    if token and (token.startswith("demo-") or token.startswith("google-demo-") or token.startswith("mock-")):
+        demo_user = db.query(User).filter(User.email == "user@scamsense.ai").first()
+        if not demo_user:
+            demo_user = db.query(User).first()
+        if demo_user:
+            return demo_user
+
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get("sub")

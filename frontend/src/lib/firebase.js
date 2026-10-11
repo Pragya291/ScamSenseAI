@@ -49,6 +49,8 @@ const db = getFirestore(app);
 
 // Configure Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // Ensure persistence is set to browser local persistence
@@ -60,40 +62,46 @@ try {
 
 /**
  * Creates or updates the user profile document in Cloud Firestore under collection `users/{uid}`.
- * Preserves existing `createdAt` timestamp while updating `lastLoginAt` and user details.
+ * Protected with a timeout so network issues never block authentication.
  */
 export const syncUserProfileWithFirestore = async (authUser) => {
   if (!authUser || authUser.isMock || !isFirebaseConfigured) return;
 
   try {
-    const userRef = doc(db, 'users', authUser.uid);
-    const userDoc = await getDoc(userRef);
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Firestore sync timed out')), 2500)
+    );
 
-    const providerId = authUser.providerData && authUser.providerData.length > 0 
-      ? authUser.providerData[0].providerId 
-      : (authUser.providerId || 'google.com');
+    const syncPromise = (async () => {
+      const userRef = doc(db, 'users', authUser.uid);
+      const userDoc = await getDoc(userRef);
 
-    const profileData = {
-      uid: authUser.uid,
-      displayName: authUser.displayName || authUser.email?.split('@')[0] || 'User',
-      email: authUser.email || '',
-      photoURL: authUser.photoURL || '',
-      provider: providerId,
-      lastLoginAt: serverTimestamp()
-    };
+      const providerId = authUser.providerData && authUser.providerData.length > 0 
+        ? authUser.providerData[0].providerId 
+        : (authUser.providerId || 'google.com');
 
-    if (!userDoc.exists()) {
-      // Create new profile for first-time sign in
-      await setDoc(userRef, {
-        ...profileData,
-        createdAt: serverTimestamp()
-      });
-    } else {
-      // Update last login and profile info for returning users
-      await updateDoc(userRef, profileData);
-    }
+      const profileData = {
+        uid: authUser.uid,
+        displayName: authUser.displayName || authUser.email?.split('@')[0] || 'User',
+        email: authUser.email || '',
+        photoURL: authUser.photoURL || '',
+        provider: providerId,
+        lastLoginAt: serverTimestamp()
+      };
+
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          ...profileData,
+          createdAt: serverTimestamp()
+        });
+      } else {
+        await updateDoc(userRef, profileData);
+      }
+    })();
+
+    await Promise.race([syncPromise, timeoutPromise]);
   } catch (error) {
-    console.warn("Cloud Firestore profile sync notice (permission/network):", error);
+    console.warn("Cloud Firestore profile sync notice (skipped non-blocking):", error);
   }
 };
 

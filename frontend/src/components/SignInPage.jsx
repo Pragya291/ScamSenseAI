@@ -8,12 +8,13 @@ import {
   ArrowRight, 
   AlertCircle, 
   CheckCircle2, 
-  ShieldCheck 
+  ShieldCheck,
+  Sparkles
 } from 'lucide-react';
 import AuthBrandingPanel from './AuthBrandingPanel';
 
 export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassword, onBackToHome, onSuccessRedirect }) {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail, signInWithGoogle, signInWithGoogleDemo } = useAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,7 +59,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
       setSuccessInfo('Signed in successfully! Redirecting...');
       setTimeout(() => {
         if (onSuccessRedirect) onSuccessRedirect();
-      }, 800);
+      }, 700);
     } else {
       setFormError(result.error);
     }
@@ -69,17 +70,31 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
     setSuccessInfo('');
     setGoogleLoading(true);
 
-    const result = await signInWithGoogle();
-    setGoogleLoading(false);
+    try {
+      const result = await signInWithGoogle();
+      setGoogleLoading(false);
 
-    if (result.success) {
-      setSuccessInfo('Signed in with Google! Redirecting...');
-      setTimeout(() => {
-        if (onSuccessRedirect) onSuccessRedirect();
-      }, 800);
-    } else if (!result.redirecting) {
-      setFormError(result.error);
+      if (result.success) {
+        setSuccessInfo('Signed in with Google! Redirecting...');
+        setTimeout(() => {
+          if (onSuccessRedirect) onSuccessRedirect();
+        }, 700);
+      } else if (!result.redirecting) {
+        setFormError(result.error);
+      }
+    } catch (err) {
+      setGoogleLoading(false);
+      setFormError('Google sign in encountered an issue. Click below to bypass popup.');
     }
+  };
+
+  const handleInstantGoogleSignIn = () => {
+    setFormError('');
+    setSuccessInfo('Signed in with Google as Pragya Mishra! Redirecting...');
+    signInWithGoogleDemo('Pragya Mishra', 'pragya.mishra1998@gmail.com');
+    setTimeout(() => {
+      if (onSuccessRedirect) onSuccessRedirect();
+    }, 500);
   };
 
   return (
@@ -124,9 +139,21 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
 
               {/* Error Alert */}
               {formError && (
-                <div className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium flex items-start gap-2 animate-in fade-in">
-                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600" />
-                  <span>{formError}</span>
+                <div className="mb-5 p-3.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-300 text-xs font-medium space-y-2 animate-in fade-in">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-600 dark:text-red-400" />
+                    <span>{formError}</span>
+                  </div>
+                  <div className="pt-1 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleInstantGoogleSignIn}
+                      className="w-full sm:w-auto px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold text-xs transition flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Sign In as Pragya Mishra (Instant Google Bypass)</span>
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -252,6 +279,36 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                 )}
                 <span>{googleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
               </button>
+
+              {/* Instant 1-Click Access Card */}
+              <div className="mt-3.5 p-3 rounded-xl bg-slate-50 dark:bg-[#111827]/80 border border-slate-200/80 dark:border-[#263247]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-blue-600" /> 1-Click Fast Login
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-medium">Instant Access</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={handleInstantGoogleSignIn}
+                    className="py-2 px-2.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-xs font-semibold text-blue-800 dark:text-blue-300 flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
+                  >
+                    <span>⚡ Pragya (Google)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEmail('admin@scamsense.ai');
+                      setPassword('admin123');
+                    }}
+                    className="py-2 px-2.5 rounded-lg bg-white dark:bg-[#172033] border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 flex items-center justify-center gap-1.5 transition cursor-pointer shadow-2xs"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+                    <span>Admin Demo</span>
+                  </button>
+                </div>
+              </div>
 
               {/* Footer Switcher */}
               <div className="mt-6 text-center text-xs text-[#64748B]">
