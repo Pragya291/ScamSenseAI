@@ -629,38 +629,74 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             {activeTab === 'home' && (
               <div className="flex flex-col gap-5 sm:gap-6 w-full min-w-0">
                 
-                {/* 1. FULL-WIDTH AI-POWERED FRAUD DETECTION BANNER */}
+                {/* 1. FULL-WIDTH AI-POWERED FRAUD DETECTION BANNER (Blue-to-Purple Brand Palette) */}
                 <div 
-                  className="w-full min-w-0 relative shrink-0 overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-xl shadow-blue-500/20 border border-blue-400/30"
+                  className="w-full min-w-0 relative shrink-0 overflow-hidden rounded-2xl p-6 sm:p-7 lg:p-8 text-white shadow-xl shadow-blue-500/15 border border-blue-400/30"
                   style={{ background: 'linear-gradient(110deg, #2563EB 0%, #3B82F6 50%, #6366F1 100%)' }}
                 >
-                  {/* Ambient subtle light accents */}
-                  <div className="absolute -top-12 -right-12 w-52 h-52 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-                  <div className="absolute -bottom-8 -left-8 w-44 h-44 bg-indigo-300/20 rounded-full blur-2xl pointer-events-none" />
+                  {/* Ambient subtle light accents matching dashboard blue-purple glow */}
+                  <div className="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                  <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-indigo-300/20 rounded-full blur-2xl pointer-events-none" />
 
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
-                    <div className="space-y-2 max-w-xl min-w-0">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-white border border-white/25 shadow-xs">
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    {/* Left: Typography & Hierarchy */}
+                    <div className="space-y-3 max-w-2xl min-w-0">
+                      {/* Compact Translucent Badge */}
+                      <div 
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-white shadow-xs backdrop-blur-md"
+                        style={{ 
+                          backgroundColor: 'rgba(255, 255, 255, 0.14)', 
+                          borderColor: 'rgba(255, 255, 255, 0.22)', 
+                          borderWidth: '1px' 
+                        }}
+                      >
                         <Sparkles className="w-3.5 h-3.5 text-blue-100" />
                         <span>AI-POWERED FRAUD DETECTION</span>
                       </div>
-                      <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold text-white tracking-tight leading-snug drop-shadow-xs">
+
+                      {/* Heading */}
+                      <h1 className="text-2xl sm:text-[28px] lg:text-[32px] font-extrabold text-white tracking-tight leading-snug drop-shadow-xs">
                         Think Before You Click. <span className="text-white">Let AI Check.</span>
                       </h1>
-                      <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-normal">
+
+                      {/* Subtitle */}
+                      <p 
+                        className="text-sm sm:text-[15px] lg:text-base leading-relaxed font-normal"
+                        style={{ color: 'rgba(255, 255, 255, 0.88)' }}
+                      >
                         Analyze suspicious links, messages, emails, and more with advanced AI. Get instant, evidence-backed insights and stay protected from scams.
                       </p>
                     </div>
 
-                    {/* Banner Category Tags + Translucent Glass Shield Graphic */}
-                    <div className="flex items-center gap-3.5 shrink-0 self-start md:self-auto">
-                      <div className="hidden sm:flex flex-col gap-1.5 text-[11px] font-semibold">
-                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">URLs</span>
-                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">SMS</span>
-                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">Phone Numbers</span>
+                    {/* Right: Category Labels & Glass Shield Container */}
+                    <div className="flex items-center gap-3.5 sm:gap-4 shrink-0 self-start md:self-auto">
+                      {/* Vertical Labels */}
+                      <div className="flex flex-col gap-1.5 sm:gap-2 text-xs font-semibold">
+                        {['URLs', 'SMS', 'Phone Numbers'].map((label) => (
+                          <span 
+                            key={label}
+                            className="px-3.5 py-1.5 rounded-lg text-white text-center backdrop-blur-md transition-colors duration-200 cursor-default select-none shadow-xs hover:bg-white/20"
+                            style={{ 
+                              backgroundColor: 'rgba(255, 255, 255, 0.14)', 
+                              borderColor: 'rgba(255, 255, 255, 0.22)', 
+                              borderWidth: '1px' 
+                            }}
+                          >
+                            {label}
+                          </span>
+                        ))}
                       </div>
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg shadow-blue-900/25 shrink-0">
-                        <ShieldCheck className="w-9 h-9 sm:w-11 sm:h-11 text-white drop-shadow-xs" />
+
+                      {/* Translucent Blue-Purple Glass Shield Container */}
+                      <div 
+                        className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl flex items-center justify-center relative backdrop-blur-md shadow-lg shadow-blue-900/20 shrink-0"
+                        style={{ 
+                          backgroundColor: 'rgba(255, 255, 255, 0.14)', 
+                          borderColor: 'rgba(255, 255, 255, 0.22)', 
+                          borderWidth: '1px' 
+                        }}
+                      >
+                        <ShieldCheck className="w-10 h-10 sm:w-11 sm:h-11 text-white relative z-10 drop-shadow-xs" />
                       </div>
                     </div>
                   </div>
