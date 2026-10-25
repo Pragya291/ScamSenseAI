@@ -65,11 +65,24 @@ def get_current_user(
 
     # Check for demo or local bypass tokens
     if token and (token.startswith("demo-") or token.startswith("google-demo-") or token.startswith("mock-")):
-        demo_user = db.query(User).filter(User.email == "user@scamsense.ai").first()
-        if not demo_user:
-            demo_user = db.query(User).first()
-        if demo_user:
-            return demo_user
+        import re
+        clean_suffix = re.sub(r'[^a-zA-Z0-9]', '', token)
+        token_suffix = clean_suffix[-24:]
+        demo_email = f"demo_{token_suffix}@scamsense.internal"
+        user = db.query(User).filter(User.email == demo_email).first()
+        if not user:
+            user = User(
+                email=demo_email,
+                full_name=f"Guest User {token_suffix[:6]}",
+                hashed_password="mock_authenticated_session",
+                role="user",
+                is_active=True,
+                is_verified=True
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        return user
 
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])

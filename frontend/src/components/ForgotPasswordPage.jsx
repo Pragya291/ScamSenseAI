@@ -114,7 +114,7 @@ export default function ForgotPasswordPage({ onNavigateToSignIn, onBackToHome })
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="pragya.mishra@scamsense.ai"
+                    placeholder="name@example.com"
                     autoComplete="email"
                     className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#263247] text-sm text-[#0F172A] dark:text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#2563EB] focus:border-transparent bg-slate-50/50 dark:bg-[#111827] hover:bg-white dark:hover:bg-[#172033] transition"
                   />

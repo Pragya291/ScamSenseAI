@@ -18,7 +18,7 @@ import ForgotPasswordPage from './components/ForgotPasswordPage';
 import Dashboard from './components/Dashboard';
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOutUser } = useAuth();
   
   // Current view state: 'landing' | 'signin' | 'signup' | 'forgot-password' | 'dashboard'
   const [currentView, setCurrentView] = useState('landing');
@@ -26,6 +26,12 @@ function AppContent() {
 
   // Navigation handlers
   const navigateTo = (view, tab = 'home') => {
+    // Protected route check: Dashboard requires an authenticated user
+    if (view === 'dashboard' && !user) {
+      setCurrentView('signin');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setCurrentView(view);
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -58,13 +64,28 @@ function AppContent() {
     );
   }
 
-  // If user is authenticated or explicitly on the dashboard view
-  if (user || currentView === 'dashboard') {
+  // View: Dashboard (Strictly protected for authenticated users)
+  if (currentView === 'dashboard') {
+    if (!user) {
+      // Unauthenticated visitor trying to view dashboard -> redirect to signin
+      return (
+        <SignInPage
+          onNavigateToSignUp={() => navigateTo('signup')}
+          onNavigateToForgotPassword={() => navigateTo('forgot-password')}
+          onBackToHome={() => navigateTo('landing')}
+          onSuccessRedirect={() => navigateTo('dashboard', 'home')}
+        />
+      );
+    }
+
     return (
       <Dashboard 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onSignOut={() => navigateTo('landing')} 
+        onSignOut={async () => {
+          await signOutUser();
+          navigateTo('landing');
+        }} 
         onBackToHome={() => navigateTo('landing')} 
       />
     );
@@ -103,6 +124,14 @@ function AppContent() {
     );
   }
 
+  const handleStartScanning = () => {
+    if (user) {
+      navigateTo('dashboard', 'scan');
+    } else {
+      navigateTo('signin');
+    }
+  };
+
   // View: Landing Page (Default)
   return (
     <div className="min-h-screen bg-[#F8FAFF] dark:bg-[#070B17] text-[#0F172A] dark:text-[#F8FAFC] flex flex-col justify-between selection:bg-blue-600 selection:text-white transition-colors duration-200">
@@ -121,7 +150,7 @@ function AppContent() {
       <main className="flex-grow">
         {/* 1. Hero with Security Scanner Live Preview */}
         <Hero 
-          onStartScanning={() => navigateTo('signin')} 
+          onStartScanning={handleStartScanning} 
           onExploreHowItWorks={scrollToHowItWorks} 
         />
 
@@ -129,26 +158,26 @@ function AppContent() {
         <TrustStrip />
 
         {/* 3. Features 4-in-1 Suite */}
-        <Features onSelectFeature={() => navigateTo('signin')} />
+        <Features onSelectFeature={handleStartScanning} />
 
         {/* 4. How It Works 6-Step Pipeline */}
         <HowItWorks />
 
         {/* 5. Live Sample Showcase (Explainable AI Demonstration) */}
-        <SampleShowcase onTryLiveScan={() => navigateTo('signin')} />
+        <SampleShowcase onTryLiveScan={handleStartScanning} />
 
         {/* 6. Technology & Multi-Layer Threat Intelligence */}
         <TechnologyTrustSection />
 
         {/* 7. Why ScamSense Core Value Pillars */}
-        <WhyScamSense onStartScanning={() => navigateTo('signin')} />
+        <WhyScamSense onStartScanning={handleStartScanning} />
 
         {/* 8. Threat Intelligence Advisory Feed */}
         <ThreatIntel onExploreIntel={() => navigateTo('signin')} />
 
         {/* 9. Final Call to Action */}
         <CTASection 
-          onStartScanning={() => navigateTo('signin')} 
+          onStartScanning={handleStartScanning} 
           onTryDemo={() => {
             const el = document.getElementById('showcase');
             if (el) el.scrollIntoView({ behavior: 'smooth' });

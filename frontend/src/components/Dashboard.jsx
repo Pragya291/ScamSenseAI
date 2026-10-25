@@ -43,75 +43,6 @@ import {
 import { getScanHistory, deleteScanHistory, scanUrl, scanText, scanPhone, scanQr, scanContent } from '../services/api';
 import { analyzeSecurityContent } from '../services/securityEngine';
 
-// Sample initial scan records
-const INITIAL_SCANS = [
-  {
-    id: 'scan-101',
-    content: 'https://secure-bank-login.com',
-    type: 'URL',
-    timestamp: '2 hours ago',
-    date: '2026-10-10 10:15',
-    score: 87,
-    verdict: 'High Risk',
-    badgeClass: 'bg-red-50 text-red-700 border-red-200',
-    iconBg: 'bg-red-100 text-red-600',
-    indicators: ['Suspicious domain (bank-login)', 'Matches known phishing patterns', 'SSL certificate invalid'],
-    recommendation: 'Do not enter credentials. Verify via official banking portal.'
-  },
-  {
-    id: 'scan-102',
-    content: 'You won a free iPhone! Click here to claim...',
-    type: 'Message',
-    timestamp: '5 hours ago',
-    date: '2026-10-10 07:42',
-    score: 65,
-    verdict: 'Suspicious',
-    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
-    iconBg: 'bg-amber-100 text-amber-600',
-    indicators: ['Urgent reward lure', 'Unverified shortened tracking link'],
-    recommendation: 'Do not click links. Block sender number.'
-  },
-  {
-    id: 'scan-103',
-    content: 'https://amazon-official.net',
-    type: 'URL',
-    timestamp: 'Yesterday',
-    date: '2026-10-09 16:30',
-    score: 12,
-    verdict: 'Safe',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    iconBg: 'bg-emerald-100 text-emerald-600',
-    indicators: ['Verified domain registration', 'Valid SSL certificate'],
-    recommendation: 'No threat indicators detected.'
-  },
-  {
-    id: 'scan-104',
-    content: 'Payment pending - verify now at...',
-    type: 'SMS',
-    timestamp: 'Yesterday',
-    date: '2026-10-09 14:12',
-    score: 72,
-    verdict: 'Suspicious',
-    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
-    iconBg: 'bg-amber-100 text-amber-600',
-    indicators: ['Payment pressure language', 'Suspicious SMS sender'],
-    recommendation: 'Do not send funds or reply with OTP.'
-  },
-  {
-    id: 'scan-105',
-    content: 'https://google.com',
-    type: 'URL',
-    timestamp: '2 days ago',
-    date: '2026-10-08 09:00',
-    score: 0,
-    verdict: 'Safe',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    iconBg: 'bg-emerald-100 text-emerald-600',
-    indicators: ['Official Google search domain', 'Strict HSTS enforcement'],
-    recommendation: 'Verified official domain.'
-  }
-];
-
 export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: externalSetActiveTab, onSignOut, onBackToHome }) {
   const { user, signOutUser } = useAuth();
   
@@ -123,18 +54,22 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
     if (externalSetActiveTab) externalSetActiveTab(tab);
   };
   
-  // Persistent state initialized from localStorage, seeded with INITIAL_SCANS if empty
+  // Storage key uniquely tied to authenticated user ID to prevent data leakage between accounts
+  const userScanStorageKey = user?.uid ? `scamsense_scans_${user.uid}` : null;
+
+  // Persistent scan state isolated per authenticated user
   const [scans, setScans] = useState(() => {
+    if (!userScanStorageKey) return [];
     try {
-      const stored = localStorage.getItem('scamsense_scans');
+      const stored = localStorage.getItem(userScanStorageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {
-      console.warn('Could not read cached scans from localStorage:', e);
+      console.warn('Could not read user scans from localStorage:', e);
     }
-    return INITIAL_SCANS;
+    return [];
   });
 
   const [selectedScan, setSelectedScan] = useState(() => scans.length > 0 ? scans[0] : null);
@@ -142,22 +77,50 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   const [scanError, setScanError] = useState('');
   const { isDark: darkMode, toggleTheme: handleToggleTheme, setTheme } = useTheme();
 
-  // Keep localStorage synchronized whenever scans change
+  // Reset and reload scans whenever the authenticated user changes
   React.useEffect(() => {
-    try {
-      localStorage.setItem('scamsense_scans', JSON.stringify(scans));
-    } catch (e) {
-      console.warn('Failed to sync scans to localStorage:', e);
+    if (!userScanStorageKey) {
+      setScans([]);
+      setSelectedScan(null);
+      return;
     }
-  }, [scans]);
 
-  // Fetch real authenticated user scan history from backend if available
+    try {
+      const stored = localStorage.getItem(userScanStorageKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setScans(parsed);
+          setSelectedScan(parsed.length > 0 ? parsed[0] : null);
+          return;
+        }
+      }
+      setScans([]);
+      setSelectedScan(null);
+    } catch (e) {
+      setScans([]);
+      setSelectedScan(null);
+    }
+  }, [userScanStorageKey]);
+
+  // Keep authenticated user's private localStorage synchronized
+  React.useEffect(() => {
+    if (!userScanStorageKey) return;
+    try {
+      localStorage.setItem(userScanStorageKey, JSON.stringify(scans));
+    } catch (e) {
+      console.warn('Failed to sync scans to user localStorage:', e);
+    }
+  }, [scans, userScanStorageKey]);
+
+  // Fetch real authenticated user scan history from backend
   React.useEffect(() => {
     let isMounted = true;
     async function fetchUserHistory() {
+      if (!user) return;
       try {
         const res = await getScanHistory();
-        if (isMounted && res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+        if (isMounted && res && res.data && Array.isArray(res.data)) {
           const mapped = res.data.map(item => {
             const score = Math.round(item.risk_score || 0);
             const verdict = item.verdict || (score >= 70 ? 'High Risk' : score >= 35 ? 'Suspicious' : 'Safe');
@@ -182,16 +145,20 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
           setScans(prev => {
             const combined = [...mapped, ...prev];
-            return Array.from(new Map(combined.map(s => [s.id, s])).values());
+            const unique = Array.from(new Map(combined.map(s => [s.id, s])).values());
+            if (unique.length > 0 && !selectedScan) {
+              setSelectedScan(unique[0]);
+            }
+            return unique;
           });
         }
       } catch (err) {
-        // Backend not running: gracefully fallback to persisted localStorage data
+        // Backend not running or 401: gracefully fallback to persisted user data
       }
     }
     fetchUserHistory();
     return () => { isMounted = false; };
-  }, []);
+  }, [user?.uid]);
 
   const handleToggleDarkMode = (val) => {
     if (val !== undefined) {
@@ -255,6 +222,11 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   const handleClearAllHistory = () => {
     setScans([]);
     setSelectedScan(null);
+    if (userScanStorageKey) {
+      try {
+        localStorage.removeItem(userScanStorageKey);
+      } catch (e) {}
+    }
   };
 
   // Real Quick Scan Submission on Home Tab connected to FastAPI
@@ -536,15 +508,15 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                   ) : (
-                    <span>{user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'P')}</span>
+                    <span>{user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'U')}</span>
                   )}
                 </div>
                 <div className="text-left hidden sm:block min-w-0">
                   <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] leading-tight truncate max-w-[130px]">
-                    {user?.displayName || user?.email?.split('@')[0] || 'Pragya Mishra'}
+                    {user?.displayName || (user?.email ? user.email.split('@')[0] : 'User')}
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-[#8494AD] leading-none truncate max-w-[140px] mt-0.5">
-                    {user?.email || 'pragya.mishra24@strice.in'}
+                    {user?.email || ''}
                   </div>
                 </div>
               </button>

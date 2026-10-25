@@ -347,12 +347,10 @@ def get_scan_history(
     skip: int = 0,
     limit: int = 50,
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_optional_user)
+    current_user: User = Depends(get_current_user)
 ) -> Any:
     """Retrieve authenticated user's scan history (Firestore with SQLite fallback)."""
-    user_id = current_user.id if current_user else None
-    if not user_id:
-        return []
+    user_id = current_user.id
 
     firebase_uid = getattr(current_user, "firebase_uid", None) if current_user else None
     target_uid = firebase_uid or str(user_id)

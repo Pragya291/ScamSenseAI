@@ -21,65 +21,6 @@ import {
 } from 'lucide-react';
 import { getScanHistory, deleteScanHistory } from '../services/api';
 
-const INITIAL_MOCK_HISTORY = [
-  {
-    id: 'hist-101',
-    content: 'https://secure-pay-verify.net',
-    type: 'URL',
-    subType: 'Phishing attempt',
-    date: 'Oct 8, 2025 • 10:42 AM',
-    rawDate: '2025-10-08',
-    score: 88,
-    verdict: 'Danger',
-    badgeClass: 'bg-red-50 text-red-700 border-red-200',
-    iconBg: 'bg-red-100 text-red-600',
-    indicators: ['Suspicious domain: secure-pay-verify.net', 'Impersonation cues: bank branding', 'No HTTPS; mismatched sender'],
-    recommendation: 'Do not click or enter credentials. Block sender.'
-  },
-  {
-    id: 'hist-102',
-    content: 'WhatsApp lottery message',
-    type: 'Message',
-    subType: 'Message (SMS) • Lottery scam',
-    date: 'Oct 7, 2025 • 03:18 PM',
-    rawDate: '2025-10-07',
-    score: 92,
-    verdict: 'Danger',
-    badgeClass: 'bg-red-50 text-red-700 border-red-200',
-    iconBg: 'bg-red-100 text-red-600',
-    indicators: ['Fake lottery reward lure', 'Viral forwarding requirement', 'Unverified shortened link'],
-    recommendation: 'Do not reply or click links. Report sender.'
-  },
-  {
-    id: 'hist-103',
-    content: 'Bank OTP screenshot',
-    type: 'Screenshot',
-    subType: 'Screenshot • OTP scam',
-    date: 'Oct 5, 2025 • 09:15 AM',
-    rawDate: '2025-10-05',
-    score: 76,
-    verdict: 'Suspicious',
-    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',
-    iconBg: 'bg-amber-100 text-amber-600',
-    indicators: ['Urgent verification request', 'Potential remote access lure'],
-    recommendation: 'Do not share OTP with callers.'
-  },
-  {
-    id: 'hist-104',
-    content: 'https://officialbank.com',
-    type: 'URL',
-    subType: 'URL • Legitimate site',
-    date: 'Oct 4, 2025 • 02:30 PM',
-    rawDate: '2025-10-04',
-    score: 12,
-    verdict: 'Safe',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    iconBg: 'bg-emerald-100 text-emerald-600',
-    indicators: ['Verified domain registration', 'Valid SSL certificate'],
-    recommendation: 'No threat indicators detected.'
-  }
-];
-
 export default function ScanHistoryView({ scans = [], onNavigateToScan, onDeleteScan }) {
   const [historyList, setHistoryList] = useState([]);
   const [loading, setLoading] = useState(true);

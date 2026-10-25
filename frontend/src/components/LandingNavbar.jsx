@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Logo from './Logo';
 import { Menu, X, ArrowRight, ShieldCheck, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function LandingNavbar({ onNavigate, currentView }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const { user, signOutUser } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +21,14 @@ export default function LandingNavbar({ onNavigate, currentView }) {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleDashboardClick = (tab = 'home') => {
+    if (user) {
+      onNavigate('dashboard', tab);
+    } else {
+      onNavigate('signin');
+    }
+  };
 
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
@@ -103,15 +113,34 @@ export default function LandingNavbar({ onNavigate, currentView }) {
               )}
             </button>
 
-            <button
-              onClick={() => onNavigate('signin')}
-              className="px-4 py-2.5 text-sm font-semibold text-[#0F172A] dark:text-[#F8FAFC] bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247] rounded-xl hover:bg-[#F5F7FC] dark:hover:bg-[#172033] transition shadow-2xs cursor-pointer"
-            >
-              Sign In
-            </button>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F5F7FC] dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247]">
+                  <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-[11px] flex items-center justify-center">
+                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : (user.email ? user.email.charAt(0).toUpperCase() : 'U')}
+                  </div>
+                  <span className="text-xs font-semibold text-[#0F172A] dark:text-[#F8FAFC] max-w-[100px] truncate">
+                    {user.displayName || (user.email ? user.email.split('@')[0] : 'User')}
+                  </span>
+                </div>
+                <button
+                  onClick={signOutUser}
+                  className="px-2.5 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => onNavigate('signin')}
+                className="px-4 py-2.5 text-sm font-semibold text-[#0F172A] dark:text-[#F8FAFC] bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247] rounded-xl hover:bg-[#F5F7FC] dark:hover:bg-[#172033] transition shadow-2xs cursor-pointer"
+              >
+                Sign In
+              </button>
+            )}
 
             <button
-              onClick={() => onNavigate('dashboard', 'home')}
+              onClick={() => handleDashboardClick('home')}
               className="px-5 py-2.5 text-sm font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-200 cursor-pointer flex items-center gap-2 group"
             >
               <ShieldCheck className="w-4 h-4 text-blue-200" />
@@ -182,21 +211,33 @@ export default function LandingNavbar({ onNavigate, currentView }) {
           </nav>
 
           <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#263247] flex flex-col gap-2.5">
+            {user ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  signOutUser();
+                }}
+                className="w-full py-2.5 text-center text-sm font-semibold text-red-600 dark:text-red-400 bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247] rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
+              >
+                Sign Out ({user.displayName || (user.email ? user.email.split('@')[0] : 'User')})
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onNavigate('signin');
+                }}
+                className="w-full py-2.5 text-center text-sm font-semibold text-[#0F172A] dark:text-[#F8FAFC] bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247] rounded-xl hover:bg-[#F5F7FC] dark:hover:bg-[#172033] transition cursor-pointer"
+              >
+                Sign In
+              </button>
+            )}
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                onNavigate('signin');
+                handleDashboardClick('home');
               }}
-              className="w-full py-2.5 text-center text-sm font-semibold text-[#0F172A] dark:text-[#F8FAFC] bg-white dark:bg-[#111827] border border-[#E2E8F0] dark:border-[#263247] rounded-xl hover:bg-[#F5F7FC] dark:hover:bg-[#172033] transition"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onNavigate('dashboard', 'home');
-              }}
-              className="w-full py-2.5 text-center text-sm font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl shadow-md flex items-center justify-center gap-2"
+              className="w-full py-2.5 text-center text-sm font-semibold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4" />
               <span>Go to Dashboard</span>

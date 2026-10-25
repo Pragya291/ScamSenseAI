@@ -14,6 +14,7 @@ import {
   isFirebaseConfigured,
   syncUserProfileWithFirestore
 } from '../lib/firebase';
+import { loginUser, registerUser, getMe } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -26,24 +27,65 @@ export function AuthProvider({ children }) {
   const postLoginDestination = import.meta.env.VITE_POST_LOGIN_REDIRECT || '/dashboard';
 
   useEffect(() => {
-    // Restore saved session immediately on mount if available
-    try {
-      const savedUserJson = localStorage.getItem('scamsense_user');
-      if (savedUserJson) {
-        const parsed = JSON.parse(savedUserJson);
-        if (parsed && parsed.uid) {
-          setUser(parsed);
-        }
-      }
-    } catch (e) {
-      console.warn("Session restore check:", e);
-    }
+    let isMounted = true;
 
-    // Check for redirect result if mobile redirect was used
+    // Safety timeout: ensure loading finishes within 1.2 seconds maximum
+    const timer = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 1200);
+
+    // Handler for expired backend JWT sessions
+    const handleAuthExpired = () => {
+      localStorage.removeItem('scamsense_token');
+      localStorage.removeItem('scamsense_user');
+      if (isMounted) {
+        setUser(null);
+      }
+    };
+    window.addEventListener('scamsense_auth_expired', handleAuthExpired);
+
+    // Validate a stored backend JWT token
+    const validateBackendSession = async () => {
+      const token = localStorage.getItem('scamsense_token');
+      if (!token) {
+        localStorage.removeItem('scamsense_user');
+        if (isMounted) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const meRes = await getMe();
+        if (isMounted && meRes && meRes.data) {
+          const validatedUser = {
+            uid: String(meRes.data.id),
+            displayName: meRes.data.full_name || meRes.data.email.split('@')[0],
+            email: meRes.data.email,
+            role: meRes.data.role || 'user',
+            providerId: 'password'
+          };
+          setUser(validatedUser);
+          localStorage.setItem('scamsense_user', JSON.stringify(validatedUser));
+        }
+      } catch (err) {
+        // Token is invalid or expired
+        if (isMounted) {
+          localStorage.removeItem('scamsense_token');
+          localStorage.removeItem('scamsense_user');
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    // Check for mobile redirect result from Firebase Google sign-in
     if (isFirebaseConfigured) {
       getRedirectResult(auth)
         .then(async (result) => {
-          if (result && result.user) {
+          if (result && result.user && isMounted) {
             setUser(result.user);
             try {
               const idToken = await result.user.getIdToken();
@@ -62,49 +104,52 @@ export function AuthProvider({ children }) {
         })
         .catch((error) => {
           console.error("Redirect auth error:", error);
-          setAuthError(mapAuthError(error));
+          if (isMounted) setAuthError(mapAuthError(error));
         });
+
+      // Subscribe to Firebase auth state changes
+      const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        clearTimeout(timer);
+        if (currentUser && !currentUser.isMock) {
+          if (isMounted) setUser(currentUser);
+          try {
+            const idToken = await currentUser.getIdToken();
+            localStorage.setItem('scamsense_token', idToken);
+            localStorage.setItem('scamsense_user', JSON.stringify({
+              uid: currentUser.uid,
+              displayName: currentUser.displayName,
+              email: currentUser.email,
+              photoURL: currentUser.photoURL,
+              emailVerified: currentUser.emailVerified,
+              providerId: currentUser.providerData?.[0]?.providerId || 'google.com'
+            }));
+          } catch (tokenErr) {
+            console.warn("Could not retrieve Firebase ID token:", tokenErr);
+          }
+          syncUserProfileWithFirestore(currentUser);
+          if (isMounted) setLoading(false);
+        } else {
+          // Firebase reports no current user; check if valid backend JWT session exists
+          await validateBackendSession();
+        }
+      });
+
+      return () => {
+        isMounted = false;
+        unsubscribe();
+        clearTimeout(timer);
+        window.removeEventListener('scamsense_auth_expired', handleAuthExpired);
+      };
+    } else {
+      // Firebase not configured; validate against backend session
+      validateBackendSession();
+
+      return () => {
+        isMounted = false;
+        clearTimeout(timer);
+        window.removeEventListener('scamsense_auth_expired', handleAuthExpired);
+      };
     }
-
-    // Safety timeout: ensure loading finishes within 1 second even if Firebase listener stalls
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    // Subscribe to Firebase auth state changes
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      clearTimeout(timer);
-      if (currentUser && !currentUser.isMock) {
-        setUser(currentUser);
-        try {
-          const idToken = await currentUser.getIdToken();
-          localStorage.setItem('scamsense_token', idToken);
-          localStorage.setItem('scamsense_user', JSON.stringify({
-            uid: currentUser.uid,
-            displayName: currentUser.displayName,
-            email: currentUser.email,
-            photoURL: currentUser.photoURL,
-            emailVerified: currentUser.emailVerified,
-            providerId: currentUser.providerData?.[0]?.providerId || 'google.com'
-          }));
-        } catch (tokenErr) {
-          console.warn("Could not retrieve Firebase ID token:", tokenErr);
-        }
-        syncUserProfileWithFirestore(currentUser);
-      } else if (!currentUser) {
-        const savedUserJson = localStorage.getItem('scamsense_user');
-        if (!savedUserJson) {
-          localStorage.removeItem('scamsense_token');
-          setUser(null);
-        }
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timer);
-    };
   }, []);
 
   // Map Firebase error codes to friendly, safe, plain English messages
@@ -152,95 +197,161 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Sign up with Email and Password
+  // Sign up with Email and Password: creates independent user account in backend & Firebase
   const signUpWithEmail = async (name, email, password) => {
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured) {
-        // Safe simulation if Firebase credentials have not yet been provided in .env
-        const mockUser = {
-          uid: 'demo-' + Date.now(),
-          displayName: name,
-          email: email,
-          emailVerified: false,
-          isMock: true
-        };
-        localStorage.setItem('scamsense_token', 'demo-token-' + Date.now());
-        setUser(mockUser);
-        return { success: true, user: mockUser };
+      const trimmedEmail = email.trim().toLowerCase();
+      const trimmedName = name ? name.trim() : trimmedEmail.split('@')[0];
+
+      // 1. Create user account on backend
+      let backendRegistered = false;
+      try {
+        await registerUser(trimmedEmail, password, trimmedName);
+        backendRegistered = true;
+      } catch (beErr) {
+        const beMsg = beErr.response?.data?.detail;
+        if (beMsg && beMsg.includes('already exists')) {
+          setAuthError('An account already exists with this email. Please sign in instead.');
+          return { success: false, error: 'An account already exists with this email. Please sign in instead.' };
+        }
       }
 
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      if (name && userCredential.user) {
-        await updateProfile(userCredential.user, { displayName: name });
+      // 2. Also register in Firebase if configured
+      if (isFirebaseConfigured) {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(auth, trimmedEmail, password);
+          if (trimmedName && userCredential.user) {
+            await updateProfile(userCredential.user, { displayName: trimmedName });
+          }
+          const freshUser = {
+            uid: userCredential.user.uid,
+            displayName: trimmedName,
+            email: trimmedEmail,
+            photoURL: userCredential.user.photoURL || '',
+            emailVerified: userCredential.user.emailVerified,
+            providerId: 'password'
+          };
+          setUser(freshUser);
+          try {
+            const idToken = await userCredential.user.getIdToken();
+            localStorage.setItem('scamsense_token', idToken);
+            localStorage.setItem('scamsense_user', JSON.stringify(freshUser));
+          } catch (tErr) {}
+          syncUserProfileWithFirestore(userCredential.user);
+          return { success: true, user: freshUser };
+        } catch (fbErr) {
+          // If Firebase failed but backend succeeded, log in via backend
+          if (backendRegistered) {
+            const loginRes = await loginUser(trimmedEmail, password);
+            const token = loginRes.data.access_token;
+            const userData = {
+              uid: String(loginRes.data.user_id),
+              displayName: loginRes.data.full_name || trimmedName,
+              email: loginRes.data.email || trimmedEmail,
+              role: loginRes.data.role || 'user',
+              providerId: 'password'
+            };
+            localStorage.setItem('scamsense_token', token);
+            localStorage.setItem('scamsense_user', JSON.stringify(userData));
+            setUser(userData);
+            return { success: true, user: userData };
+          }
+          const friendlyMsg = mapAuthError(fbErr);
+          setAuthError(friendlyMsg);
+          return { success: false, error: friendlyMsg, rawError: fbErr };
+        }
       }
-      setUser(userCredential.user);
-      syncUserProfileWithFirestore(userCredential.user);
-      return { success: true, user: userCredential.user };
+
+      // 3. Log in with newly registered backend account
+      const loginRes = await loginUser(trimmedEmail, password);
+      const token = loginRes.data.access_token;
+      const userData = {
+        uid: String(loginRes.data.user_id),
+        displayName: loginRes.data.full_name || trimmedName,
+        email: loginRes.data.email || trimmedEmail,
+        role: loginRes.data.role || 'user',
+        providerId: 'password'
+      };
+      localStorage.setItem('scamsense_token', token);
+      localStorage.setItem('scamsense_user', JSON.stringify(userData));
+      setUser(userData);
+      return { success: true, user: userData };
     } catch (error) {
-      const friendlyMsg = mapAuthError(error);
+      const friendlyMsg = error.response?.data?.detail || mapAuthError(error);
       setAuthError(friendlyMsg);
       return { success: false, error: friendlyMsg, rawError: error };
     }
   };
 
-  // Sign in with Email and Password
+  // Sign in with Email and Password: authenticates credentials dynamically
   const signInWithEmail = async (email, password) => {
     setAuthError(null);
-    try {
-      if (!isFirebaseConfigured) {
-        // Safe simulation if Firebase credentials have not yet been provided in .env
-        const mockUser = {
-          uid: 'demo-' + Date.now(),
-          displayName: email.split('@')[0],
-          email: email,
-          emailVerified: true,
-          isMock: true
+    const trimmedEmail = email.trim().toLowerCase();
+
+    // 1. Try Firebase Authentication if configured
+    if (isFirebaseConfigured) {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, trimmedEmail, password);
+        const fbUser = userCredential.user;
+        const idToken = await fbUser.getIdToken();
+        const userData = {
+          uid: fbUser.uid,
+          displayName: fbUser.displayName || trimmedEmail.split('@')[0],
+          email: fbUser.email || trimmedEmail,
+          photoURL: fbUser.photoURL || '',
+          emailVerified: fbUser.emailVerified,
+          providerId: 'password'
         };
-        localStorage.setItem('scamsense_token', 'demo-token-' + Date.now());
-        setUser(mockUser);
-        return { success: true, user: mockUser };
+        localStorage.setItem('scamsense_token', idToken);
+        localStorage.setItem('scamsense_user', JSON.stringify(userData));
+        setUser(userData);
+        syncUserProfileWithFirestore(fbUser);
+        return { success: true, user: userData };
+      } catch (fbErr) {
+        console.warn("Firebase sign-in attempt notice:", fbErr.code);
+        // If credentials invalid on Firebase, try backend database credentials
       }
-
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setUser(userCredential.user);
-      syncUserProfileWithFirestore(userCredential.user);
-      return { success: true, user: userCredential.user };
-    } catch (error) {
-      const friendlyMsg = mapAuthError(error);
-      setAuthError(friendlyMsg);
-      return { success: false, error: friendlyMsg, rawError: error };
     }
+
+    // 2. Try Backend Database Authentication (JWT)
+    try {
+      const loginRes = await loginUser(trimmedEmail, password);
+      if (loginRes && loginRes.data && loginRes.data.access_token) {
+        const token = loginRes.data.access_token;
+        const userData = {
+          uid: String(loginRes.data.user_id),
+          displayName: loginRes.data.full_name || trimmedEmail.split('@')[0],
+          email: loginRes.data.email || trimmedEmail,
+          role: loginRes.data.role || 'user',
+          providerId: 'password'
+        };
+        localStorage.setItem('scamsense_token', token);
+        localStorage.setItem('scamsense_user', JSON.stringify(userData));
+        setUser(userData);
+        return { success: true, user: userData };
+      }
+    } catch (beErr) {
+      const friendlyMsg = beErr.response?.data?.detail || 'Incorrect email or password. Please try again.';
+      setAuthError(friendlyMsg);
+      return { success: false, error: friendlyMsg };
+    }
+
+    const fallbackMsg = 'Incorrect email or password. Please try again.';
+    setAuthError(fallbackMsg);
+    return { success: false, error: fallbackMsg };
   };
 
-  // Instant 1-Click Google Sign In (Works 100% reliably in local, dev, demo, and production bypass)
-  const signInWithGoogleDemo = (customName = 'Pragya Mishra', customEmail = 'pragya.mishra1998@gmail.com') => {
-    setAuthError(null);
-    const demoGoogleUser = {
-      uid: 'google-demo-' + Date.now(),
-      displayName: customName,
-      email: customEmail,
-      photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-      emailVerified: true,
-      providerId: 'google.com',
-      isMock: true
-    };
-    localStorage.setItem('scamsense_token', 'google-demo-token-' + Date.now());
-    localStorage.setItem('scamsense_user', JSON.stringify(demoGoogleUser));
-    setUser(demoGoogleUser);
-    return { success: true, user: demoGoogleUser };
-  };
-
-  // Google Authentication (Popup with Redirect fallback, safety timeout & instant demo fallback)
+  // Google Authentication: uses genuine authenticated Google identity
   const signInWithGoogle = async (preferRedirect = false) => {
     setAuthError(null);
 
-    // If Firebase credentials are mock or missing, instantly use verified Google demo sign in
     if (!isFirebaseConfigured) {
-      return signInWithGoogleDemo();
+      const errorMsg = 'Google Sign-In is not enabled. Please sign in with your email and password.';
+      setAuthError(errorMsg);
+      return { success: false, error: errorMsg };
     }
 
-    // Direct redirect flow if explicitly requested or preferred
     if (preferRedirect) {
       try {
         await signInWithRedirect(auth, googleProvider);
@@ -253,7 +364,6 @@ export function AuthProvider({ children }) {
     }
 
     try {
-      // Safety timeout: 20s maximum so popup never hangs the application indefinitely
       const popupPromise = signInWithPopup(auth, googleProvider);
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => {
@@ -264,31 +374,30 @@ export function AuthProvider({ children }) {
       });
 
       const result = await Promise.race([popupPromise, timeoutPromise]);
-      setUser(result.user);
+      const gUser = result.user;
+      setUser(gUser);
       try {
-        const idToken = await result.user.getIdToken();
+        const idToken = await gUser.getIdToken();
         localStorage.setItem('scamsense_token', idToken);
         localStorage.setItem('scamsense_user', JSON.stringify({
-          uid: result.user.uid,
-          displayName: result.user.displayName,
-          email: result.user.email,
-          photoURL: result.user.photoURL,
-          emailVerified: result.user.emailVerified,
-          providerId: result.user.providerData?.[0]?.providerId || 'google.com'
+          uid: gUser.uid,
+          displayName: gUser.displayName,
+          email: gUser.email,
+          photoURL: gUser.photoURL,
+          emailVerified: gUser.emailVerified,
+          providerId: gUser.providerData?.[0]?.providerId || 'google.com'
         }));
       } catch (tokErr) {}
-      syncUserProfileWithFirestore(result.user);
-      return { success: true, user: result.user };
+      syncUserProfileWithFirestore(gUser);
+      return { success: true, user: gUser };
     } catch (popupError) {
-      console.warn("Google Sign-In caught error:", popupError);
-
+      console.warn("Google Sign-In error:", popupError);
       const friendlyMsg = mapAuthError(popupError);
       setAuthError(friendlyMsg);
       return { 
         success: false, 
         error: friendlyMsg, 
         errorCode: popupError.code, 
-        canFallbackToDemo: true,
         canUseRedirect: popupError.code === 'auth/popup-blocked',
         rawError: popupError 
       };
@@ -299,13 +408,9 @@ export function AuthProvider({ children }) {
   const resetPassword = async (email) => {
     setAuthError(null);
     try {
-      if (!isFirebaseConfigured) {
-        return { 
-          success: true, 
-          message: 'If an account exists with this email, a password reset link has been sent.' 
-        };
+      if (isFirebaseConfigured) {
+        await sendPasswordResetEmail(auth, email.trim());
       }
-      await sendPasswordResetEmail(auth, email);
       return { 
         success: true, 
         message: 'If an account exists with this email, a password reset link has been sent.' 
@@ -317,7 +422,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Sign Out
+  // Sign Out: completely destroys local session, tokens, and cached user state
   const signOutUser = async () => {
     try {
       localStorage.removeItem('scamsense_token');
@@ -329,7 +434,10 @@ export function AuthProvider({ children }) {
       return { success: true };
     } catch (error) {
       console.error("Sign out error:", error);
-      return { success: false, error: error.message };
+      localStorage.removeItem('scamsense_token');
+      localStorage.removeItem('scamsense_user');
+      setUser(null);
+      return { success: true };
     }
   };
 
@@ -342,7 +450,6 @@ export function AuthProvider({ children }) {
     signUpWithEmail,
     signInWithEmail,
     signInWithGoogle,
-    signInWithGoogleDemo,
     signInWithGoogleRedirect: () => signInWithGoogle(true),
     resetPassword,
     signOutUser,
@@ -359,4 +466,3 @@ export function useAuth() {
   }
   return context;
 }
-

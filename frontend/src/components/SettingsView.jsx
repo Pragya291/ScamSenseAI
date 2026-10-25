@@ -48,34 +48,71 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
   const [connectionStatus, setConnectionStatus] = useState(null);
   const [copiedHost, setCopiedHost] = useState(false);
 
-  // Profile Form States (Matching exact screenshot values)
-  const [profileData, setProfileData] = useState({
-    fullName: user?.displayName || 'Pragya Mishra',
-    pronouns: 'she/her',
-    bio: 'Cybersecurity enthusiast focused on AI-powered fraud detection. Building safer internet for everyone. Open innovation hackathon participant — Team PJSR (Programming Just Solves Real-Problem). Passionate about Detect • Explain • Protect. Experienced in building 4-in-1 scam detection with Gemini AI + Safe Browsing + VirusTotal.',
-    occupation: 'Cybersecurity Analyst',
-    jobTitle: 'Threat Intelligence Researcher',
-    age: '27',
-    gender: 'Female',
-    dob: 'March 15, 1998',
-    mobile: '+91 98765 43210',
-    altMobile: '+91 91234 56789',
-    emailId: user?.email || 'pragya.mishra@scamsense.ai',
-    personalEmail: 'pragya.mishra1998@gmail.com',
-    location: 'Mumbai, Maharashtra, India',
-    address: 'Andheri West, Mumbai - 400053',
-    experience: '3+ Years',
-    company: 'ScamSense AI • Team PJSR',
-    education: 'B.Tech Cybersecurity, Mumbai University • 2020',
-    workLocation: 'Remote',
-    linkedin: 'linkedin.com/in/pragyamishra',
-    github: 'github.com/pragya-mishra',
-    website: 'pragyamishra.dev',
-    skills: ['Threat Analysis', 'AI/ML', 'React', 'Python', 'Firebase', 'Gemini AI']
+  // Storage key uniquely tied to authenticated user ID
+  const userProfileKey = user?.uid ? `scamsense_profile_${user.uid}` : null;
+
+  const getDefaultProfile = () => {
+    const name = user?.displayName || (user?.email ? user.email.split('@')[0] : 'User');
+    return {
+      fullName: name,
+      pronouns: '',
+      bio: 'Cybersecurity enthusiast using ScamSense AI for real-time threat detection and digital fraud prevention.',
+      occupation: 'Security Analyst',
+      jobTitle: 'ScamSense User',
+      age: '',
+      gender: '',
+      dob: '',
+      mobile: '',
+      altMobile: '',
+      emailId: user?.email || '',
+      personalEmail: user?.email || '',
+      location: '',
+      address: '',
+      experience: '1+ Years',
+      company: 'ScamSense AI Community',
+      education: '',
+      workLocation: 'Remote',
+      linkedin: '',
+      github: '',
+      website: '',
+      skills: ['Threat Analysis', 'AI Security', 'Phishing Detection']
+    };
+  };
+
+  const [profileData, setProfileData] = useState(() => {
+    if (userProfileKey) {
+      try {
+        const stored = localStorage.getItem(userProfileKey);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return { ...getDefaultProfile(), ...parsed };
+        }
+      } catch (e) {}
+    }
+    return getDefaultProfile();
   });
+
+  // Re-sync profile when authenticated user changes
+  useEffect(() => {
+    if (userProfileKey) {
+      try {
+        const stored = localStorage.getItem(userProfileKey);
+        if (stored) {
+          setProfileData({ ...getDefaultProfile(), ...JSON.parse(stored) });
+          return;
+        }
+      } catch (e) {}
+    }
+    setProfileData(getDefaultProfile());
+  }, [userProfileKey, user?.displayName, user?.email]);
 
   const handleSaveProfile = (e) => {
     e.preventDefault();
+    if (userProfileKey) {
+      try {
+        localStorage.setItem(userProfileKey, JSON.stringify(profileData));
+      } catch (err) {}
+    }
     setIsEditing(false);
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2500);
@@ -210,7 +247,7 @@ export default function SettingsView({ onSignOut, onClearHistory, darkMode, onTo
                 />
               ) : null}
               {(!user?.photoURL || user?.photoURL === '') && (
-                <span>{user?.displayName ? user.displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'PM'}</span>
+                <span>{profileData.fullName ? profileData.fullName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() : (user?.email ? user.email.substring(0, 2).toUpperCase() : 'U')}</span>
               )}
             </div>
 

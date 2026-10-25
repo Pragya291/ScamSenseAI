@@ -81,6 +81,9 @@ api.interceptors.response.use(
       error.friendlyMessage = `Unable to connect to ScamSense AI server at ${activeBase}. Please ensure backend is running or update endpoint in Settings.`;
     } else if (error.response.status === 401) {
       error.friendlyMessage = 'Session expired or unauthorized. Please sign in again.';
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('scamsense_auth_expired'));
+      }
     } else if (error.response.status === 403) {
       error.friendlyMessage = error.response.data?.detail || 'Operation forbidden. You do not have permission to access this resource.';
     } else if (error.response.status === 404) {

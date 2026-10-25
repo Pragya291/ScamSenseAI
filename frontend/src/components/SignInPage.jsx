@@ -256,7 +256,7 @@ export default function SignInPage({ onNavigateToSignUp, onNavigateToForgotPassw
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="pragya.mishra@scamsense.ai"
+                    placeholder="name@example.com"
                     autoComplete="email"
                     className="w-full h-12 pl-10 pr-4 rounded-xl sm:rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/60 dark:bg-[#111827] text-sm text-[#0F172A] dark:text-white placeholder:text-slate-400 font-medium focus:bg-white dark:focus:bg-[#151D30] focus:border-[#2563EB] focus:ring-4 focus:ring-blue-500/10 outline-none transition-all duration-200"
                   />
