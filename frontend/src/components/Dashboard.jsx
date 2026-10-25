@@ -330,115 +330,68 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
   };
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-[#0B1120] text-[#F1F5F9]' : 'bg-[#F5F7FC] text-[#111827]'} font-sans flex selection:bg-indigo-600 selection:text-white`}>
+    <div className={`h-[100dvh] w-full overflow-hidden ${darkMode ? 'bg-[#0B1120] text-[#F1F5F9]' : 'bg-[#F8FAFC] text-[#111827]'} font-sans flex selection:bg-indigo-600 selection:text-white`}>
       
-      {/* 1. LEFT SIDEBAR NAVIGATION */}
-      <aside className={`w-64 shrink-0 hidden lg:flex flex-col justify-between p-6 border-r ${darkMode ? 'bg-[#070C19] border-[#293953]' : 'bg-white border-[#E2E8F0]'} sticky top-0 h-screen`}>
-        <div className="space-y-8">
+      {/* 1. FIXED-WIDTH LEFT NAVIGATION SIDEBAR (260px wide) */}
+      <aside className={`w-[260px] shrink-0 hidden lg:flex flex-col justify-between p-4 border-r ${darkMode ? 'bg-[#070C19] border-[#293953]' : 'bg-white border-[#E2E8F0]'} h-full overflow-y-auto select-none`}>
+        <div className="space-y-6">
           
           {/* Brand Logo */}
-          <Logo onClick={onBackToHome} />
+          <div className="px-1 py-1">
+            <Logo onClick={onBackToHome} />
+          </div>
 
           {/* Navigation Links */}
           <nav className="space-y-1.5">
-            <button
-              onClick={() => setActiveTab('home')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'home'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <Home className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Home</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setTargetScanType('URL');
-                setActiveTab('scan');
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'scan'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <Scan className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Scan</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('threat-intel')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'threat-intel'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <ShieldAlert className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Threat Intelligence</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('scan-history')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'scan-history'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <History className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Scan History</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('analytics')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'analytics'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <BarChart3 className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Analytics</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('settings')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
-                activeTab === 'settings'
-                  ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
-              }`}
-            >
-              <Settings className="w-5 h-5 text-slate-500 dark:text-[#8494AD]" />
-              <span>Settings</span>
-            </button>
+            {[
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'scan', label: 'Scan', icon: Scan },
+              { id: 'threat-intel', label: 'Threat Intelligence', icon: ShieldAlert },
+              { id: 'scan-history', label: 'Scan History', icon: History },
+              { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+              { id: 'settings', label: 'Settings', icon: Settings }
+            ].map(({ id, label, icon: IconComponent }) => (
+              <button
+                key={id}
+                onClick={() => {
+                  if (id === 'scan') setTargetScanType('URL');
+                  setActiveTab(id);
+                }}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
+                  activeTab === id
+                    ? 'bg-linear-to-r from-[#4F46E5] to-[#9333EA] text-white shadow-md shadow-indigo-500/20'
+                    : 'text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#111C32] hover:text-slate-900 dark:hover:text-[#F1F5F9]'
+                }`}
+              >
+                <IconComponent className="w-4 h-4 shrink-0" />
+                <span className="truncate">{label}</span>
+              </button>
+            ))}
           </nav>
         </div>
 
-        {/* Bottom Sidebar Info Card */}
-        <div className="space-y-4">
-          <div className="rounded-2xl bg-linear-to-br from-[#2563EB]/10 via-[#7C3AED]/10 to-blue-50 dark:from-[#162238] dark:via-[#111C32] dark:to-[#0F172A] p-4 border border-blue-100 dark:border-[#293953] text-left space-y-2">
-            <div className="w-8 h-8 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center shadow-xs">
+        {/* Bottom Sidebar Info Card & Sign Out */}
+        <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-[#293953]/60">
+          <div className="rounded-2xl bg-linear-to-br from-[#2563EB]/10 via-[#7C3AED]/10 to-blue-50 dark:from-[#162238] dark:via-[#111C32] dark:to-[#0F172A] p-3.5 border border-blue-100 dark:border-[#293953] text-left space-y-1.5">
+            <div className="w-7 h-7 rounded-xl bg-linear-to-tr from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white flex items-center justify-center shadow-2xs">
               <ShieldCheck className="w-4 h-4" />
             </div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9]">Smarter, Safer Internet</h4>
-            <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-snug">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] leading-tight">Smarter, Safer Internet</h4>
+            <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-relaxed">
               Analyze suspicious content and make informed security decisions.
             </p>
           </div>
 
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#A8B6CC] hover:text-red-600 dark:hover:text-[#FB7185] hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-[#293953] transition cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-3.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#A8B6CC] hover:text-red-600 dark:hover:text-[#FB7185] hover:bg-red-50 dark:hover:bg-red-950/30 border border-slate-200 dark:border-[#293953] transition cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Log Out</span>
           </button>
         </div>
       </aside>
+
       {/* MOBILE DRAWER SIDEBAR */}
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
@@ -446,13 +399,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileSidebarOpen(false)} 
           />
-          <aside className={`relative w-72 max-w-[85vw] h-full p-6 flex flex-col justify-between shadow-2xl z-10 ${darkMode ? 'bg-[#070C19] text-[#F1F5F9] border-r border-[#293953]' : 'bg-white text-slate-900'}`}>
+          <aside className={`relative w-72 max-w-[85vw] h-full p-5 flex flex-col justify-between shadow-2xl z-10 ${darkMode ? 'bg-[#070C19] text-[#F1F5F9] border-r border-[#293953]' : 'bg-white text-slate-900'}`}>
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <Logo onClick={() => { setMobileSidebarOpen(false); onBackToHome(); }} />
                 <button 
                   onClick={() => setMobileSidebarOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 dark:text-[#8494AD] hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#111C32]"
+                  className="p-1.5 rounded-lg text-slate-400 dark:text-[#8494AD] hover:text-slate-600 dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#111C32]"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -474,20 +427,20 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       setActiveTab(id);
                       setMobileSidebarOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition cursor-pointer ${
+                    className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
                       activeTab === id
-                        ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-md shadow-blue-500/20'
+                        ? 'bg-linear-to-r from-[#2563EB] to-[#7C3AED] text-white shadow-xs'
                         : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                     }`}
                   >
-                    <IconComponent className="w-5 h-5" />
+                    <IconComponent className="w-4 h-4" />
                     <span>{label}</span>
                   </button>
                 ))}
               </nav>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <button
                 onClick={() => { setMobileSidebarOpen(false); handleSignOut(); }}
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 transition cursor-pointer"
@@ -500,54 +453,54 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
         </div>
       )}
 
-      {/* MAIN DASHBOARD CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+      {/* MAIN DASHBOARD SHELL */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 h-full overflow-hidden">
         
-        {/* 2. TOP NAVIGATION BAR */}
-        <header className={`sticky top-0 z-30 px-4 sm:px-6 py-4 border-b ${darkMode ? 'bg-[#0F172A]/95 border-[#293953]' : 'bg-white/90 border-[#E2E8F0]'} backdrop-blur-md flex items-center justify-between gap-4`}>
+        {/* 2. TOP NAVIGATION BAR (64px high, flex-shrink: 0) */}
+        <header className={`h-16 shrink-0 px-4 sm:px-6 border-b ${darkMode ? 'bg-[#0F172A] border-[#293953]' : 'bg-white border-[#E2E8F0]'} flex items-center justify-between gap-4 sticky top-0 z-20`}>
           
-          <div className="flex items-center gap-3 w-full max-w-md">
-            {/* Mobile menu button */}
+          <div className="flex items-center gap-3 flex-1 max-w-md min-w-0">
+            {/* Mobile menu trigger */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
               className="lg:hidden p-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#162238] transition cursor-pointer shrink-0"
               title="Open Navigation"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4" />
             </button>
 
             {/* Global Search Input */}
-            <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-400 dark:text-[#8494AD] absolute left-3.5 top-3" />
+            <div className="relative w-full min-w-0">
+              <Search className="w-4 h-4 text-slate-400 dark:text-[#8494AD] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search scans, URLs, messages..."
-                className="w-full pl-10 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-[#293953] bg-slate-50/70 dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9] placeholder-slate-400 dark:placeholder-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1]"
+                className="w-full pl-9 pr-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm border border-slate-200 dark:border-[#293953] bg-slate-50/70 dark:bg-[#162238] text-slate-900 dark:text-[#F1F5F9] placeholder-slate-400 dark:placeholder-[#8494AD] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1]"
               />
             </div>
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             
             {/* Dark mode toggle */}
             <button
               onClick={() => handleToggleDarkMode()}
-              className={`p-2.5 rounded-xl border transition cursor-pointer ${
+              className={`p-2 rounded-xl border transition cursor-pointer ${
                 darkMode ? 'border-[#293953] bg-[#162238] text-amber-400 hover:bg-[#17243A]' : 'border-[#E2E8F0] text-slate-600 hover:bg-slate-100'
               }`}
               title="Toggle Theme"
             >
-              {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+              {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
             </button>
 
             {/* Notification bell */}
             <div className="relative">
               <button
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="p-2.5 rounded-xl border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#162238] transition relative cursor-pointer"
+                className="p-2 rounded-xl border border-[#E2E8F0] dark:border-[#293953] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-100 dark:hover:bg-[#162238] transition relative cursor-pointer"
               >
                 <Bell className="w-4 h-4" />
                 <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#FB7185] animate-ping" />
@@ -556,15 +509,13 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
               {notificationsOpen && (
                 <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-[#111C32] rounded-2xl shadow-xl border border-slate-200 dark:border-[#293953] p-4 z-50 text-slate-800 dark:text-[#F1F5F9] animate-in fade-in">
-                  <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-[#293953] pb-2">
+                  <div className="flex items-center justify-between mb-2 border-b border-slate-100 dark:border-[#293953] pb-2">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Notifications</span>
                     <span className="text-[10px] bg-blue-50 dark:bg-indigo-950/60 text-blue-600 dark:text-[#6366F1] font-bold px-2 py-0.5 rounded-full">1 New</span>
                   </div>
-                  <div className="space-y-2 text-xs">
-                    <div className="p-2 rounded-lg bg-red-50 dark:bg-rose-950/40 border border-red-100 dark:border-[#FB7185]/40 text-red-900 dark:text-[#FB7185]">
-                      <div className="font-bold">High Risk Alert</div>
-                      <div className="text-[11px] text-red-700 dark:text-[#F1F5F9]">Phishing domain flagged 2 hours ago.</div>
-                    </div>
+                  <div className="p-2.5 rounded-xl bg-red-50 dark:bg-rose-950/40 border border-red-100 dark:border-[#FB7185]/40 text-red-900 dark:text-[#FB7185] text-xs">
+                    <div className="font-bold text-xs">High Risk Alert</div>
+                    <div className="text-[11px] text-red-700 dark:text-[#F1F5F9] mt-0.5">Phishing domain flagged recently.</div>
                   </div>
                 </div>
               )}
@@ -574,9 +525,9 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2.5 p-1.5 pl-2.5 rounded-full border border-[#E2E8F0] dark:border-[#293953] bg-slate-50 dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] transition cursor-pointer"
+                className="flex items-center gap-2.5 p-1 pl-2 pr-3 rounded-full border border-[#E2E8F0] dark:border-[#293953] bg-slate-50 dark:bg-[#162238] hover:bg-slate-100 dark:hover:bg-[#17243A] transition cursor-pointer"
               >
-                <div className="w-7 h-7 rounded-full bg-linear-to-tr from-[#4F46E5] to-[#9333EA] text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0">
+                <div className="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                   {user?.photoURL ? (
                     <img 
                       src={user.photoURL} 
@@ -584,17 +535,16 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
                       className="w-full h-full object-cover"
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
-                  ) : null}
-                  {(!user?.photoURL || user?.photoURL === '') && (
+                  ) : (
                     <span>{user?.displayName ? user.displayName.charAt(0).toUpperCase() : (user?.email?.charAt(0).toUpperCase() || 'P')}</span>
                   )}
                 </div>
-                <div className="text-left hidden md:block">
+                <div className="text-left hidden sm:block min-w-0">
                   <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] leading-tight truncate max-w-[130px]">
                     {user?.displayName || user?.email?.split('@')[0] || 'Pragya Mishra'}
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-[#8494AD] leading-tight truncate max-w-[130px]">
-                    {user?.email || 'Free Plan'}
+                  <div className="text-[10px] text-slate-500 dark:text-[#8494AD] leading-none truncate max-w-[140px] mt-0.5">
+                    {user?.email || 'pragya.mishra24@strice.in'}
                   </div>
                 </div>
               </button>
@@ -631,457 +581,428 @@ export default function Dashboard({ activeTab: externalActiveTab, setActiveTab: 
 
         </header>
 
-        {/* 3. DYNAMIC PAGE ROUTING WITHIN DASHBOARD CONTAINER */}
-        <main className="p-4 sm:p-6 lg:p-8 space-y-8 max-w-7xl w-full mx-auto flex-grow">
-          
-          {/* TAB 1: SCAN WORKSPACE (Matching Reference Screenshot 1 from previous prompt) */}
-          {activeTab === 'scan' && (
-            <ScanWorkspace 
-              initialScanType={targetScanType}
-              onSaveScan={handleSaveNewScan}
-              onViewHistory={() => setActiveTab('scan-history')}
-            />
-          )}
+        {/* 3. SCROLLABLE PAGE BODY */}
+        <main className="flex-1 min-w-0 min-h-0 overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 pb-12 dashboard-scroll">
+          <div className="w-full min-w-0">
+            
+            {/* TAB 1: SCAN WORKSPACE */}
+            {activeTab === 'scan' && (
+              <ScanWorkspace 
+                initialScanType={targetScanType}
+                onSaveScan={handleSaveNewScan}
+                onViewHistory={() => setActiveTab('scan-history')}
+              />
+            )}
 
-          {/* TAB 2: THREAT INTELLIGENCE (Matching Reference Screenshot 2 from previous prompt) */}
-          {activeTab === 'threat-intel' && (
-            <ThreatIntelligenceView 
-              onNavigateToScan={handleNavigateToScanFromThreat}
-            />
-          )}
+            {/* TAB 2: THREAT INTELLIGENCE */}
+            {activeTab === 'threat-intel' && (
+              <ThreatIntelligenceView 
+                onNavigateToScan={handleNavigateToScanFromThreat}
+              />
+            )}
 
-          {/* TAB 3: SCAN HISTORY (Matching Reference Screenshot 1) */}
-          {activeTab === 'scan-history' && (
-            <ScanHistory 
-              scans={scans}
-              onNavigateToScan={() => setActiveTab('scan')}
-              onDeleteScan={handleDeleteScan}
-            />
-          )}
+            {/* TAB 3: SCAN HISTORY */}
+            {activeTab === 'scan-history' && (
+              <ScanHistory 
+                scans={scans}
+                onNavigateToScan={() => setActiveTab('scan')}
+                onDeleteScan={handleDeleteScan}
+              />
+            )}
 
-          {/* TAB 4: ANALYTICS (Matching Reference Screenshot 2) */}
-          {activeTab === 'analytics' && (
-            <AnalyticsDashboard scans={scans} />
-          )}
+            {/* TAB 4: ANALYTICS */}
+            {activeTab === 'analytics' && (
+              <AnalyticsDashboard scans={scans} />
+            )}
 
-          {/* TAB 5: SETTINGS (Matching Reference Screenshot 3) */}
-          {activeTab === 'settings' && (
-            <SettingsView 
-              onSignOut={handleSignOut}
-              onClearHistory={handleClearAllHistory}
-              darkMode={darkMode}
-              onToggleDarkMode={handleToggleDarkMode}
-            />
-          )}
+            {/* TAB 5: SETTINGS */}
+            {activeTab === 'settings' && (
+              <SettingsView 
+                onSignOut={handleSignOut}
+                onClearHistory={handleClearAllHistory}
+                darkMode={darkMode}
+                onToggleDarkMode={handleToggleDarkMode}
+              />
+            )}
 
-          {/* TAB 0: HOMEPAGE (Default) */}
-          {activeTab === 'home' && (
-            <>
-              {/* Welcome Banner */}
-              <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-[#2563EB] via-[#4338CA] to-[#7C3AED] p-6 sm:p-8 text-white shadow-xl">
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="space-y-2 max-w-xl">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-bold uppercase tracking-wider border border-white/20">
-                      <Sparkles className="w-3.5 h-3.5 text-blue-200" />
-                      <span>AI-POWERED FRAUD DETECTION</span>
-                    </div>
-                    <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-                      Think Before You Click. <br />
-                      <span className="text-blue-200">Let AI Check.</span>
-                    </h1>
-                    <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-                      Analyze suspicious links, messages, emails, and more with advanced AI. Get instant, evidence-backed insights and stay protected from scams.
-                    </p>
-                  </div>
-
-                  {/* Banner Graphic elements */}
-                  <div className="flex items-center gap-3">
-                    <div className="hidden sm:flex flex-col gap-2">
-                      <span className="px-3 py-1.5 rounded-xl bg-white/15 backdrop-blur-md text-xs font-bold border border-white/20">URLs</span>
-                      <span className="px-3 py-1.5 rounded-xl bg-white/15 backdrop-blur-md text-xs font-bold border border-white/20">SMS</span>
-                      <span className="px-3 py-1.5 rounded-xl bg-white/15 backdrop-blur-md text-xs font-bold border border-white/20">Phone Numbers</span>
-                    </div>
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-2xl shrink-0">
-                      <ShieldCheck className="w-16 h-16 text-white" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* SECURITY STATISTICS CARDS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* TAB 0: HOMEPAGE (Full-Width Hero, 4-Card Stats Row & Two-Column Main Content) */}
+            {activeTab === 'home' && (
+              <div className="flex flex-col gap-5 sm:gap-6 w-full min-w-0">
                 
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Total Scans</div>
-                    <div className="text-2xl font-black text-slate-900 dark:text-[#F1F5F9] mt-1">{totalScans}</div>
-                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">All completed analyses</div>
-                  </div>
-                  <div className="w-11 h-11 rounded-2xl bg-blue-50 dark:bg-[#162238] text-blue-600 dark:text-[#6366F1] flex items-center justify-center font-bold">
-                    <Scan className="w-5 h-5" />
+                {/* 1. FULL-WIDTH AI-POWERED FRAUD DETECTION BANNER */}
+                <div 
+                  className="w-full min-w-0 relative shrink-0 overflow-hidden rounded-2xl p-5 sm:p-6 text-white shadow-xl shadow-blue-500/20 border border-blue-400/30"
+                  style={{ background: 'linear-gradient(110deg, #2563EB 0%, #3B82F6 50%, #6366F1 100%)' }}
+                >
+                  {/* Ambient subtle light accents */}
+                  <div className="absolute -top-12 -right-12 w-52 h-52 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+                  <div className="absolute -bottom-8 -left-8 w-44 h-44 bg-indigo-300/20 rounded-full blur-2xl pointer-events-none" />
+
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div className="space-y-2 max-w-xl min-w-0">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-white border border-white/25 shadow-xs">
+                        <Sparkles className="w-3.5 h-3.5 text-blue-100" />
+                        <span>AI-POWERED FRAUD DETECTION</span>
+                      </div>
+                      <h1 className="text-xl sm:text-2xl md:text-[26px] font-extrabold text-white tracking-tight leading-snug drop-shadow-xs">
+                        Think Before You Click. <span className="text-white">Let AI Check.</span>
+                      </h1>
+                      <p className="text-xs sm:text-sm text-white/90 leading-relaxed font-normal">
+                        Analyze suspicious links, messages, emails, and more with advanced AI. Get instant, evidence-backed insights and stay protected from scams.
+                      </p>
+                    </div>
+
+                    {/* Banner Category Tags + Translucent Glass Shield Graphic */}
+                    <div className="flex items-center gap-3.5 shrink-0 self-start md:self-auto">
+                      <div className="hidden sm:flex flex-col gap-1.5 text-[11px] font-semibold">
+                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">URLs</span>
+                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">SMS</span>
+                        <span className="px-3 py-1 rounded-lg bg-white/15 backdrop-blur-md border border-white/25 text-white text-center shadow-xs">Phone Numbers</span>
+                      </div>
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg shadow-blue-900/25 shrink-0">
+                        <ShieldCheck className="w-9 h-9 sm:w-11 sm:h-11 text-white drop-shadow-xs" />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Threats Detected</div>
-                    <div className="text-2xl font-black text-red-600 dark:text-[#FB7185] mt-1">{threatsDetected}</div>
-                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">High risk threats</div>
-                  </div>
-                  <div className="w-11 h-11 rounded-2xl bg-red-50 dark:bg-rose-950/40 text-red-600 dark:text-[#FB7185] flex items-center justify-center font-bold">
-                    <ShieldAlert className="w-5 h-5" />
-                  </div>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Suspicious Items</div>
-                    <div className="text-2xl font-black text-amber-600 dark:text-[#FBBF24] mt-1">{suspiciousCount}</div>
-                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Needs verification</div>
-                  </div>
-                  <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-[#FBBF24] flex items-center justify-center font-bold">
-                    <AlertTriangle className="w-5 h-5" />
-                  </div>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD]">Safe Results</div>
-                    <div className="text-2xl font-black text-emerald-600 dark:text-[#34D399] mt-1">{safeCount}</div>
-                    <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Clean checkups</div>
-                  </div>
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] flex items-center justify-center font-bold">
-                    <CheckCircle2 className="w-5 h-5" />
-                  </div>
-                </div>
-
-              </div>
-
-              {/* QUICK SCANNER & RECENT SCANS GRID */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* Left Column (8 cols): Quick Scan Panel */}
-                <div className="lg:col-span-8 space-y-8">
+                {/* 2. FOUR STATISTICS CARDS (ONE ROW ON WIDE DESKTOP) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 w-full min-w-0">
                   
-                  {/* QUICK SCAN PANEL */}
-                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] dark:border-[#293953] shadow-xl space-y-6">
+                  {/* Total Scans */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between min-w-0">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD] truncate">TOTAL SCANS</div>
+                      <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-[#F1F5F9] leading-tight mt-1">{totalScans}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-[#8494AD] leading-none mt-1.5 truncate">All completed analyses</div>
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-[#162238] text-blue-600 dark:text-[#6366F1] flex items-center justify-center shrink-0 ml-3">
+                      <Scan className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  {/* Threats Detected */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between min-w-0">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD] truncate">THREATS DETECTED</div>
+                      <div className="text-2xl sm:text-3xl font-black text-red-600 dark:text-[#FB7185] leading-tight mt-1">{threatsDetected}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-[#8494AD] leading-none mt-1.5 truncate">High risk threats</div>
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-red-50 dark:bg-rose-950/40 text-red-600 dark:text-[#FB7185] flex items-center justify-center shrink-0 ml-3">
+                      <ShieldAlert className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  {/* Suspicious Items */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between min-w-0">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD] truncate">SUSPICIOUS ITEMS</div>
+                      <div className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-[#FBBF24] leading-tight mt-1">{suspiciousCount}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-[#8494AD] leading-none mt-1.5 truncate">Needs verification</div>
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-[#FBBF24] flex items-center justify-center shrink-0 ml-3">
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  {/* Safe Results */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#111C32] border border-[#E2E8F0] dark:border-[#293953] shadow-xs flex items-center justify-between min-w-0">
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-[#8494AD] truncate">SAFE RESULTS</div>
+                      <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-[#34D399] leading-tight mt-1">{safeCount}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-[#8494AD] leading-none mt-1.5 truncate">Clean checkups</div>
+                    </div>
+                    <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-[#34D399] flex items-center justify-center shrink-0 ml-3">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* 3. BALANCED TWO-COLUMN MAIN CONTENT (LEFT: SCANNER & THREAT INTEL, RIGHT: RISK ANALYSIS & CTA) */}
+                <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.6fr)_minmax(320px,0.95fr)] gap-5 sm:gap-6 items-start w-full min-w-0">
+                  
+                  {/* ======================================================== */}
+                  {/* LEFT COLUMN: SCANNER PANEL & THREAT INTELLIGENCE        */}
+                  {/* ======================================================== */}
+                  <div className="flex flex-col gap-5 sm:gap-6 min-w-0">
                     
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-xl font-extrabold text-slate-900 dark:text-[#F1F5F9] tracking-tight">
-                          Check Before You Trust
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-[#A8B6CC] mt-1">
-                          Analyze suspicious messages, links, and digital content in seconds.
+                    {/* CHECK BEFORE YOU TRUST SCANNER PANEL */}
+                    <div className="bg-white dark:bg-[#111C32] rounded-2xl p-4 sm:p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4">
+                      
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-[#F1F5F9] tracking-tight">
+                            Check Before You Trust
+                          </h3>
+                          <p className="text-xs text-slate-500 dark:text-[#A8B6CC] leading-snug mt-0.5">
+                            Analyze suspicious messages, links, and digital content in seconds.
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setActiveTab('scan')}
+                          className="text-xs font-semibold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer shrink-0"
+                        >
+                          <span>Open Workspace</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Scan Type Selectors */}
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { id: 'URL', label: 'URL', icon: ExternalLink },
+                          { id: 'Message', label: 'Message (SMS)', icon: MessageSquare },
+                          { id: 'Email', label: 'Email', icon: Mail },
+                          { id: 'Phone', label: 'Phone Number', icon: Phone }
+                        ].map(({ id, label, icon: IconComponent }) => (
+                          <button
+                            key={id}
+                            onClick={() => setScanType(id)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 transition cursor-pointer ${
+                              scanType === id
+                                ? 'bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
+                                : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
+                            }`}
+                          >
+                            <IconComponent className="w-3.5 h-3.5" />
+                            <span>{label}</span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Responsive Input Area */}
+                      <div className="flex items-center gap-2.5 sm:gap-3">
+                        <div className="relative flex-1 min-w-0">
+                          <input
+                            type="text"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={(e) => { if (e.key === 'Enter') handleRunScan(); }}
+                            placeholder="Paste a suspicious link (e.g. https://example.com) or enter a message..."
+                            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238] placeholder-slate-400 dark:placeholder-[#8494AD]"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleRunScan()}
+                          disabled={isScanning}
+                          className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-indigo-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                          {isScanning ? (
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <>
+                              <span>Analyze</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {scanError && (
+                        <div className="py-2 px-3 rounded-xl bg-red-50 dark:bg-rose-950/40 border border-red-200 dark:border-[#FB7185]/40 text-red-700 dark:text-[#FB7185] text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                          <AlertTriangle className="w-4 h-4 text-red-600 dark:text-[#FB7185] shrink-0" />
+                          <span>{scanError}</span>
+                        </div>
+                      )}
+
+                      {/* Sample Try Links */}
+                      <div className="flex flex-wrap items-center gap-2 text-xs">
+                        <span className="font-bold text-slate-400 dark:text-[#8494AD] uppercase tracking-wider text-[10px]">TRY SAMPLE:</span>
+                        <button
+                          onClick={() => { setInputValue('https://fake-login.com'); handleRunScan('https://fake-login.com'); }}
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer transition"
+                        >
+                          https://fake-login.com
+                        </button>
+                        <button
+                          onClick={() => { setInputValue('whatsapp scam promo'); handleRunScan('whatsapp scam promo'); }}
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer transition"
+                        >
+                          whatsapp scam
+                        </button>
+                      </div>
+
+                      {/* 3 Core Value Props */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 dark:border-[#293953]">
+                        <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-[#162238] border border-blue-100/70 dark:border-[#293953] flex items-start gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-blue-600 dark:bg-[#6366F1] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                            <ShieldCheck className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] leading-tight">Detect</div>
+                            <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-snug mt-0.5">Identify red flags and suspicious patterns.</div>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-purple-50/50 dark:bg-[#162238] border border-purple-100/70 dark:border-[#293953] flex items-start gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-purple-600 dark:bg-[#9333EA] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] leading-tight">Explain</div>
+                            <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-snug mt-0.5">Understand the risk with clear insights.</div>
+                          </div>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-[#162238] border border-emerald-100/70 dark:border-[#293953] flex items-start gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-[#34D399] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                            <CheckCircle2 className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] leading-tight">Protect</div>
+                            <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-snug mt-0.5">Get safe next steps and recommendations.</div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* THREAT INTELLIGENCE SECTION */}
+                    <div className="bg-white dark:bg-[#111C32] rounded-2xl p-4 sm:p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-3.5">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Threat Intelligence</h4>
+                          <p className="text-xs text-slate-500 dark:text-[#A8B6CC]">Latest scam trends, tactics and safety tips to keep you informed.</p>
+                        </div>
+                        <button
+                          onClick={() => setActiveTab('threat-intel')}
+                          className="text-xs font-semibold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer shrink-0"
+                        >
+                          <span>View all</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="p-3.5 rounded-xl bg-red-50/50 dark:bg-[#162238] border border-red-100/70 dark:border-[#293953] space-y-1.5">
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 dark:bg-rose-950/60 text-red-700 dark:text-[#FB7185]">PHISHING</span>
+                          <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] truncate">WhatsApp Giveaway Scams</div>
+                          <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-relaxed line-clamp-2">Fake rewards spreading via WhatsApp messaging loops.</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-amber-50/50 dark:bg-[#162238] border border-amber-100/70 dark:border-[#293953] space-y-1.5">
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-[#FBBF24]">INVESTMENT</span>
+                          <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] truncate">Crypto Investment Fraud</div>
+                          <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-relaxed line-clamp-2">Fake platforms promising high guaranteed returns.</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-purple-50/50 dark:bg-[#162238] border border-purple-100/70 dark:border-[#293953] space-y-1.5">
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-[#A78BFA]">MALWARE</span>
+                          <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9] truncate">Malware in APK Files</div>
+                          <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC] leading-relaxed line-clamp-2">Malicious mobile apps posing as popular utility tools.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* ======================================================== */}
+                  {/* RIGHT COLUMN: RISK ANALYSIS DETAIL CARD & CTA           */}
+                  {/* ======================================================== */}
+                  <div className="flex flex-col gap-5 sm:gap-6 min-w-0">
+                    
+                    {/* RISK ANALYSIS DETAIL CARD */}
+                    {selectedScan ? (
+                      <div className="bg-white dark:bg-[#111C32] rounded-2xl p-4 sm:p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4 animate-in fade-in">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Risk Analysis</h4>
+                          <span className="text-xs font-semibold text-slate-500 dark:text-[#8494AD] bg-slate-100 dark:bg-[#162238] px-2.5 py-0.5 rounded-md">{selectedScan.type}</span>
+                        </div>
+
+                        {/* Inspected Content Target */}
+                        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#162238] border border-slate-200/70 dark:border-[#293953] text-xs font-mono text-slate-700 dark:text-[#A8B6CC] truncate">
+                          <span className="font-semibold text-slate-400 dark:text-[#8494AD] font-sans mr-1.5 uppercase text-[10px]">Target:</span>
+                          {selectedScan.content}
+                        </div>
+
+                        {/* Circular Risk Meter */}
+                        <div className="flex items-center gap-3.5 p-3.5 rounded-xl bg-slate-50/80 dark:bg-[#162238] border border-slate-200/70 dark:border-[#293953]">
+                          <div className={`relative w-14 h-14 rounded-full bg-white dark:bg-[#111C32] border-3 ${
+                            selectedScan.score >= 70 ? 'border-red-500 dark:border-[#FB7185]' : selectedScan.score >= 35 ? 'border-amber-500 dark:border-[#FBBF24]' : 'border-emerald-500 dark:border-[#34D399]'
+                          } flex items-center justify-center shrink-0 shadow-xs`}>
+                            <div className="text-lg font-black text-slate-900 dark:text-[#F1F5F9]">{selectedScan.score}</div>
+                          </div>
+                          <div className="min-w-0">
+                            <div className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${selectedScan.badgeClass}`}>
+                              {selectedScan.verdict}
+                            </div>
+                            <div className="text-xs font-bold text-slate-800 dark:text-[#F1F5F9] mt-1 truncate">
+                              {selectedScan.score >= 70 ? 'Likely Scam Threat' : selectedScan.score >= 35 ? 'Suspicious Indicators' : 'Low Threat Level'}
+                            </div>
+                            <div className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">
+                              Confidence: 98% AI verified
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Evidence Indicators */}
+                        <div className="space-y-2">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-[#8494AD]">
+                            EVIDENCE INDICATORS
+                          </div>
+                          <ul className="space-y-2 text-xs text-slate-600 dark:text-[#A8B6CC]">
+                            {(selectedScan.indicators || []).slice(0, 4).map((ind, i) => (
+                              <li key={i} className="flex items-start gap-2 leading-relaxed">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#FB7185] shrink-0 mt-0.5" />
+                                <span className="truncate">{ind}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* Recommendation */}
+                        <div className="p-3.5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-xs text-emerald-900 dark:text-[#34D399]">
+                          <div className="font-bold flex items-center gap-1.5 text-emerald-800 dark:text-[#34D399]">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-[#34D399]" />
+                            <span>Recommended Action</span>
+                          </div>
+                          <p className="mt-1 text-[11px] text-emerald-700 dark:text-[#A8B6CC] leading-relaxed">
+                            {selectedScan.recommendation}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-white dark:bg-[#111C32] rounded-2xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs text-center space-y-3">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-[#162238] text-blue-600 dark:text-[#6366F1] flex items-center justify-center mx-auto">
+                          <ShieldCheck className="w-6 h-6" />
+                        </div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-[#F1F5F9]">Risk Analysis Ready</h4>
+                        <p className="text-xs text-slate-500 dark:text-[#A8B6CC] max-w-xs mx-auto">
+                          Run a scan on the left to view in-depth risk scores, threat signals, and recommended security actions.
                         </p>
-                      </div>
-                      <button
-                        onClick={() => setActiveTab('scan')}
-                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>Open Workspace</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    {/* Scan Type Selectors */}
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => setScanType('URL')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'URL' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
-                        }`}
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                        <span>URL</span>
-                      </button>
-
-                      <button
-                        onClick={() => setScanType('Message')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Message' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
-                        }`}
-                      >
-                        <MessageSquare className="w-3.5 h-3.5" />
-                        <span>Message (SMS)</span>
-                      </button>
-
-                      <button
-                        onClick={() => setScanType('Email')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Email' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
-                        }`}
-                      >
-                        <Mail className="w-3.5 h-3.5" />
-                        <span>Email</span>
-                      </button>
-
-                      <button
-                        onClick={() => setScanType('Phone')}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
-                          scanType === 'Phone' ? 'bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] text-white shadow-xs' : 'bg-slate-100 dark:bg-[#162238] text-slate-600 dark:text-[#A8B6CC] hover:bg-slate-200 dark:hover:bg-[#17243A]'
-                        }`}
-                      >
-                        <Phone className="w-3.5 h-3.5" />
-                        <span>Phone Number</span>
-                      </button>
-                    </div>
-
-                    {/* Input Area */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3">
-                      <div className="relative w-full">
-                        <input
-                          type="text"
-                          value={inputValue}
-                          onChange={(e) => setInputValue(e.target.value)}
-                          placeholder="Paste a suspicious link (e.g. https://example.com) or enter a message..."
-                          className="w-full pl-4 pr-4 py-3.5 rounded-2xl border border-slate-300 dark:border-[#293953] text-xs sm:text-sm text-slate-900 dark:text-[#F1F5F9] focus:outline-hidden focus:ring-2 focus:ring-[#6366F1] bg-slate-50/50 dark:bg-[#162238] placeholder-slate-400 dark:placeholder-[#8494AD]"
-                        />
-                      </div>
-                      <button
-                        onClick={() => handleRunScan()}
-                        disabled={isScanning}
-                        className="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-bold text-white bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] hover:from-blue-700 hover:to-purple-700 shadow-md shadow-indigo-500/20 transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
-                      >
-                        {isScanning ? (
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <>
-                            <span>Analyze</span>
-                            <ArrowRight className="w-4 h-4" />
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {scanError && (
-                      <div className="p-3 rounded-xl bg-red-50 dark:bg-rose-950/40 border border-red-200 dark:border-[#FB7185]/40 text-red-700 dark:text-[#FB7185] text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                        <AlertTriangle className="w-4 h-4 text-red-600 dark:text-[#FB7185] shrink-0" />
-                        <span>{scanError}</span>
                       </div>
                     )}
 
-                    {/* Sample try links */}
-                    <div className="flex flex-wrap items-center gap-2 text-xs">
-                      <span className="font-bold text-slate-400 dark:text-[#8494AD] uppercase tracking-wider text-[10px]">Try Sample:</span>
-                      <button
-                        onClick={() => { setInputValue('https://fake-login.com'); handleRunScan('https://fake-login.com'); }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer"
-                      >
-                        https://fake-login.com
-                      </button>
-                      <button
-                        onClick={() => { setInputValue('whatsapp scam promo'); handleRunScan('whatsapp scam promo'); }}
-                        className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#162238] hover:bg-slate-200 dark:hover:bg-[#17243A] text-slate-600 dark:text-[#A8B6CC] font-mono text-[11px] cursor-pointer"
-                      >
-                        whatsapp scam
-                      </button>
-                    </div>
-
-                    {/* 3 Core Value Pill Props */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-100 dark:border-[#293953]">
-                      <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-[#162238] border border-blue-100 dark:border-[#293953] space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-blue-600 dark:bg-[#6366F1] text-white flex items-center justify-center">
-                          <ShieldCheck className="w-4 h-4" />
+                    {/* SCAMSENSE AI BOTTOM CALL-TO-ACTION */}
+                    <div className="rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 dark:from-[#4F46E5] dark:to-[#9333EA] p-4 sm:p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-md">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-5 h-5 text-white" />
                         </div>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Detect</div>
-                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Identify red flags and suspicious patterns.</div>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-purple-50/60 dark:bg-[#162238] border border-purple-100 dark:border-[#293953] space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-purple-600 dark:bg-[#9333EA] text-white flex items-center justify-center">
-                          <Sparkles className="w-4 h-4" />
+                        <div className="min-w-0">
+                          <span className="font-bold text-sm leading-tight block">ScamSense AI</span>
+                          <p className="text-xs text-blue-100 leading-snug mt-0.5">
+                            Join the fight against online fraud. Your safety matters.
+                          </p>
                         </div>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Explain</div>
-                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Understand the risk with clear insights.</div>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-emerald-50/60 dark:bg-[#162238] border border-emerald-100 dark:border-[#293953] space-y-1">
-                        <div className="w-7 h-7 rounded-lg bg-emerald-600 dark:bg-[#34D399] text-white flex items-center justify-center">
-                          <CheckCircle2 className="w-4 h-4" />
-                        </div>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Protect</div>
-                        <div className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Get safe next steps and recommendations.</div>
-                      </div>
-                    </div>
-
-                  </div>
-
-                  {/* THREAT INTELLIGENCE PREVIEW ON HOME */}
-                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Threat Intelligence</h4>
-                        <p className="text-xs text-slate-500 dark:text-[#A8B6CC]">Latest scam trends, tactics and safety tips to keep you informed.</p>
                       </div>
                       <button
-                        onClick={() => setActiveTab('threat-intel')}
-                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
+                        onClick={() => setActiveTab('scan')}
+                        className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white text-blue-600 font-bold text-xs hover:bg-blue-50 transition cursor-pointer shrink-0 shadow-sm whitespace-nowrap text-center"
                       >
-                        <span>View all</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        Start New Scan &rarr;
                       </button>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="p-4 rounded-2xl bg-red-50/60 dark:bg-[#162238] border border-red-100 dark:border-[#293953] space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 dark:bg-rose-950/60 text-red-700 dark:text-[#FB7185]">Phishing</span>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">WhatsApp Giveaway Scams</div>
-                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Fake rewards spreading via WhatsApp messaging loops.</p>
-                      </div>
-
-                      <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-[#162238] border border-amber-100 dark:border-[#293953] space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-[#FBBF24]">Investment</span>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Crypto Investment Fraud</div>
-                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Fake platforms promising high guaranteed returns.</p>
-                      </div>
-
-                      <div className="p-4 rounded-2xl bg-purple-50/60 dark:bg-[#162238] border border-purple-100 dark:border-[#293953] space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-[#A78BFA]">Malware</span>
-                        <div className="font-bold text-xs text-slate-900 dark:text-[#F1F5F9]">Malware in APK Files</div>
-                        <p className="text-[11px] text-slate-500 dark:text-[#A8B6CC]">Malicious mobile apps posing as popular utility tools.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Right Column (4 cols): Recent Scans & Risk Breakdown */}
-                <div className="lg:col-span-4 space-y-6">
-                  
-                  {/* RECENT SCANS LIST CARD */}
-                  <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Recent Scans</h4>
-                      <button
-                        onClick={() => setActiveTab('scan-history')}
-                        className="text-xs font-bold text-blue-600 dark:text-[#6366F1] hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>View all</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="space-y-3">
-                      {loadingHistory ? (
-                        <div className="py-6 text-center text-xs text-slate-400 dark:text-[#8494AD] flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                          <span>Loading scan history...</span>
-                        </div>
-                      ) : filteredScans.length === 0 ? (
-                        <div className="py-8 px-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-dashed border-slate-200 dark:border-[#293953] text-center">
-                          <Scan className="w-7 h-7 text-slate-300 dark:text-[#8494AD] mx-auto mb-1.5" />
-                          <div className="text-xs font-bold text-slate-700 dark:text-[#F1F5F9]">No scans recorded yet</div>
-                          <p className="text-[11px] text-slate-400 dark:text-[#8494AD] mt-0.5">Run a scan above to see your verified results here.</p>
-                        </div>
-                      ) : (
-                        filteredScans.slice(0, 5).map((scan) => (
-                          <div
-                            key={scan.id}
-                            onClick={() => setSelectedScan(scan)}
-                            className={`p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                              selectedScan && selectedScan.id === scan.id
-                                ? 'border-[#6366F1] bg-blue-50/30 dark:bg-[#162238]'
-                                : 'border-slate-200 dark:border-[#293953] hover:bg-slate-50 dark:hover:bg-[#162238]/60'
-                            }`}
-                          >
-                            <div className="flex items-center gap-3 min-w-0 pr-2">
-                              <div className={`w-9 h-9 rounded-xl ${scan.iconBg || 'bg-red-100 text-red-600'} flex items-center justify-center shrink-0`}>
-                                <ShieldCheck className="w-4 h-4" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] truncate">
-                                  {scan.content}
-                                </div>
-                                <div className="flex items-center gap-2 mt-0.5">
-                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${scan.badgeClass}`}>
-                                    {scan.verdict}
-                                  </span>
-                                  <span className="text-[10px] text-slate-400 dark:text-[#8494AD]">{scan.timestamp}</span>
-                                </div>
-                              </div>
-                            </div>
-                            <ChevronRight className="w-4 h-4 text-slate-400 dark:text-[#8494AD] shrink-0" />
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-
-                  {/* RISK ANALYSIS DETAIL CARD */}
-                  {selectedScan && (
-                    <div className="bg-white dark:bg-[#111C32] rounded-3xl p-6 border border-[#E2E8F0] dark:border-[#293953] shadow-xs space-y-4 animate-in fade-in">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-base font-bold text-slate-900 dark:text-[#F1F5F9]">Risk Analysis</h4>
-                        <span className="text-xs font-bold text-slate-400 dark:text-[#8494AD]">{selectedScan.type}</span>
-                      </div>
-
-                      {/* Circular Risk Meter */}
-                      <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-[#162238] border border-slate-200 dark:border-[#293953]">
-                        <div className="relative w-16 h-16 rounded-full bg-slate-200 dark:bg-[#111C32] border-4 border-[#FB7185] flex items-center justify-center shrink-0">
-                          <div className="text-lg font-black text-slate-900 dark:text-[#F1F5F9]">{selectedScan.score}</div>
-                        </div>
-                        <div>
-                          <div className={`inline-block text-xs font-bold px-2.5 py-0.5 rounded-full border ${selectedScan.badgeClass}`}>
-                            {selectedScan.verdict}
-                          </div>
-                          <div className="text-xs font-bold text-slate-800 dark:text-[#F1F5F9] mt-1">
-                            {selectedScan.score > 70 ? 'Likely Scam Threat' : selectedScan.score > 40 ? 'Suspicious Indicators' : 'Low Threat Level'}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Evidence Indicators */}
-                      <div className="space-y-2">
-                        <div className="text-xs font-bold text-slate-900 dark:text-[#F1F5F9] uppercase tracking-wider text-[10px]">
-                          Evidence Indicators
-                        </div>
-                        <ul className="space-y-1.5 text-xs text-slate-600 dark:text-[#A8B6CC]">
-                          {selectedScan.indicators.map((ind, i) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-[#FB7185] shrink-0 mt-0.5" />
-                              <span>{ind}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Recommendation */}
-                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-900 dark:text-[#34D399]">
-                        <div className="font-bold flex items-center gap-1.5 text-emerald-800 dark:text-[#34D399]">
-                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-[#34D399]" />
-                          <span>Recommended Action</span>
-                        </div>
-                        <p className="mt-1 text-[11px] text-emerald-700 dark:text-[#A8B6CC] leading-snug">
-                          {selectedScan.recommendation}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Security CTA Card */}
-                  <div className="rounded-3xl bg-linear-to-r from-blue-600 to-purple-600 dark:from-[#4F46E5] dark:to-[#9333EA] p-6 text-white space-y-3 shadow-lg">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-6 h-6" />
-                      <span className="font-bold text-sm">ScamSense AI</span>
-                    </div>
-                    <p className="text-xs text-blue-100 leading-relaxed">
-                      Join the fight against online fraud. Your safety matters.
-                    </p>
-                    <button
-                      onClick={() => setActiveTab('scan')}
-                      className="w-full py-2.5 rounded-xl bg-white text-blue-600 font-bold text-xs hover:bg-blue-50 transition cursor-pointer"
-                    >
-                      Start New Scan &rarr;
-                    </button>
                   </div>
 
                 </div>
 
               </div>
-            </>
-          )}
+            )}
 
+          </div>
         </main>
 
       </div>

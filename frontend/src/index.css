@@ -134,3 +134,38 @@ body {
 .dark .card-hover:hover {
   box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4);
 }
+
+/* Dashboard Smooth Scroll Container Styling */
+.dashboard-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.dashboard-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+.dashboard-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+.dashboard-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}
+
+.dark .dashboard-scroll {
+  scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+}
+
+.dark .dashboard-scroll::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.55);
+}
+
+.dark .dashboard-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.85);
+}
