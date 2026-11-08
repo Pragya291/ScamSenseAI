@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* ScamSense Design Tokens - Light Mode (Default) */
   --bg-page: #F8FAFF;
@@ -50,6 +54,7 @@ html {
   background-color: var(--bg-page);
   color: var(--text-primary);
   color-scheme: light;
+  height: 100%;
 }
 
 html.dark {
@@ -62,8 +67,14 @@ body {
   color: var(--text-primary);
   margin: 0;
   padding: 0;
+  height: 100%;
   overflow-x: hidden;
   transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
 }
 
 /* Smooth theme transitions across common container surfaces */

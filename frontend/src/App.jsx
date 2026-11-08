@@ -21,7 +21,16 @@ function AppContent() {
   const { user, loading, signOutUser } = useAuth();
   
   // Current view state: 'landing' | 'signin' | 'signup' | 'forgot-password' | 'dashboard'
-  const [currentView, setCurrentView] = useState('landing');
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.hash === '#dashboard' || window.location.pathname === '/dashboard') {
+        return 'dashboard';
+      }
+      const stored = localStorage.getItem('scamsense_current_view');
+      if (stored) return stored;
+    }
+    return 'dashboard';
+  });
   const [activeTab, setActiveTab] = useState('home');
 
   // Navigation handlers
@@ -29,11 +38,20 @@ function AppContent() {
     // Protected route check: Dashboard requires an authenticated user
     if (view === 'dashboard' && !user) {
       setCurrentView('signin');
+      if (typeof window !== 'undefined') localStorage.setItem('scamsense_current_view', 'signin');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     setCurrentView(view);
     setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('scamsense_current_view', view);
+      if (view === 'dashboard') {
+        window.location.hash = 'dashboard';
+      } else if (window.location.hash === '#dashboard') {
+        history.replaceState(null, '', window.location.pathname);
+      }
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
